@@ -1,0 +1,9 @@
+{
+  "gamePort": 8887,
+  "gameConfigPath": ".lia/game-config.json",
+  "botRepos": [
+    {"name": "java", "url": "https://github.com/liagame/java-bot"},
+    {"name": "kotlin", "url": "https://github.com/liagame/kotlin-bot"},
+    {"name": "", "url": "https://github.com/liagame/python3-bot"}
+  ]
+}

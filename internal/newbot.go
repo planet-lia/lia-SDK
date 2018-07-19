@@ -16,10 +16,10 @@ import (
 func FetchNewBot(lang string, name string)  {
 	// Check if the bot with name already exists
 	if isUsed, err := isNameUsed(name); err != nil {
-		fmt.Println("Failed to check if name isUsed. \n", err)
+		fmt.Printf("failed to check if name isUsed. %s", err)
 		return
 	} else if isUsed {
-		fmt.Printf("Bot name %s already exists. Choose another name.\n", name)
+		fmt.Printf("bot name %s already exists. Choose another name.\n", name)
 		return
 	}
 
@@ -34,26 +34,51 @@ func FetchNewBot(lang string, name string)  {
 	// Create temporary file
 	tmpFile, err := ioutil.TempFile("", "")
 	if err != nil {
-		fmt.Println("Error while creating tmp tmpFile \n", err)
+		fmt.Printf("error while creating tmp tmpFile \n", err)
 		return
 	}
 	defer os.Remove(tmpFile.Name())
 
 	// Download bot zip
+	fmt.Printf("Downloading bot from %s...\n", repoURL)
 	if err := downloadBot(repoURL, tmpFile); err != nil {
-		fmt.Printf("Failed to download bot from %s.\n %s\n", repoURL, err)
+		fmt.Printf("failed to download bot from %s.\n %s\n", repoURL, err)
 		return
 	}
 
 	// Extract bot
-	if err := unzipBot(tmpFile.Name(), name); err != nil {
-		fmt.Printf("Failed to extract bot with name %s. %v\n", name, err)
+	fmt.Println("Preparing bot...")
+	tmpBotParentDir, err := ioutil.TempDir("", "")
+	if err != nil {
+		fmt.Printf("failed to create tmp bot dir. %s", err)
 		return
 	}
+	defer os.RemoveAll(tmpBotParentDir)
+	if err := unzipBot(tmpFile.Name(), tmpBotParentDir); err != nil {
+		fmt.Printf("failed to extract bot with target %s. %v\n", tmpBotParentDir, err)
+		return
+	}
+
+	// Rename bot
+	tmpBotDir, err := getBotDir(tmpBotParentDir)
+	if err != nil {
+		fmt.Printf("failed to get bot dir. %s\n", err)
+		return
+	}
+
+	// Move bot dir
+	finalBotDir := fmt.Sprintf("%s/%s", config.DirPath, name)
+	if err := os.Rename(tmpBotDir, finalBotDir); err != nil {
+		fmt.Printf("failed move bot dir from %s to %s. %s\n", tmpBotDir, finalBotDir, err)
+		return
+	}
+
+	fmt.Printf("Bot %s is ready!\n", name)
 }
 
 func isNameUsed(name string) (bool, error) {
-	_, err := os.Stat(name)
+	path := fmt.Sprintf("%s/%s", config.DirPath, name)
+	_, err := os.Stat(path)
 	if err == nil { return true, nil }
 	if os.IsNotExist(err) { return false, nil }
 	return true, err
@@ -61,11 +86,11 @@ func isNameUsed(name string) (bool, error) {
 
 /** Find repository from config file based on lang parameter */
 func getRepositoryURL(lang string) (string, error) {
-	e := reflect.ValueOf(*config.GetCfg().BotRepos)
+	for _, langData := range config.GetCfg().Languages {
+		e := reflect.ValueOf(langData)
 
-	for i := 0; i < e.Type().NumField(); i++ {
-		lang2 := e.Type().Field(i).Tag.Get("json")
-		value := e.Field(i).Interface()
+		lang2 := e.Field(0).Interface()
+		value := e.Field(1).Interface()
 
 		if lang == lang2 {
 			return value.(string), nil
@@ -78,17 +103,17 @@ func getRepositoryURL(lang string) (string, error) {
 func downloadBot(url string, output *os.File) error {
 	response, err := http.Get(url)
 	if err != nil {
-		return stacktrace.Propagate(err, "Failed to download bot from %s. %s", url)
+		return stacktrace.Propagate(err, "failed to download bot from %s. %s", url)
 	}
 	defer response.Body.Close()
 
 	if response.StatusCode != 200 {
-		return stacktrace.NewError("Failed to download bot. %v", *response)
+		return stacktrace.NewError("failed to download bot. %v", *response)
 	}
 
 	_, err = io.Copy(output, response.Body)
 	if err != nil {
-		return stacktrace.Propagate(err, "Failed to store downloaded bot")
+		return stacktrace.Propagate(err, "failed to store downloaded bot")
 	}
 
 	return nil
@@ -97,11 +122,11 @@ func downloadBot(url string, output *os.File) error {
 func unzipBot(archive string, target string) error {
 	reader, err := zip.OpenReader(archive)
 	if err != nil {
-		return stacktrace.Propagate(err, "Opening reader failed")
+		return stacktrace.Propagate(err, "opening reader failed")
 	}
 
 	if err := os.MkdirAll(target, 0755); err != nil {
-		return stacktrace.Propagate(err, "Creating target dir failed")
+		return stacktrace.Propagate(err, "creating target dir failed")
 	}
 
 	for _, file := range reader.File {
@@ -129,4 +154,16 @@ func unzipBot(archive string, target string) error {
 	}
 
 	return nil
+}
+
+func getBotDir(parentDir string) (string, error) {
+	files, err := ioutil.ReadDir(parentDir)
+	if err != nil {
+		return "", stacktrace.Propagate(err,"failed to read files from dir: %s", parentDir)
+	}
+	if len(files) != 1 {
+		return "", stacktrace.NewError("there should be exactly 1 file in parentDir. nFiles: %v", len(files))
+	}
+	botDir := fmt.Sprintf("%s/%s", parentDir, files[0].Name())
+	return botDir, nil
 }

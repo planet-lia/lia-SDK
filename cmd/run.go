@@ -13,6 +13,7 @@ var runCmd = &cobra.Command{
 	Use:   "run [bot1] [bot2]",
 	Short: "Run game instance",
 	Long: `A longer description.`,
+	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		internal.RunGame(args, &gameFlags)
 	},

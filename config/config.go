@@ -5,7 +5,11 @@ import (
 	"fmt"
 	"github.com/palantir/stacktrace"
 	"io/ioutil"
+	"path/filepath"
+	"os"
 )
+
+const CLI_VERISON = "0.1.0"
 
 var cfg *Config
 
@@ -13,6 +17,7 @@ var cfg *Config
 var DirPath string
 
 type Config struct {
+	Version 	   string 		  `json:"version"`
 	GamePort       int        `json:"gamePort"`
 	GameConfigPath string     `json:"gameConfigPath"`
 	Languages      []Language `json:"languages"`
@@ -47,8 +52,18 @@ func SetConfig(path string) error {
 
 func GetCfg() *Config {
 	if cfg == nil {
-		if err := SetConfig("config/config.json"); err != nil {
-			panic(fmt.Sprintf("couldn't get config. %s", err))
+		// Set DirPath to executable path
+		ex, err := os.Executable()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "failed to get executable location\n %s", err)
+			os.Exit(FAILED_TO_GET_ENVIRONMENT)
+		}
+		DirPath = filepath.Dir(ex)
+
+		pathToCfg := DirPath + "/.lia/cli-config.json"
+		if err := SetConfig(pathToCfg); err != nil {
+			fmt.Fprintf(os.Stderr, "couldn't get config\n %s", err)
+			os.Exit(FAILED_TO_READ_CONFIG)
 		}
 	}
 	return cfg

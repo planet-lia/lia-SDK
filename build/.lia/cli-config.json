@@ -1,4 +1,5 @@
 {
+  "version": "0.1.0",
   "gamePort": 8887,
   "gameConfigPath": ".lia/game-config.json",
   "languages": [

@@ -16,7 +16,7 @@ func ShowReplayViewer(replayFile string)  {
 		cmd.Args = append(cmd.Args, replayFile)
 	}
 	if err := cmd.Run(); err != nil {
-		fmt.Printf("Couldn't run replay: %s\n", err)
-		return
+		fmt.Fprintf(os.Stderr, "couldn't run replay: %s\n", err)
+		os.Exit(config.REPLAY_VIEWER_FAILED)
 	}
 }

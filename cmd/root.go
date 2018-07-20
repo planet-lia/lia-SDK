@@ -7,14 +7,23 @@ import (
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/liagame/lia-cli/internal"
 )
 
 var cfgFile string
+var showVersion bool
 
 var rootCmd = &cobra.Command{
 	Use:   "lia-cli",
 	Short: "The core LIA development tool.",
 	Long: `lia-cli is a CLI tool for easier development of LIA bots.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		if showVersion {
+			internal.ShowVersions()
+		} else {
+			cmd.Help()
+		}
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -28,6 +37,8 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+
+	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", false, "Show tools version.")
 }
 
 // initConfig reads in config file and ENV variables if set.

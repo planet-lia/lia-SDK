@@ -8,8 +8,6 @@ import (
 	"github.com/palantir/stacktrace"
 	"crypto/rand"
 	"runtime"
-	"strings"
-	"io/ioutil"
 	"strconv"
 	"time"
 )
@@ -24,33 +22,33 @@ type RunGameFlags struct {
 	DebugBots []int
 }
 
-func RunGame(args []string, gameFlags *RunGameFlags) {
+func GenerateGame(args []string, gameFlags *RunGameFlags) {
 	uidBot1, err := generateUuid()
 	if err != nil {
-		fmt.Printf("failed to generate uid. %s", err)
+		fmt.Fprintf(os.Stderr, "failed to generate uid. %s", err)
 		return
 	}
 	uidBot2, err := generateUuid()
 	if err != nil {
-		fmt.Printf("failed to generate uid. %s", err)
+		fmt.Fprintf(os.Stderr, "failed to generate uid. %s", err)
 		return
 	}
 	nameBot1 := args[0]
 	nameBot2 := args[1]
 
 	// Prepare bots
-	fmt.Printf("Preparing bot %s...\n", nameBot1)
+/*	fmt.Printf("Preparing bot %s...\n", nameBot1)
 	if err := prepareBot(nameBot1); err != nil {
-		fmt.Printf("failed to prepare the first bot. %s", err)
+		fmt.Fprintf(os.Stderr, "failed to prepare the first bot. %s", err)
 		return
 	}
 	if nameBot1 != nameBot2 {
 		fmt.Printf("Preparing bot %s...\n", nameBot2)
 		if err := prepareBot(nameBot2); err != nil {
-			fmt.Printf("failed to prepare the second bot. %s", err)
+			fmt.Fprintf(os.Stderr, "failed to prepare the second bot. %s", err)
 			return
 		}
-	}
+	}*/
 
 	result := make(chan error)
 
@@ -79,7 +77,7 @@ func RunGame(args []string, gameFlags *RunGameFlags) {
 
 	for err := range result {
 		if err != nil {
-			fmt.Printf("failed to generate game\n %s\n", err)
+			fmt.Fprintf(os.Stderr, "failed to generate game\n %s\n", err)
 			break
 		}
 	}
@@ -97,7 +95,7 @@ func killProcess(cmdRef *CommandReference, errorMsg string) {
 		return
 	}
 	if err := cmdRef.cmd.Process.Kill(); err != nil {
-		fmt.Printf(errorMsg, err)
+		fmt.Fprintf(os.Stderr, errorMsg, err)
 	}
 }
 
@@ -111,7 +109,7 @@ func runBot(cmdRef *CommandReference, name, uid string, port int) error {
 		runScriptName = "run.bat"
 	}
 
-	botDir := fmt.Sprintf("%s/%s", config.DirPath, name)
+	botDir := config.DirPath + "/" + name
 
 	cmd := exec.Command(runScriptName, strconv.Itoa(port), uid)
 	cmdRef.cmd = cmd
@@ -124,108 +122,6 @@ func runBot(cmdRef *CommandReference, name, uid string, port int) error {
 	}
 
 	return nil
-}
-
-func prepareBot(name string) error {
-	lang, err := getBotLanguage(name)
-	if err != nil {
-		return stacktrace.Propagate(err, "Failed to get language for bot %s", name)
-	}
-
-	botDir := fmt.Sprintf("%s/%s", config.DirPath, name)
-
-	// Choose platform dependent preparing logic
-	prepareCommands := lang.PrepareUnix
-	runScriptContent := lang.RunScriptUnix
-	runScriptName := "run.sh"
-
-	if runtime.GOOS == "windows" {
-		prepareCommands = lang.PrepareWindows
-		runScriptContent = lang.RunScriptWindows
-		runScriptName = "run.bat"
-	}
-
-	// Run prepare commands
-	for _, cmd := range prepareCommands {
-		if err := runPrepareCommand(botDir, cmd); err != nil {
-			return stacktrace.Propagate(err, "Failed to run command for bot %s language %s", name, lang.Name)
-		}
-	}
-
-	// Convert script content from []string to []byte
-	var runScriptContentBytes []byte
-	for i, line := range runScriptContent {
-		runScriptContentBytes = append(runScriptContentBytes, []byte(line)...)
-		if i < len(runScriptContent) - 1 {
-			runScriptContentBytes = append(runScriptContentBytes, []byte(" && ")...)
-		}
-	}
-	if runtime.GOOS != "windows" {
-		runScriptContentBytes = append([]byte("#!/bin/bash\n"), runScriptContentBytes...)
-	}
-
-	// Create run script
-	if err := createRunScript(botDir, runScriptName, runScriptContentBytes); err != nil {
-		return stacktrace.Propagate(err, "Failed to create run script in %s/%s", botDir, runScriptName)
-	}
-
-	return nil
-}
-
-func createRunScript(botDir string, name string, body []byte) error {
-	runScriptPath := fmt.Sprintf("%s/%s", botDir, name)
-
-	err := ioutil.WriteFile(runScriptPath, body, 0644) // overwriting
-	if err != nil {
-		return stacktrace.Propagate(err, "Failed to create run script in %s", runScriptPath)
-	}
-	// Make it executable
-	if runtime.GOOS == "windows" {
-
-	} else {
-		cmd := exec.Command("chmod", "+x", "run.sh")
-		cmd.Dir = botDir
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-
-		if err := cmd.Run(); err != nil {
-			return stacktrace.Propagate(err, "Failed to make run.sh executable.")
-		}
-	}
-	return nil
-}
-
-func runPrepareCommand(botDir string, prepareCmd config.Command) error {
-	cmd := exec.Command(prepareCmd.Args[0])
-	cmd.Dir = botDir
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	// Append arguments
-	for i := 1; i < len(prepareCmd.Args); i++ {
-		cmd.Args = append(cmd.Args, prepareCmd.Args[i])
-	}
-
-	if err := cmd.Run(); err != nil {
-		return stacktrace.Propagate(err, "Failed to run command [%s]", strings.Join(prepareCmd.Args, " "))
-	}
-	return nil
-}
-
-
-func getBotLanguage(name string) (*config.Language, error) {
-	configPath := fmt.Sprintf("%s/%s/lia.json", config.DirPath, name)
-	liaConfig, err := getConfig(configPath)
-	if err != nil {
-		return nil, stacktrace.Propagate(err, "Failed to read %s", configPath)
-	}
-	for _, langData := range config.GetCfg().Languages {
-		if langData.Name == liaConfig.Language {
-			return &langData, nil
-		}
-	}
-
-	return nil, stacktrace.NewError("Language %s was not found", liaConfig.Language)
 }
 
 func runGameGenerator(cmdRef *CommandReference, gameFlags *RunGameFlags, nameBot1, nameBot2, uidBot1, uidBot2 string) error {

@@ -1,0 +1,16 @@
+package config
+
+const (
+	GENERIC                    = 1
+	BOT_EXISTS                 = 2
+	FAILED_TO_FIND_REPO        = 3
+	BOT_DOWNLOAD_FAILED        = 4
+	OS_CALL_FAILED             = 5
+	REPLAY_VIEWER_FAILED       = 6
+	FAILED_GETTING_BOT_LANG    = 7
+	PREPARING_BOT_FAILED       = 8
+	CREATING_RUN_SCRIPT_FAILED = 9
+	FAILED_TO_READ_CONFIG      = 10
+	FAILED_TO_GET_ENVIRONMENT  = 11
+	GAME_GENERATOR_FAILED = 12
+)

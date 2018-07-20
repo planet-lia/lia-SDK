@@ -12,12 +12,7 @@ import (
 )
 
 func Compile(botName string) {
-	lang, err := getBotLanguage(botName)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to get language for bot %s\n %s", botName, err)
-		os.Exit(config.FAILED_GETTING_BOT_LANG)
-	}
-
+	lang := GetBotLanguage(botName)
 	botDir := config.DirPath + "/" + botName
 
 	// Choose platform dependent preparing logic
@@ -97,19 +92,4 @@ func runPrepareCommand(botDir string, prepareCmd config.Command) error {
 		return stacktrace.Propagate(err, "failed to run command [%s]", strings.Join(prepareCmd.Args, " "))
 	}
 	return nil
-}
-
-func getBotLanguage(name string) (*config.Language, error) {
-	configPath := config.DirPath + "/" + name + "/lia.json"
-	liaConfig, err := getConfig(configPath)
-	if err != nil {
-		return nil, stacktrace.Propagate(err, "failed to read %s", configPath)
-	}
-	for _, langData := range config.GetCfg().Languages {
-		if langData.Name == liaConfig.Language {
-			return &langData, nil
-		}
-	}
-
-	return nil, stacktrace.NewError("language %s was not found", liaConfig.Language)
 }

@@ -47,7 +47,7 @@ func ShowVersions() {
 	}
 	replayViewerVersion := string(out)
 
-	liaCliVersion := "lia-cli version: " + config.CLI_VERISON
+	liaCliVersion := "lia-cli version: " + config.VERSION
 
 	fmt.Printf("%s\n%s\n%s\n%s%s",
 		liaCliVersion,

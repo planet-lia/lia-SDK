@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-const CLI_VERISON = "0.1.0"
+const VERSION = "0.1.0"
 
 var cfg *Config
 

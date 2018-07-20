@@ -36,20 +36,6 @@ func GenerateGame(args []string, gameFlags *RunGameFlags) {
 	nameBot1 := args[0]
 	nameBot2 := args[1]
 
-	// Prepare bots
-/*	fmt.Printf("Preparing bot %s...\n", nameBot1)
-	if err := prepareBot(nameBot1); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to prepare the first bot. %s", err)
-		return
-	}
-	if nameBot1 != nameBot2 {
-		fmt.Printf("Preparing bot %s...\n", nameBot2)
-		if err := prepareBot(nameBot2); err != nil {
-			fmt.Fprintf(os.Stderr, "failed to prepare the second bot. %s", err)
-			return
-		}
-	}*/
-
 	result := make(chan error)
 
 	cmdBot1 := &CommandReference{}

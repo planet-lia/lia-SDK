@@ -8,7 +8,6 @@ import (
 
 
 var gameFlags = internal.RunGameFlags{}
-var
 
 var generateCmd = &cobra.Command{
 	Use:   "generate <bot1> <id1> <bot2> <id2>",
@@ -29,8 +28,6 @@ func init() {
 	generateCmd.Flags().StringVarP(&gameFlags.MapPath, "map", "M", "", "Path to custom map settings.")
 	generateCmd.Flags().StringVarP(&gameFlags.ReplayPath, "replay", "r", "", "Choose custom replay name and location.")
 	generateCmd.Flags().StringVarP(&gameFlags.ConfigPath, "config", "c", config.GetCfg().GameConfigPath, "Choose custom replay name and location.")
-	generateCmd.Flags().StringVarP(&gameFlags.ConfigPath, "config", "c", config.GetCfg().GameConfigPath, "Choose custom replay name and location.")
 	generateCmd.Flags().IntSliceVarP(&gameFlags.DebugBots, "debug", "d", []int{},"Specify which bots you want to run manually." +
 		"Examples: -d 1,2 -- debug bot1 and bot2, -d 2 -- debug bot2)")
-
 }

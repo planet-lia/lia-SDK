@@ -9,11 +9,12 @@ import (
 	"io/ioutil"
 	"os/exec"
 	"strings"
+	"path/filepath"
 )
 
 func Compile(botName string) {
 	lang := GetBotLanguage(botName)
-	botDir := config.DirPath + "/" + botName
+	botDir := filepath.Join(config.DirPath, botName)
 
 	// Choose platform dependent preparing logic
 	prepareCommands := lang.PrepareUnix
@@ -57,7 +58,7 @@ func Compile(botName string) {
 }
 
 func createRunScript(botDir string, name string, body []byte) error {
-	runScriptPath := botDir + "/" + name
+	runScriptPath := filepath.Join(botDir, name)
 
 	err := ioutil.WriteFile(runScriptPath, body, 0644) // overwriting
 	if err != nil {

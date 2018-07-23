@@ -1,35 +1,32 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
+	"github.com/liagame/lia-cli/config"
+	"github.com/liagame/lia-cli/internal"
 )
 
-var playCmd = &cobra.Command{
-	Use:   "play",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+var viewReplay bool
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+var playCmd = &cobra.Command{
+	Use:   "play <bot1> <bot2>",
+	Short: "Compiles and generates a game between bot1 and bot2.",
+	Long: `Compiles and generates a game between bot1 and bot2.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("play called")
+		internal.Play(args, &gameFlags, viewReplay)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(playCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// playCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// playCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	playCmd.Flags().BoolVarP(&viewReplay,"view-replay", "v", true, "If set, the replay will not be opened in replay viewer.")
+	playCmd.Flags().IntVarP(&gameFlags.GameSeed,"gseed", "g", 0, "Game seed. 0 means random.")
+	playCmd.Flags().IntVarP(&gameFlags.MapSeed,"mseed", "m", 0, "Map seed. 0 means random.")
+	playCmd.Flags().IntVarP(&gameFlags.Port,"port", "p", config.GetCfg().GamePort, "Port on which game generator will run. Default is 8887.")
+	playCmd.Flags().StringVarP(&gameFlags.MapPath, "map", "M", "", "Path to custom map settings.")
+	playCmd.Flags().StringVarP(&gameFlags.ReplayPath, "replay", "r", "", "Choose custom replay name and location.")
+	playCmd.Flags().StringVarP(&gameFlags.ConfigPath, "config", "c", config.GetCfg().GameConfigPath, "Choose custom replay name and location.")
+	playCmd.Flags().IntSliceVarP(&gameFlags.DebugBots, "debug", "d", []int{},"Specify which bots you want to run manually." +
+		"Examples: -d 1,2 -- debug bot1 and bot2, -d 2 -- debug bot2)")
 }

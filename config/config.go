@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"github.com/palantir/stacktrace"
 	"io/ioutil"
-	"path/filepath"
 	"os"
+	"path/filepath"
 )
 
 const VERSION = "0.1.0"
@@ -17,10 +17,12 @@ var cfg *Config
 var DirPath string
 
 type Config struct {
-	Version 	   string 		  `json:"version"`
-	GamePort       int        `json:"gamePort"`
-	GameConfigPath string     `json:"gameConfigPath"`
-	Languages      []Language `json:"languages"`
+	Version           string     `json:"version"`
+	GamePort          int        `json:"gamePort"`
+	GameConfigPath    string     `json:"gameConfigPath"`
+	RunBotRetries     int        `json:"runBotRetries"`
+	RunBotRetriesWait int        `json:"runBotRetriesWait"`
+	Languages         []Language `json:"languages"`
 }
 
 type Language struct {

@@ -25,7 +25,8 @@ func FetchBot(url string, name string)  {
 	fmt.Printf("Downloading bot from %s...\n", url)
 	if err := downloadBot(url, tmpFile); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to download bot from %s.\n %s\n", url, err)
-		os.Exit(config.BOT_DOWNLOAD_FAILED)
+		defer os.Exit(config.BOT_DOWNLOAD_FAILED)
+		return // need to call like that so that other defers are called (removing files etc...)
 	}
 
 	// Extract bot
@@ -33,19 +34,22 @@ func FetchBot(url string, name string)  {
 	tmpBotParentDir, err := ioutil.TempDir("", "")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to create tmp bot dir. %s", err)
-		os.Exit(config.OS_CALL_FAILED)
+		defer os.Exit(config.OS_CALL_FAILED)
+		return
 	}
 	defer os.RemoveAll(tmpBotParentDir)
 	if err := unzipBot(tmpFile.Name(), tmpBotParentDir); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to extract bot with target %s. %v\n", tmpBotParentDir, err)
-		os.Exit(config.OS_CALL_FAILED)
+		defer os.Exit(config.OS_CALL_FAILED)
+		return
 	}
 
 	// Get bot dir name in temporary file
 	botDirName, err := getBotDirName(tmpBotParentDir)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to get bot dir. %s\n", err)
-		os.Exit(config.GENERIC)
+		defer os.Exit(config.GENERIC)
+		return
 	}
 
 	// Set bot name
@@ -56,25 +60,28 @@ func FetchBot(url string, name string)  {
 	// Check if the bot with chosen name already exists
 	if isUsed, err := isNameUsed(name); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to check if name isUsed. %s", err)
-		os.Exit(config.GENERIC)
+		defer os.Exit(config.GENERIC)
+		return
 	} else if isUsed {
 		fmt.Fprintf(os.Stderr, "bot name %s already exists. Choose another name.\n", name)
-		os.Exit(config.BOT_EXISTS)
+		defer os.Exit(config.BOT_EXISTS)
+		return
 	}
 
 	// Move bot dir and set new name
-	tmpBotDir := tmpBotParentDir + "/" + botDirName
-	finalBotDir := config.DirPath + "/" + name
+	tmpBotDir := filepath.Join(tmpBotParentDir, botDirName)
+	finalBotDir := filepath.Join(config.DirPath, name)
 	if err := os.Rename(tmpBotDir, finalBotDir); err != nil {
 		fmt.Fprintf(os.Stderr, "failed move bot dir from %s to %s. %s\n", botDirName, finalBotDir, err)
-		os.Exit(config.OS_CALL_FAILED)
+		defer os.Exit(config.OS_CALL_FAILED)
+		return
 	}
 
 	fmt.Printf("Bot %s is ready!\n", name)
 }
 
 func isNameUsed(name string) (bool, error) {
-	path := config.DirPath + "/" + name
+	path := filepath.Join(config.DirPath, name)
 	_, err := os.Stat(path)
 	if err == nil { return true, nil }
 	if os.IsNotExist(err) { return false, nil }

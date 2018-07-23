@@ -4,11 +4,12 @@ import (
 	"github.com/liagame/lia-cli/config"
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
 
 func GetBotLanguage(botName string) *config.Language {
-	configPath := config.DirPath + "/" + botName + "/lia.json"
+	configPath := filepath.Join(config.DirPath, botName, "lia.json")
 	liaConfig, err := getConfig(configPath)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to read %s\n %s", configPath, err)

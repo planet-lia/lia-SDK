@@ -14,14 +14,12 @@ const VERSION = "0.1.0"
 var cfg *Config
 
 // Store path to this program executables
-var DirPath string
+var PathToBots string
+var PathToLia  string
 
 type Config struct {
 	Version           string     `json:"version"`
 	GamePort          int        `json:"gamePort"`
-	GameConfigPath    string     `json:"gameConfigPath"`
-	RunBotRetries     int        `json:"runBotRetries"`
-	RunBotRetriesWait int        `json:"runBotRetriesWait"`
 	Languages         []Language `json:"languages"`
 }
 
@@ -54,15 +52,16 @@ func SetConfig(path string) error {
 
 func GetCfg() *Config {
 	if cfg == nil {
-		// Set DirPath to executable path
+		// Set PathToBots to executable path
 		ex, err := os.Executable()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "failed to get executable location\n %s", err)
 			os.Exit(FAILED_TO_GET_ENVIRONMENT)
 		}
-		DirPath = filepath.Dir(ex)
+		PathToBots = filepath.Dir(ex)
+		PathToLia = filepath.Join(PathToBots, "lia")
 
-		pathToCfg := DirPath + "/.lia/cli-config.json"
+		pathToCfg := filepath.Join(PathToLia, "cli-config.json")
 		if err := SetConfig(pathToCfg); err != nil {
 			fmt.Fprintf(os.Stderr, "couldn't get config\n %s", err)
 			os.Exit(FAILED_TO_READ_CONFIG)

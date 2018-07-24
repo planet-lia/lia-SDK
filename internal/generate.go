@@ -11,9 +11,12 @@ import (
 	"strconv"
 	"time"
 	"path/filepath"
+	"strings"
+	"bytes"
+	"io"
 )
 
-type RunGameFlags struct {
+type GameFlags struct {
 	GameSeed int
 	MapSeed int
 	Port int
@@ -23,49 +26,74 @@ type RunGameFlags struct {
 	DebugBots []int
 }
 
-func GenerateGame(args []string, gameFlags *RunGameFlags) {
-	uidBot1, err := generateUuid()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to generate uid. %s", err)
-		os.Exit(config.GENERIC)
-	}
-	uidBot2, err := generateUuid()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to generate uid. %s", err)
-		os.Exit(config.GENERIC)
-	}
-	nameBot1 := args[0]
-	nameBot2 := args[1]
+func GenerateGame(bot1Dir string, bot2Dir string, gameFlags *GameFlags) {
+	bot1Debug := contains(gameFlags.DebugBots, 1)
+	uidBot1 := getBotUid(bot1Debug)
 
+	bot2Debug := contains(gameFlags.DebugBots, 2)
+	uidBot2 := getBotUid(bot2Debug)
+
+	// Set config path if not provided
+	if gameFlags.ConfigPath == "" {
+		gameFlags.ConfigPath = filepath.Join(gameFlags.ConfigPath, "game-config.json")
+		if len(gameFlags.DebugBots) > 0 {
+			gameFlags.ConfigPath = strings.Replace(gameFlags.ConfigPath, ".json", "-debug.json",1)
+		}
+	}
+
+	// Create channel that will listen to results
+	// from game generator and both bots
 	result := make(chan error)
 
-	cmdBot1 := &CommandReference{}
-	cmdBot2 := &CommandReference{}
-	cmdGameGenerator := &CommandReference{}
+	cmdBot1 := &CommandRef{}
+	cmdBot2 := &CommandRef{}
+	cmdGameGenerator := &CommandRef{}
 
-	nRetries := config.GetCfg().RunBotRetries
+	generatorStarted := make(chan bool)
 
-	go func () {
-		fmt.Printf("Running bot %s\n", nameBot1)
- 		err := runBotWithRetries(nRetries, cmdBot1, nameBot1, uidBot1, gameFlags.Port)
-		cmdBot1 = nil
-		result <- err
-	}()
-	go func () {
-		fmt.Printf("Running bot %s\n", nameBot2)
-		err := runBotWithRetries(nRetries, cmdBot2, nameBot2, uidBot2, gameFlags.Port)
-		cmdBot2 = nil
-		result <- err
-	}()
-	go func () {
+	// Run game-generator
+	go func() {
 		fmt.Printf("Running game generator\n")
-		err := runGameGenerator(cmdGameGenerator, gameFlags, nameBot1, nameBot2, uidBot1, uidBot2)
-		cmdGameGenerator = nil
+		bot1Name := parseBotName(bot1Dir)
+		bot2Name := parseBotName(bot2Dir)
+		err := runGameGenerator(generatorStarted, cmdGameGenerator, gameFlags, bot1Name, bot2Name, uidBot1, uidBot2)
+		cmdGameGenerator.cmd = nil
 		result <- err
 	}()
 
-	for i := 0; i < 3; i++ {
-		err = <-result
+	// Wait until game generator has started
+	<-generatorStarted
+
+	// Run bot 1
+	if !bot1Debug {
+		go func() {
+			fmt.Printf("Running bot %s\n", bot1Dir)
+			err := runBot(cmdBot1, bot1Dir, uidBot1, gameFlags.Port)
+			cmdBot1.cmd = nil
+			result <- err
+		}()
+	}
+
+	// Run bot 2
+	if !bot2Debug {
+		go func() {
+			fmt.Printf("Running bot %s\n", bot2Dir)
+			err := runBot(cmdBot2, bot2Dir, uidBot2, gameFlags.Port)
+			cmdBot2.cmd = nil
+			result <- err
+		}()
+	}
+
+	// Wait for all routines to finish
+	nGoRoutines := 3
+	if bot1Debug {
+		nGoRoutines--
+	}
+	if bot2Debug {
+		nGoRoutines--
+	}
+	for i := 0; i < nGoRoutines; i++ {
+		err := <-result
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "failed to generate game\n %s\n", err)
 			defer os.Exit(config.FAILED_TO_GENERATE_GAME)
@@ -73,69 +101,81 @@ func GenerateGame(args []string, gameFlags *RunGameFlags) {
 		}
 	}
 
-	killProcess(cmdBot1, fmt.Sprintf("failed to kill bot %s\n %s\n", nameBot1, err))
-	killProcess(cmdBot2, fmt.Sprintf("failed to kill bot %s\n %s\n", nameBot2, err))
-	killProcess(cmdGameGenerator, fmt.Sprintf("failed to kill game generator\n %s\n", err))
+	// Attempt to kill the process to prevent daemons
+	killProcess(cmdGameGenerator, fmt.Sprintf("failed to kill game generator\n"))
+	killProcess(cmdBot1, fmt.Sprintf("failed to kill bot %s\n", bot1Dir))
+	killProcess(cmdBot2, fmt.Sprintf("failed to kill bot %s\n", bot2Dir))
 
-
-	// Wait for outputs to appear on the console so that the output
-	// wont come in late
+	// Wait for outputs to appear on the console (nicer way to fix this?)
 	time.Sleep(time.Millisecond * 100)
 }
 
-func runBotWithRetries(nRetries int, cmdRef *CommandReference, name, uid string, port int) error {
-	var err error
-	var output []byte
+func parseBotName(botDir string) string {
+	if runtime.GOOS == "windows" {
+		split := strings.Split(botDir, "\\")
+		return split[len(split) - 1]
+	} else {
+		split := strings.Split(botDir, "/")
+		return split[len(split) - 1]
+	}
+}
 
-	for i := nRetries - 1; i >= 0; i-- {
-		output, err = runBot(cmdRef, name, uid, port)
-		if err == nil {
-			break
-		} else {
-			time.Sleep(time.Millisecond * time.Duration(config.GetCfg().RunBotRetriesWait))
+func contains(slice []int, e int) bool {
+	for _, e2 := range slice {
+		if e == e2 {
+			return true
 		}
 	}
-	if output != nil {
-		fmt.Printf("%s\n", output)
-	}
-
-	return err
+	return false
 }
 
-func killProcess(cmdRef *CommandReference, errorMsg string) {
-	if cmdRef == nil {
-		return
+func getBotUid(debug bool) string {
+	if debug {
+		return ""
 	}
-	if err := cmdRef.cmd.Process.Kill(); err != nil {
-		fmt.Fprintf(os.Stderr, errorMsg, err)
+	uid, err := generateUuid()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to generate uid. %s", err)
+		os.Exit(config.GENERIC)
+	}
+	return uid
+}
+
+func killProcess(cmdRef *CommandRef, errorMsg string) {
+	if cmdRef.cmd != nil {
+		if err := cmdRef.cmd.Process.Kill(); err != nil {
+			fmt.Fprintf(os.Stderr, "%s %s", errorMsg, err)
+		}
 	}
 }
 
-type CommandReference struct {
+type CommandRef struct {
 	cmd *exec.Cmd
 }
 
-func runBot(cmdRef *CommandReference, name, uid string, port int) ([]byte, error) {
+func runBot(cmdRef *CommandRef, name, uid string, port int) error {
 	runScriptName := "./run.sh"
 	if runtime.GOOS == "windows" {
 		runScriptName = "run.bat"
 	}
 
-	botDir := filepath.Join(config.DirPath, name)
+	botDir := filepath.Join(config.PathToBots, name)
 
 	cmd := exec.Command(runScriptName, strconv.Itoa(port), uid)
 	cmdRef.cmd = cmd
 	cmd.Dir = botDir
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 
-	output, err := cmd.CombinedOutput();
+	err := cmd.Run()
 	if err != nil {
-		return output, stacktrace.Propagate(err, "running bot %s failed", name)
+		return stacktrace.Propagate(err, "running bot %s failed", name)
 	}
 
-	return output, nil
+	return nil
 }
 
-func runGameGenerator(cmdRef *CommandReference, gameFlags *RunGameFlags, nameBot1, nameBot2, uidBot1, uidBot2 string) error {
+func runGameGenerator(started chan bool, cmdRef *CommandRef, gameFlags *GameFlags, nameBot1, nameBot2, uidBot1, uidBot2 string) error {
 	cmd := exec.Command(
 		"java", "-jar", "game-generator.jar",
 		"-g", fmt.Sprint(gameFlags.GameSeed),
@@ -153,14 +193,55 @@ func runGameGenerator(cmdRef *CommandReference, gameFlags *RunGameFlags, nameBot
 	// Append bot2 and his uid
 	cmd.Args = append(cmd.Args, nameBot2, uidBot2)
 
-	cmd.Dir = config.DirPath
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	cmd.Dir = config.PathToLia
 
+	// Get pipes for stdout and stderr
+	stdoutIn, err := cmd.StdoutPipe()
+	if err != nil {
+		return stacktrace.Propagate(err, "failed to create stdout pipe for game generator")
+	}
+	stderrIn, err := cmd.StderrPipe()
+	if err != nil {
+		return stacktrace.Propagate(err, "failed to create stdin pipe for game generator")
+	}
+	// Create multi writer that will pass result to stdout, stderr and buffers
+	var stdoutBuf, stderrBuf bytes.Buffer
+	stdout := io.MultiWriter(os.Stdout, &stdoutBuf)
+	stderr := io.MultiWriter(os.Stderr, &stderrBuf)
+
+	// Set the data flow from command to writers
+	var errStdout, errStderr error
+	go func() {
+		_, errStdout = io.Copy(stdout, stdoutIn)
+	}()
+
+	go func() {
+		_, errStderr = io.Copy(stderr, stderrIn)
+	}()
+
+	// Send true to started channel when game generator outputs something
+	// (means that websocket server is prepared)
+	go func() {
+		for {
+			if stdoutBuf.Len() > 0 || stderrBuf.Len() > 0 {
+				started <- true
+				return
+			}
+			time.Sleep(time.Millisecond * 20)
+		}
+	}()
+
+	// Run game generator
 	if err := cmd.Run(); err != nil {
 		return stacktrace.Propagate(err, "game generator failed.")
 	}
-	time.Sleep(2000)
+
+	if errStdout != nil {
+		return stacktrace.Propagate(err,"failed to capture stdout\n")
+	}
+	if errStderr != nil {
+		return stacktrace.Propagate(err,"failed to capture stderr\n")
+	}
 
 	return nil
 }

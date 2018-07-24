@@ -9,7 +9,7 @@ import (
 
 func ShowReplayViewer(replayFile string)  {
 	cmd := exec.Command("java", "-jar", "replay-viewer.jar")
-	cmd.Dir = config.DirPath
+	cmd.Dir = config.PathToLia
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if replayFile != "" {

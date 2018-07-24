@@ -7,26 +7,29 @@ import (
 	"path/filepath"
 )
 
-func Play(args []string, gameFlags *RunGameFlags, viewReplay bool) {
-	bot1Name := args[0]
-	bot2Name := args[1]
+func Play(args []string, gameFlags *GameFlags, viewReplay bool) {
+	bot1Dir := args[0]
+	bot2Dir := args[1]
 
-	Compile(bot1Name)
-	if bot1Name != bot2Name {
-		Compile(bot2Name)
+	Compile(bot1Dir)
+	if bot1Dir != bot2Dir {
+		Compile(bot2Dir)
 	}
 
-	// Set up replay file
 	if gameFlags.ReplayPath == "" {
-		path := filepath.Join(config.DirPath, "replays")
-		os.MkdirAll(path, os.ModePerm)
-		fileName := time.Now().Format(time.RFC3339) + ".lia"
-		gameFlags.ReplayPath = filepath.Join(path, fileName)
+		gameFlags.ReplayPath = createReplayFileName()
 	}
 
-	GenerateGame(args, gameFlags)
+	GenerateGame(bot1Dir, bot2Dir, gameFlags)
 
 	if viewReplay {
 		ShowReplayViewer(gameFlags.ReplayPath)
 	}
+}
+
+func createReplayFileName() string {
+	path := filepath.Join(config.PathToBots, "replays")
+	os.MkdirAll(path, os.ModePerm)
+	fileName := time.Now().Format(time.RFC3339) + ".lia"
+	return filepath.Join(path, fileName)
 }

@@ -14,7 +14,7 @@ import (
 
 func Compile(botName string) {
 	lang := GetBotLanguage(botName)
-	botDir := filepath.Join(config.DirPath, botName)
+	botDir := filepath.Join(config.PathToBots, botName)
 
 	// Choose platform dependent preparing logic
 	prepareCommands := lang.PrepareUnix

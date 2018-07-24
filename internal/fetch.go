@@ -70,7 +70,7 @@ func FetchBot(url string, name string)  {
 
 	// Move bot dir and set new name
 	tmpBotDir := filepath.Join(tmpBotParentDir, botDirName)
-	finalBotDir := filepath.Join(config.DirPath, name)
+	finalBotDir := filepath.Join(config.PathToBots, name)
 	if err := os.Rename(tmpBotDir, finalBotDir); err != nil {
 		fmt.Fprintf(os.Stderr, "failed move bot dir from %s to %s. %s\n", botDirName, finalBotDir, err)
 		defer os.Exit(config.OS_CALL_FAILED)
@@ -81,7 +81,7 @@ func FetchBot(url string, name string)  {
 }
 
 func isNameUsed(name string) (bool, error) {
-	path := filepath.Join(config.DirPath, name)
+	path := filepath.Join(config.PathToBots, name)
 	_, err := os.Stat(path)
 	if err == nil { return true, nil }
 	if os.IsNotExist(err) { return false, nil }

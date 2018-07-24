@@ -8,6 +8,7 @@ import (
 	"github.com/liagame/lia-cli/config"
 	"github.com/palantir/stacktrace"
 	"os/exec"
+	"path/filepath"
 )
 
 func ShowVersions() {
@@ -29,7 +30,7 @@ func ShowVersions() {
 
 	// Get game generator version
 	cmd := exec.Command("java", "-jar", "game-generator.jar", "--version")
-	cmd.Dir = config.DirPath
+	cmd.Dir = config.PathToLia
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to get game-generator version\n %s", err)
@@ -39,7 +40,7 @@ func ShowVersions() {
 
 	// Get replay viewer version
 	cmd = exec.Command("java", "-jar", "replay-viewer.jar", "--version")
-	cmd.Dir = config.DirPath
+	cmd.Dir = config.PathToLia
 	out, err = cmd.Output()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to get replay-viewer version\n %s", err)
@@ -58,7 +59,7 @@ func ShowVersions() {
 }
 
 func getConfigVersion(fileName string) (string, error) {
-	path := config.DirPath + "/.lia/" + fileName
+	path := filepath.Join(config.PathToLia, fileName)
 
 	// Read config file
 	b, err := ioutil.ReadFile(path)

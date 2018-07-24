@@ -9,10 +9,10 @@ import (
 
 
 func GetBotLanguage(botName string) *config.Language {
-	configPath := filepath.Join(config.DirPath, botName, "lia.json")
-	liaConfig, err := getConfig(configPath)
+	botConfigPath := filepath.Join(config.PathToBots, botName, "lia.json")
+	liaConfig, err := getConfig(botConfigPath)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to read %s\n %s", configPath, err)
+		fmt.Fprintf(os.Stderr, "failed to read %s\n %s", botConfigPath, err)
 		os.Exit(config.FAILED_TO_GET_LIA_JSON)
 	}
 	for _, langData := range config.GetCfg().Languages {

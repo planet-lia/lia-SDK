@@ -12,16 +12,19 @@ import (
 
 var cfgFile string
 var showVersion bool
+var showSupportedLanguages bool
 
 var rootCmd = &cobra.Command{
 	Use:   "lia-cli",
-	Short: "The core LIA development tool.",
-	Long:  `lia-cli is a CLI tool for easier development of LIA bots.`,
+	Short: "The core LIA development tool",
+	Long:  `lia-cli is a CLI tool for easier development of LIA bots`,
 	Run: func(cmd *cobra.Command, args []string) {
 		internal.UpdateIfTime(true)
 
 		if showVersion {
 			internal.ShowVersions()
+		} else if showSupportedLanguages {
+			internal.ShowSupportedLanguages()
 		} else {
 			cmd.Help()
 		}
@@ -40,7 +43,9 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", false, "Show tools version.")
+	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", false, "Show tools version")
+
+	rootCmd.Flags().BoolVarP(&showSupportedLanguages, "languages", "l", false, "Show all supported languages")
 }
 
 // initConfig reads in config file and ENV variables if set.

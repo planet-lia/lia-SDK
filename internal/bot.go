@@ -5,7 +5,6 @@ import (
 	"github.com/liagame/lia-cli/config"
 	"github.com/palantir/stacktrace"
 	"os"
-	"reflect"
 )
 
 func FetchBotByLanguage(lang string, name string) {
@@ -32,13 +31,8 @@ func FetchBotByLanguage(lang string, name string) {
 // Find repository from config file based on lang parameter
 func getRepositoryURL(lang string) (string, error) {
 	for _, langData := range config.GetCfg().Languages {
-		e := reflect.ValueOf(langData)
-
-		lang2 := e.Field(0).Interface()
-		value := e.Field(1).Interface()
-
-		if lang == lang2 {
-			return value.(string), nil
+		if lang == langData.Name {
+			return langData.BotURL, nil
 		}
 	}
 

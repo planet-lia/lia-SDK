@@ -7,8 +7,8 @@ import (
 
 var botCmd = &cobra.Command{
 	Use:   "bot <language> <name>",
-	Short: "Create new bot.",
-	Long:  `Create new bot with specified language and chosen name.`,
+	Short: "Create new bot",
+	Long:  `Create new bot with specified language and chosen name`,
 	Args:  cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		internal.UpdateIfTime(true)

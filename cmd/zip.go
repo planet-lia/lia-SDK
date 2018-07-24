@@ -7,8 +7,8 @@ import (
 
 var zipCmd = &cobra.Command{
 	Use:   "zip <botDir>",
-	Short: "Verifies, compiles and zips the bot in botDir.",
-	Long:  `Verifies, compiles and zips the bot in botDir. Final zip can be uploaded to the website.`,
+	Short: "Verifies, compiles and zips the bot in botDir",
+	Long:  `Verifies, compiles and zips the bot in botDir. Final zip can be uploaded to the website`,
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		internal.UpdateIfTime(true)

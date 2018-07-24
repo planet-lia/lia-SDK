@@ -7,9 +7,9 @@ import (
 
 var replayCmd = &cobra.Command{
 	Use:   "replay [pathToReplay]",
-	Short: "Runs a replay viewer.",
+	Short: "Runs a replay viewer",
 	Long: `Runs a replay viewer. If path to the replay file is set as an
-argument then that replay is played, else replay chooser is opened.`,
+argument then that replay is played, else replay chooser is opened`,
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		internal.UpdateIfTime(true)

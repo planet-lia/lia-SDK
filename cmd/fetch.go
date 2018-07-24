@@ -9,7 +9,7 @@ import (
 
 var fetchCmd = &cobra.Command{
 	Use:   "fetch <url> [name]",
-	Short: "Fetches a bot from url and sets a new name.",
+	Short: "Fetches a bot from url and sets a new name",
 	Long: `Fetches a bot from specified url, unzips it into current folder and renames it if 
 the argument is provided`,
 	Args: func(cmd *cobra.Command, args []string) error {

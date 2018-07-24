@@ -34,5 +34,5 @@ func init() {
 	rootCmd.AddCommand(tutorialCmd)
 
 	tutorialCmd.Flags().BoolVarP(&debugMode, "debug", "d", false, "Toggle if you want to manually run your bot (eg. "+
-		"through debug mode in IDE).")
+		"through debug mode in IDE)")
 }

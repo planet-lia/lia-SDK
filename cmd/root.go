@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/liagame/lia-cli/internal"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/liagame/lia-cli/internal"
 )
 
 var cfgFile string
@@ -16,8 +16,10 @@ var showVersion bool
 var rootCmd = &cobra.Command{
 	Use:   "lia-cli",
 	Short: "The core LIA development tool.",
-	Long: `lia-cli is a CLI tool for easier development of LIA bots.`,
+	Long:  `lia-cli is a CLI tool for easier development of LIA bots.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		internal.UpdateIfTime(true)
+
 		if showVersion {
 			internal.ShowVersions()
 		} else {

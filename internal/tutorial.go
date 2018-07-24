@@ -9,25 +9,25 @@ import (
 func Tutorial(tutorialNumber int, botDir string, debug bool) {
 
 	gameFlags := &GameFlags{
-		GameSeed: 0,
-		MapSeed: 0,
-		Port: config.GetCfg().GamePort,
-		MapPath: getTutorialMap(tutorialNumber),
+		GameSeed:   0,
+		MapSeed:    0,
+		Port:       config.GetCfg().GamePort,
+		MapPath:    getTutorialMap(tutorialNumber),
 		ReplayPath: createReplayFileName(),
 		ConfigPath: "",
-		DebugBots: setDebugSlice(debug),
+		DebugBots:  setDebugSlice(debug),
 	}
 
 	Compile(botDir)
 
-	tutorialBotDir := filepath.Join("lia", "tutorials",  strconv.Itoa(tutorialNumber), "bot")
+	tutorialBotDir := filepath.Join("lia", "tutorials", strconv.Itoa(tutorialNumber), "bot")
 	GenerateGame(botDir, tutorialBotDir, gameFlags)
 
 	ShowReplayViewer(gameFlags.ReplayPath)
 }
 
 func getTutorialMap(tutorialNumber int) string {
-	return filepath.Join(config.PathToLia, "tutorials", strconv.Itoa(tutorialNumber), "map.json")
+	return filepath.Join(config.PathToData, "tutorials", strconv.Itoa(tutorialNumber), "map.json")
 }
 
 func setDebugSlice(debug bool) []int {

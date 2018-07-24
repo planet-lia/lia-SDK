@@ -1,15 +1,15 @@
 package internal
 
 import (
-	"os/exec"
 	"fmt"
 	"github.com/liagame/lia-cli/config"
 	"os"
+	"os/exec"
 )
 
-func ShowReplayViewer(replayFile string)  {
+func ShowReplayViewer(replayFile string) {
 	cmd := exec.Command("java", "-jar", "replay-viewer.jar")
-	cmd.Dir = config.PathToLia
+	cmd.Dir = config.PathToData
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if replayFile != "" {
@@ -17,6 +17,6 @@ func ShowReplayViewer(replayFile string)  {
 	}
 	if err := cmd.Run(); err != nil {
 		fmt.Fprintf(os.Stderr, "couldn't run replay: %s\n", err)
-		os.Exit(config.REPLAY_VIEWER_FAILED)
+		os.Exit(config.ReplayViewerFailed)
 	}
 }

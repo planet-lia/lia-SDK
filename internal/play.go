@@ -1,10 +1,10 @@
 package internal
 
 import (
-	"os"
 	"github.com/liagame/lia-cli/config"
-	"time"
+	"os"
 	"path/filepath"
+	"time"
 )
 
 func Play(args []string, gameFlags *GameFlags, viewReplay bool) {

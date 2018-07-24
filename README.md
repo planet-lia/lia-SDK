@@ -1,4 +1,4 @@
 ### Build ###
 ```go
-go build -o build/lia-game
+go build -o build/lia
 ```

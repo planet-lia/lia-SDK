@@ -11,16 +11,18 @@ import (
 
 const VERSION = "0.1.0"
 
+const ReleasesUrl = "https://github.com/liagame/lia-tools/releases/latest"
+
 var cfg *Config
 
 // Store path to this program executables
 var PathToBots string
-var PathToLia  string
+var PathToData string
 
 type Config struct {
-	Version           string     `json:"version"`
-	GamePort          int        `json:"gamePort"`
-	Languages         []Language `json:"languages"`
+	Version   string     `json:"version"`
+	GamePort  int        `json:"gamePort"`
+	Languages []Language `json:"languages"`
 }
 
 type Language struct {
@@ -56,15 +58,15 @@ func GetCfg() *Config {
 		ex, err := os.Executable()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "failed to get executable location\n %s", err)
-			os.Exit(FAILED_TO_GET_ENVIRONMENT)
+			os.Exit(FailedToGetEnvironment)
 		}
 		PathToBots = filepath.Dir(ex)
-		PathToLia = filepath.Join(PathToBots, "lia")
+		PathToData = filepath.Join(PathToBots, "data")
 
-		pathToCfg := filepath.Join(PathToLia, "cli-config.json")
+		pathToCfg := filepath.Join(PathToData, "cli-config.json")
 		if err := SetConfig(pathToCfg); err != nil {
 			fmt.Fprintf(os.Stderr, "couldn't get config\n %s", err)
-			os.Exit(FAILED_TO_READ_CONFIG)
+			os.Exit(FailedToReadConfig)
 		}
 	}
 	return cfg

@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
 	"github.com/liagame/lia-cli/internal"
+	"github.com/spf13/cobra"
 )
 
 var fetchCmd = &cobra.Command{
@@ -19,6 +19,8 @@ the argument is provided`,
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
+		internal.UpdateIfTime(true)
+
 		url := args[0]
 		name := ""
 		if len(args) == 2 {

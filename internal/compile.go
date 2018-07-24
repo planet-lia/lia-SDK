@@ -2,19 +2,19 @@ package internal
 
 import (
 	"fmt"
-	"os"
-	"github.com/palantir/stacktrace"
 	"github.com/liagame/lia-cli/config"
-	"runtime"
+	"github.com/palantir/stacktrace"
 	"io/ioutil"
+	"os"
 	"os/exec"
-	"strings"
 	"path/filepath"
+	"runtime"
+	"strings"
 )
 
-func Compile(botName string) {
-	lang := GetBotLanguage(botName)
-	botDir := filepath.Join(config.PathToBots, botName)
+func Compile(botDir string) {
+	lang := GetBotLanguage(botDir)
+	botDirAbsPath := filepath.Join(config.PathToBots, botDir)
 
 	// Choose platform dependent preparing logic
 	prepareCommands := lang.PrepareUnix
@@ -29,9 +29,9 @@ func Compile(botName string) {
 	// Run prepare commands
 	fmt.Println("Preparing bot...")
 	for _, cmd := range prepareCommands {
-		if err := runPrepareCommand(botDir, cmd); err != nil {
-			fmt.Fprintf(os.Stderr, "failed to run command for bot %s language %s\n %s", botName, lang.Name, err)
-			os.Exit(config.PREPARING_BOT_FAILED)
+		if err := runPrepareCommand(botDirAbsPath, cmd); err != nil {
+			fmt.Fprintf(os.Stderr, "failed to run command for bot %s language %s\n %s", botDir, lang.Name, err)
+			os.Exit(config.PreparingBotFailed)
 		}
 	}
 
@@ -39,7 +39,7 @@ func Compile(botName string) {
 	var runScriptContentBytes []byte
 	for i, line := range runScriptContent {
 		runScriptContentBytes = append(runScriptContentBytes, []byte(line)...)
-		if i < len(runScriptContent) - 1 {
+		if i < len(runScriptContent)-1 {
 			runScriptContentBytes = append(runScriptContentBytes, []byte(" && ")...)
 		}
 	}
@@ -49,9 +49,9 @@ func Compile(botName string) {
 
 	// Create run script
 	fmt.Println("Creating run script...")
-	if err := createRunScript(botDir, runScriptName, runScriptContentBytes); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to create run script in %s/%s\n %s", botDir, runScriptName, err)
-		os.Exit(config.CREATING_RUN_SCRIPT_FAILED)
+	if err := createRunScript(botDirAbsPath, runScriptName, runScriptContentBytes); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to create run script in %s/%s\n %s", botDirAbsPath, runScriptName, err)
+		os.Exit(config.CreatingRunScriptFailed)
 	}
 
 	fmt.Println("Completed.")

@@ -1,0 +1,83 @@
+{
+  "width": 120,
+  "height": 67.5,
+  "background": {
+    "r": 0.3,
+    "g": 0.3,
+    "b": 0.3,
+    "a": 1.0
+  },
+  "obstacles": [
+    {
+      "x": 22.476,
+      "y": 56.442,
+      "width": 3,
+      "height": 3,
+      "src": "cooler.png"
+    },
+    {
+      "x": 42.476,
+      "y": 46.442,
+      "width": 3,
+      "height": 3,
+      "src": "block.png"
+    },
+    {
+      "x": 33.476,
+      "y": 56.442,
+      "width": 3,
+      "height": 3,
+      "src": "cooler.png"
+    }
+  ],
+  "units": [
+    {
+      "team": "TEAM_1",
+      "x": 3.0,
+      "y": 8.0,
+      "rotation": 0.0
+    },
+    {
+      "team": "TEAM_1",
+      "x": 3.0,
+      "y": 3.0,
+      "rotation": 0.0
+    },
+    {
+      "team": "TEAM_1",
+      "x": 8.0,
+      "y": 3.0,
+      "rotation": 0.0
+    },
+    {
+      "team": "TEAM_1",
+      "x": 8.0,
+      "y": 8.0,
+      "rotation": 0.0
+    },
+    {
+      "team": "TEAM_2",
+      "x": 110.0,
+      "y": 57.0,
+      "rotation": 0.0
+    },
+    {
+      "team": "TEAM_2",
+      "x": 110.0,
+      "y": 62.0,
+      "rotation": 0.0
+    },
+    {
+      "team": "TEAM_2",
+      "x": 115.0,
+      "y": 57.0,
+      "rotation": 0.0
+    },
+    {
+      "team": "TEAM_2",
+      "x": 115.0,
+      "y": 62.0,
+      "rotation": 0.0
+    }
+  ]
+}

@@ -1,29 +1,29 @@
 package internal
 
 import (
-	"os/exec"
+	"bytes"
+	"crypto/rand"
 	"fmt"
-	"os"
 	"github.com/liagame/lia-cli/config"
 	"github.com/palantir/stacktrace"
-	"crypto/rand"
+	"io"
+	"os"
+	"os/exec"
+	"path/filepath"
 	"runtime"
 	"strconv"
-	"time"
-	"path/filepath"
 	"strings"
-	"bytes"
-	"io"
+	"time"
 )
 
 type GameFlags struct {
-	GameSeed int
-	MapSeed int
-	Port int
-	MapPath string
+	GameSeed   int
+	MapSeed    int
+	Port       int
+	MapPath    string
 	ReplayPath string
 	ConfigPath string
-	DebugBots []int
+	DebugBots  []int
 }
 
 func GenerateGame(bot1Dir string, bot2Dir string, gameFlags *GameFlags) {
@@ -37,7 +37,7 @@ func GenerateGame(bot1Dir string, bot2Dir string, gameFlags *GameFlags) {
 	if gameFlags.ConfigPath == "" {
 		gameFlags.ConfigPath = filepath.Join(gameFlags.ConfigPath, "game-config.json")
 		if len(gameFlags.DebugBots) > 0 {
-			gameFlags.ConfigPath = strings.Replace(gameFlags.ConfigPath, ".json", "-debug.json",1)
+			gameFlags.ConfigPath = strings.Replace(gameFlags.ConfigPath, ".json", "-debug.json", 1)
 		}
 	}
 
@@ -96,7 +96,7 @@ func GenerateGame(bot1Dir string, bot2Dir string, gameFlags *GameFlags) {
 		err := <-result
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "failed to generate game\n %s\n", err)
-			defer os.Exit(config.FAILED_TO_GENERATE_GAME)
+			defer os.Exit(config.FailedToGenerateGame)
 			break
 		}
 	}
@@ -113,10 +113,10 @@ func GenerateGame(bot1Dir string, bot2Dir string, gameFlags *GameFlags) {
 func parseBotName(botDir string) string {
 	if runtime.GOOS == "windows" {
 		split := strings.Split(botDir, "\\")
-		return split[len(split) - 1]
+		return split[len(split)-1]
 	} else {
 		split := strings.Split(botDir, "/")
-		return split[len(split) - 1]
+		return split[len(split)-1]
 	}
 }
 
@@ -136,7 +136,7 @@ func getBotUid(debug bool) string {
 	uid, err := generateUuid()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to generate uid. %s", err)
-		os.Exit(config.GENERIC)
+		os.Exit(config.Generic)
 	}
 	return uid
 }
@@ -185,15 +185,21 @@ func runGameGenerator(started chan bool, cmdRef *CommandRef, gameFlags *GameFlag
 	cmdRef.cmd = cmd
 
 	// Append string flags if they are not empty
-	if len(gameFlags.MapPath) > 0 {cmd.Args = append(cmd.Args, "-M", gameFlags.MapPath)}
-	if len(gameFlags.ReplayPath) > 0 {cmd.Args = append(cmd.Args, "-r", gameFlags.ReplayPath)}
-	if len(gameFlags.ConfigPath) > 0 {cmd.Args = append(cmd.Args, "-c", gameFlags.ConfigPath)}
+	if len(gameFlags.MapPath) > 0 {
+		cmd.Args = append(cmd.Args, "-M", gameFlags.MapPath)
+	}
+	if len(gameFlags.ReplayPath) > 0 {
+		cmd.Args = append(cmd.Args, "-r", gameFlags.ReplayPath)
+	}
+	if len(gameFlags.ConfigPath) > 0 {
+		cmd.Args = append(cmd.Args, "-c", gameFlags.ConfigPath)
+	}
 	// Append bot1 and his uid
 	cmd.Args = append(cmd.Args, nameBot1, uidBot1)
 	// Append bot2 and his uid
 	cmd.Args = append(cmd.Args, nameBot2, uidBot2)
 
-	cmd.Dir = config.PathToLia
+	cmd.Dir = config.PathToData
 
 	// Get pipes for stdout and stderr
 	stdoutIn, err := cmd.StdoutPipe()
@@ -237,10 +243,10 @@ func runGameGenerator(started chan bool, cmdRef *CommandRef, gameFlags *GameFlag
 	}
 
 	if errStdout != nil {
-		return stacktrace.Propagate(err,"failed to capture stdout\n")
+		return stacktrace.Propagate(err, "failed to capture stdout\n")
 	}
 	if errStderr != nil {
-		return stacktrace.Propagate(err,"failed to capture stderr\n")
+		return stacktrace.Propagate(err, "failed to capture stderr\n")
 	}
 
 	return nil

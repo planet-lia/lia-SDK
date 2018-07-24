@@ -1,23 +1,25 @@
 package internal
 
 import (
+	"archive/zip"
+	"fmt"
+	"github.com/liagame/lia-cli/config"
+	"github.com/mholt/archiver"
 	"github.com/palantir/stacktrace"
 	"io"
-	"fmt"
 	"io/ioutil"
-	"os"
-	"github.com/liagame/lia-cli/config"
 	"net/http"
-	"archive/zip"
+	"os"
 	"path/filepath"
+	"time"
 )
 
-func FetchBot(url string, name string)  {
+func FetchBot(url string, name string) {
 	// Create temporary file
 	tmpFile, err := ioutil.TempFile("", "")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error while creating tmp tmpFile %s\n", err)
-		os.Exit(config.OS_CALL_FAILED)
+		os.Exit(config.OsCallFailed)
 	}
 	defer os.Remove(tmpFile.Name())
 
@@ -25,7 +27,7 @@ func FetchBot(url string, name string)  {
 	fmt.Printf("Downloading bot from %s...\n", url)
 	if err := downloadBot(url, tmpFile); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to download bot from %s.\n %s\n", url, err)
-		defer os.Exit(config.BOT_DOWNLOAD_FAILED)
+		defer os.Exit(config.BotDownloadFailed)
 		return // need to call like that so that other defers are called (removing files etc...)
 	}
 
@@ -34,13 +36,14 @@ func FetchBot(url string, name string)  {
 	tmpBotParentDir, err := ioutil.TempDir("", "")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to create tmp bot dir. %s", err)
-		defer os.Exit(config.OS_CALL_FAILED)
+		defer os.Exit(config.OsCallFailed)
 		return
 	}
 	defer os.RemoveAll(tmpBotParentDir)
-	if err := unzipBot(tmpFile.Name(), tmpBotParentDir); err != nil {
+
+	if err := archiver.Zip.Open(tmpFile.Name(), tmpBotParentDir); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to extract bot with target %s. %v\n", tmpBotParentDir, err)
-		defer os.Exit(config.OS_CALL_FAILED)
+		defer os.Exit(config.OsCallFailed)
 		return
 	}
 
@@ -48,7 +51,7 @@ func FetchBot(url string, name string)  {
 	botDirName, err := getBotDirName(tmpBotParentDir)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to get bot dir. %s\n", err)
-		defer os.Exit(config.GENERIC)
+		defer os.Exit(config.Generic)
 		return
 	}
 
@@ -60,11 +63,11 @@ func FetchBot(url string, name string)  {
 	// Check if the bot with chosen name already exists
 	if isUsed, err := isNameUsed(name); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to check if name isUsed. %s", err)
-		defer os.Exit(config.GENERIC)
+		defer os.Exit(config.Generic)
 		return
 	} else if isUsed {
 		fmt.Fprintf(os.Stderr, "bot name %s already exists. Choose another name.\n", name)
-		defer os.Exit(config.BOT_EXISTS)
+		defer os.Exit(config.BotExists)
 		return
 	}
 
@@ -73,7 +76,7 @@ func FetchBot(url string, name string)  {
 	finalBotDir := filepath.Join(config.PathToBots, name)
 	if err := os.Rename(tmpBotDir, finalBotDir); err != nil {
 		fmt.Fprintf(os.Stderr, "failed move bot dir from %s to %s. %s\n", botDirName, finalBotDir, err)
-		defer os.Exit(config.OS_CALL_FAILED)
+		defer os.Exit(config.OsCallFailed)
 		return
 	}
 
@@ -83,13 +86,21 @@ func FetchBot(url string, name string)  {
 func isNameUsed(name string) (bool, error) {
 	path := filepath.Join(config.PathToBots, name)
 	_, err := os.Stat(path)
-	if err == nil { return true, nil }
-	if os.IsNotExist(err) { return false, nil }
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
 	return true, err
 }
 
 func downloadBot(url string, output *os.File) error {
-	response, err := http.Get(url)
+	var netClient = &http.Client{
+		Timeout: time.Second * 30,
+	}
+
+	response, err := netClient.Get(url)
 	if err != nil {
 		return stacktrace.Propagate(err, "failed to download bot from %s", url)
 	}
@@ -147,7 +158,7 @@ func unzipBot(archive string, target string) error {
 func getBotDirName(parentDir string) (string, error) {
 	files, err := ioutil.ReadDir(parentDir)
 	if err != nil {
-		return "", stacktrace.Propagate(err,"failed to read files from dir: %s", parentDir)
+		return "", stacktrace.Propagate(err, "failed to read files from dir: %s", parentDir)
 	}
 	if len(files) != 1 {
 		return "", stacktrace.NewError("there should be exactly 1 file in parentDir. nFiles: %v", len(files))

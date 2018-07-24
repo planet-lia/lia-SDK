@@ -2,11 +2,11 @@ package internal
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"fmt"
-	"os"
 	"github.com/liagame/lia-cli/config"
 	"github.com/palantir/stacktrace"
+	"io/ioutil"
+	"os"
 	"os/exec"
 	"path/filepath"
 )
@@ -17,7 +17,7 @@ func ShowVersions() {
 	liaCfgVersion, err := getConfigVersion(liaCfgName)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to read from file %s\n %s", liaCfgName, err)
-		os.Exit(config.FAILED_TO_READ_CONFIG)
+		os.Exit(config.FailedToReadConfig)
 	}
 
 	// Get game cfg version
@@ -25,26 +25,26 @@ func ShowVersions() {
 	gameCfgVersion, err := getConfigVersion(gameCfgName)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to read from file %s\n %s", gameCfgName, err)
-		os.Exit(config.FAILED_TO_READ_CONFIG)
+		os.Exit(config.FailedToReadConfig)
 	}
 
 	// Get game generator version
 	cmd := exec.Command("java", "-jar", "game-generator.jar", "--version")
-	cmd.Dir = config.PathToLia
+	cmd.Dir = config.PathToData
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to get game-generator version\n %s", err)
-		os.Exit(config.GAME_GENERATOR_FAILED)
+		os.Exit(config.GameGeneratorFailed)
 	}
 	gameGeneratorVersion := string(out)
 
 	// Get replay viewer version
 	cmd = exec.Command("java", "-jar", "replay-viewer.jar", "--version")
-	cmd.Dir = config.PathToLia
+	cmd.Dir = config.PathToData
 	out, err = cmd.Output()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to get replay-viewer version\n %s", err)
-		os.Exit(config.REPLAY_VIEWER_FAILED)
+		os.Exit(config.ReplayViewerFailed)
 	}
 	replayViewerVersion := string(out)
 
@@ -59,7 +59,7 @@ func ShowVersions() {
 }
 
 func getConfigVersion(fileName string) (string, error) {
-	path := filepath.Join(config.PathToLia, fileName)
+	path := filepath.Join(config.PathToData, fileName)
 
 	// Read config file
 	b, err := ioutil.ReadFile(path)
@@ -78,5 +78,6 @@ func getConfigVersion(fileName string) (string, error) {
 	}
 
 	version = fmt.Sprintf("%s version: %s", fileName, version)
+
 	return version, nil
 }

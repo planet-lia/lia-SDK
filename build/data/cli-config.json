@@ -1,0 +1,58 @@
+{
+  "version": "0.1.0",
+  "gamePort": 8887,
+  "languages": [
+    {
+      "name": "java",
+      "botUrl": "https://github.com/liagame/java-bot",
+      "prepareUnix": [
+        {"cmdArgs": ["chmod", "+x", "gradlew"]},
+        {"cmdArgs": ["./gradlew", "build"]}
+      ],
+      "runScriptUnix": [
+        "java -jar build/libs/my-bot.jar -p $1 -i $2"
+      ],
+      "prepareWindows": [
+
+      ],
+      "runScriptWindows": [
+
+      ]
+    },
+    {
+      "name": "kotlin",
+      "botUrl": "https://github.com/liagame/kotlin-bot",
+      "prepareUnix": [
+        {"cmdArgs": ["chmod", "+x", "gradlew"]},
+        {"cmdArgs": ["./gradlew", "build"]}
+      ],
+      "runScriptUnix": [
+        "java -jar build/libs/my-bot.jar -p $1 -i $2"
+      ],
+      "prepareWindows": [
+
+      ],
+      "runScriptWindows": [
+
+      ]
+    },
+    {
+      "name": "python3",
+      "botUrl": "https://github.com/liagame/python3-bot",
+      "prepareUnix": [
+        {"cmdArgs": ["pip3", "install", "virtualenv"]},
+        {"cmdArgs": ["python3", "-m", "virtualenv", "env"]},
+        {"cmdArgs": ["env/bin/pip3", "install", "-r", "requirements.txt"]}
+      ],
+      "runScriptUnix": [
+        "env/bin/python3 my_bot.py -p $1 -i $2"
+      ],
+      "prepareWindows": [
+
+      ],
+      "runScriptWindows": [
+
+      ]
+    }
+  ]
+}

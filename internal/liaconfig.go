@@ -1,11 +1,10 @@
 package internal
 
 import (
-	"io/ioutil"
-	"github.com/palantir/stacktrace"
 	"encoding/json"
+	"github.com/palantir/stacktrace"
+	"io/ioutil"
 )
-
 
 type LiaConfig struct {
 	Language string `json:"language"`

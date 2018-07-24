@@ -1,18 +1,21 @@
 package config
 
 const (
-	GENERIC                    = 1
-	BOT_EXISTS                 = 2
-	FAILED_TO_FIND_REPO        = 3
-	BOT_DOWNLOAD_FAILED        = 4
-	OS_CALL_FAILED             = 5
-	REPLAY_VIEWER_FAILED       = 6
-	FAILED_GETTING_BOT_LANG    = 7
-	PREPARING_BOT_FAILED       = 8
-	CREATING_RUN_SCRIPT_FAILED = 9
-	FAILED_TO_READ_CONFIG      = 10
-	FAILED_TO_GET_ENVIRONMENT  = 11
-	GAME_GENERATOR_FAILED = 12
-	FAILED_TO_GET_LIA_JSON = 13
-	FAILED_TO_GENERATE_GAME = 14
+	Generic                  = 1
+	BotExists                = 2
+	FailedToFindRepo         = 3
+	BotDownloadFailed        = 4
+	OsCallFailed             = 5
+	ReplayViewerFailed       = 6
+	FailedGettingBotLang     = 7
+	PreparingBotFailed       = 8
+	CreatingRunScriptFailed  = 9
+	FailedToReadConfig       = 10
+	FailedToGetEnvironment   = 11
+	GameGeneratorFailed      = 12
+	FailedToGetLiaJson       = 13
+	FailedToGenerateGame     = 14
+	ZippingBotFailed         = 15
+	FailedToGetLatestRelease = 16
+	FailedToReadReleaseFile  = 17
 )

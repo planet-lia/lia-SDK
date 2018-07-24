@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"github.com/liagame/lia-cli/internal"
+	"github.com/spf13/cobra"
 )
 
 var replayCmd = &cobra.Command{
@@ -12,6 +12,8 @@ var replayCmd = &cobra.Command{
 argument then that replay is played, else replay chooser is opened.`,
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		internal.UpdateIfTime(true)
+
 		replayFile := ""
 		if len(args) == 1 {
 			replayFile = args[0]

@@ -1,6 +1,7 @@
 {
   "version": "0.1.0",
   "gamePort": 8887,
+  "windowsPathToBash": "C:\\Program Files\\Git\\bin\\sh.exe",
   "languages": [
     {
       "name": "java",

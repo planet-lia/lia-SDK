@@ -12,8 +12,12 @@ import (
 )
 
 func Compile(botDir string) {
-	lang := GetBotLanguage(botDir)
-	botDirAbsPath := filepath.Join(config.PathToBots, botDir)
+	botDirAbsPath := botDir
+	if !filepath.IsAbs(botDir) {
+		botDirAbsPath = filepath.Join(config.PathToBots, botDir)
+	}
+
+	lang := GetBotLanguage(botDirAbsPath)
 
 	// Run prepare commands
 	fmt.Println("Preparing bot...")

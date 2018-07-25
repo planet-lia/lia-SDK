@@ -26,16 +26,12 @@ type Config struct {
 }
 
 type Language struct {
-	Name             string    `json:"name"`
-	BotURL           string    `json:"botUrl"`
-	PrepareUnix      []Command `json:"prepareUnix"`
-	RunScriptUnix    []string  `json:"runScriptUnix"`
-	PrepareWindows   []Command `json:"prepareWindows"`
-	RunScriptWindows []string  `json:"runScriptWindows"`
-}
-
-type Command struct {
-	Args []string `json:"cmdArgs"`
+	Name           string `json:"name"`
+	BotURL         string `json:"botUrl"`
+	PrepareUnix    string `json:"prepareUnix"`
+	RunUnix        string `json:"runUnix"`
+	PrepareWindows string `json:"prepareWindows"`
+	RunWindows     string `json:"runWindows"`
 }
 
 func SetConfig(path string) error {

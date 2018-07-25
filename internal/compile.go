@@ -4,93 +4,116 @@ import (
 	"fmt"
 	"github.com/liagame/lia-cli/config"
 	"github.com/palantir/stacktrace"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
-	"strings"
+	"io"
 )
 
 func Compile(botDir string) {
 	lang := GetBotLanguage(botDir)
 	botDirAbsPath := filepath.Join(config.PathToBots, botDir)
 
-	// Choose platform dependent preparing logic
-	prepareCommands := lang.PrepareUnix
-	runScriptContent := lang.RunScriptUnix
-	runScriptName := "run.sh"
-	if runtime.GOOS == "windows" {
-		prepareCommands = lang.PrepareWindows
-		runScriptContent = lang.RunScriptWindows
-		runScriptName = "run.bat"
-	}
-
 	// Run prepare commands
 	fmt.Println("Preparing bot...")
-	for _, cmd := range prepareCommands {
-		if err := runPrepareCommand(botDirAbsPath, cmd); err != nil {
-			fmt.Fprintf(os.Stderr, "failed to run command for bot %s language %s\n %s", botDir, lang.Name, err)
-			os.Exit(config.PreparingBotFailed)
-		}
+	if err := prepareBot(botDirAbsPath,  lang); err != nil {
+		fmt.Fprintf(os.Stderr, "failed run prepare bot script for bot %s and lang %s. %s\n", botDirAbsPath, lang.Name, err)
+		os.Exit(config.PreparingBotFailed)
 	}
 
-	// Convert script content from []string to []byte
-	var runScriptContentBytes []byte
-	for i, line := range runScriptContent {
-		runScriptContentBytes = append(runScriptContentBytes, []byte(line)...)
-		if i < len(runScriptContent)-1 {
-			runScriptContentBytes = append(runScriptContentBytes, []byte(" && ")...)
-		}
-	}
-	if runtime.GOOS != "windows" {
-		runScriptContentBytes = append([]byte("#!/bin/bash\n"), runScriptContentBytes...)
-	}
-
-	// Create run script
-	fmt.Println("Creating run script...")
-	if err := createRunScript(botDirAbsPath, runScriptName, runScriptContentBytes); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to create run script in %s/%s\n %s", botDirAbsPath, runScriptName, err)
+	if err := createRunScript(botDirAbsPath, lang); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to create run script for bot %s. %s\n", botDirAbsPath, err)
 		os.Exit(config.CreatingRunScriptFailed)
 	}
 
 	fmt.Println("Completed.")
 }
 
-func createRunScript(botDir string, name string, body []byte) error {
-	runScriptPath := filepath.Join(botDir, name)
-
-	err := ioutil.WriteFile(runScriptPath, body, 0644) // overwriting
-	if err != nil {
-		return stacktrace.Propagate(err, "failed to create run script in %s", runScriptPath)
+func prepareBot(botDir string, lang *config.Language) error {
+	prepareScript := lang.PrepareUnix
+	if runtime.GOOS == "windows" {
+		prepareScript = lang.PrepareWindows
 	}
-	// Make it executable
-	if runtime.GOOS != "windows" {
-		cmd := exec.Command("chmod", "+x", "run.sh")
+
+	if runtime.GOOS == "windows" {
+		// Execute
+		cmd := exec.Command("./" + prepareScript)
 		cmd.Dir = botDir
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
-
 		if err := cmd.Run(); err != nil {
-			return stacktrace.Propagate(err, "failed to make run.sh executable")
+			return stacktrace.Propagate(err, "failed to make prepare the bot %s\n", botDir)
+		}
+	} else {
+		pathToLanguages := filepath.Join(config.PathToData, "languages")
+		if err := makeFileExecutable(pathToLanguages, prepareScript); err != nil {
+			return stacktrace.Propagate(err, "")
+		}
+
+		// Execute
+		cmd := exec.Command("./" + prepareScript, botDir)
+		cmd.Dir = pathToLanguages
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		if err := cmd.Run(); err != nil {
+			return stacktrace.Propagate(err, "failed to make prepare the bot %s\n", botDir)
+		}
+	}
+
+	return nil
+}
+
+func makeFileExecutable(dir string, file string) error {
+	cmd := exec.Command("chmod", "+x", file)
+	cmd.Dir = dir
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	if err := cmd.Run(); err != nil {
+		return stacktrace.Propagate(err, "failed to make %s executable", file)
+	}
+	return nil
+}
+
+func createRunScript(botDir string, lang *config.Language) error {
+	runScript := lang.RunUnix
+	if runtime.GOOS == "windows" {
+		runScript = lang.RunWindows
+	}
+	globalRunScriptPath := filepath.Join(config.PathToData, "languages", runScript)
+	botRunScriptPath := filepath.Join(botDir, "run.sh")
+
+	// Copy run script to bot
+	if err := Copy(globalRunScriptPath, botRunScriptPath); err != nil {
+		return stacktrace.Propagate(err, "failed to copy run script from %s to %s\n", globalRunScriptPath, botRunScriptPath)
+	}
+
+	// Make it executable
+	if runtime.GOOS != "windows" {
+		if err := makeFileExecutable(botDir, "run.sh"); err != nil {
+			return stacktrace.Propagate(err, "")
 		}
 	}
 	return nil
 }
 
-func runPrepareCommand(botDir string, prepareCmd config.Command) error {
-	cmd := exec.Command(prepareCmd.Args[0])
-	cmd.Dir = botDir
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	// Append arguments
-	for i := 1; i < len(prepareCmd.Args); i++ {
-		cmd.Args = append(cmd.Args, prepareCmd.Args[i])
+func Copy(src, dst string) error {
+	in, err := os.Open(src)
+	if err != nil {
+		return err
 	}
+	defer in.Close()
 
-	if err := cmd.Run(); err != nil {
-		return stacktrace.Propagate(err, "failed to run command [%s]", strings.Join(prepareCmd.Args, " "))
+	out, err := os.Create(dst)
+	if err != nil {
+		return err
 	}
-	return nil
+	defer out.Close()
+
+	_, err = io.Copy(out, in)
+	if err != nil {
+		return err
+	}
+	return out.Close()
 }

@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-func FetchBot(url string, name string) {
+func FetchBot(url string, name string, customBotDir string) {
 	// Create temporary file
 	tmpFile, err := ioutil.TempFile("", "")
 	if err != nil {
@@ -73,7 +73,12 @@ func FetchBot(url string, name string) {
 
 	// Move bot dir and set new name
 	tmpBotDir := filepath.Join(tmpBotParentDir, botDirName)
-	finalBotDir := filepath.Join(config.PathToBots, name)
+	finalBotDir := customBotDir
+	if finalBotDir == "" {
+		finalBotDir = filepath.Join(config.PathToBots, name)
+	} else {
+		finalBotDir = filepath.Join(customBotDir, name)
+	}
 	if err := os.Rename(tmpBotDir, finalBotDir); err != nil {
 		fmt.Fprintf(os.Stderr, "failed move bot dir from %s to %s. %s\n", botDirName, finalBotDir, err)
 		defer os.Exit(config.OsCallFailed)

@@ -5,54 +5,26 @@
     {
       "name": "java",
       "botUrl": "https://github.com/liagame/java-bot",
-      "prepareUnix": [
-        {"cmdArgs": ["chmod", "+x", "gradlew"]},
-        {"cmdArgs": ["./gradlew", "build"]}
-      ],
-      "runScriptUnix": [
-        "java -jar build/libs/my-bot.jar -p $1 -i $2"
-      ],
-      "prepareWindows": [
-
-      ],
-      "runScriptWindows": [
-
-      ]
+      "prepareUnix": "java_UnixPrepare.sh",
+      "runUnix": "java_UnixRun.sh",
+      "prepareWindows": "java_WindowsPrepare.sh",
+      "runWindows": "java_WindowsRun.sh"
     },
     {
       "name": "kotlin",
       "botUrl": "https://github.com/liagame/kotlin-bot",
-      "prepareUnix": [
-        {"cmdArgs": ["chmod", "+x", "gradlew"]},
-        {"cmdArgs": ["./gradlew", "build"]}
-      ],
-      "runScriptUnix": [
-        "java -jar build/libs/my-bot.jar -p $1 -i $2"
-      ],
-      "prepareWindows": [
-
-      ],
-      "runScriptWindows": [
-
-      ]
+      "prepareUnix": "java_UnixPrepare.sh",
+      "runUnix": "java_UnixRun.sh",
+      "prepareWindows": "java_WindowsPrepare.sh",
+      "runWindows": "java_WindowsRun.sh"
     },
     {
       "name": "python3",
       "botUrl": "https://github.com/liagame/python3-bot",
-      "prepareUnix": [
-        {"cmdArgs": ["pip3", "install", "virtualenv"]},
-        {"cmdArgs": ["python3", "-m", "virtualenv", "env"]},
-        {"cmdArgs": ["env/bin/pip3", "install", "-r", "requirements.txt"]}
-      ],
-      "runScriptUnix": [
-        "env/bin/python3 my_bot.py -p $1 -i $2"
-      ],
-      "prepareWindows": [
-
-      ],
-      "runScriptWindows": [
-
-      ]
+      "prepareUnix": "python3_UnixPrepare.sh",
+      "runUnix": "python3_UnixRun.sh",
+      "prepareWindows": "python3_WindowsPrepare.sh",
+      "runWindows": "python3_WindowsRun.sh"
     }
   ]
 }

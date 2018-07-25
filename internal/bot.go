@@ -25,7 +25,7 @@ func FetchBotByLanguage(lang string, name string) {
 	}
 	url += "/archive/master.zip"
 
-	FetchBot(url, name)
+	FetchBot(url, name, "")
 }
 
 // Find repository from config file based on lang parameter

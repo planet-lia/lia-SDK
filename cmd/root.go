@@ -17,7 +17,7 @@ var showSupportedLanguages bool
 var rootCmd = &cobra.Command{
 	Use:   "lia-cli",
 	Short: "The core LIA development tool",
-	Long:  `lia-cli is a CLI tool for easier development of LIA bots`,
+	Long:  `lia-cli is a CLI tool for easier development of Lia bots.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		internal.UpdateIfTime(true)
 

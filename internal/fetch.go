@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -42,7 +43,7 @@ func FetchBot(url string, name string, customBotDir string) {
 	defer os.RemoveAll(tmpBotParentDir)
 
 	if err := archiver.Zip.Open(tmpFile.Name(), tmpBotParentDir); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to extract bot with target %s. %v\n", tmpBotParentDir, err)
+		fmt.Fprintf(os.Stderr, "failed to extract bot with target %s\n%v\n", tmpBotParentDir, err)
 		defer os.Exit(config.OsCallFailed)
 		return
 	}
@@ -101,6 +102,10 @@ func isNameUsed(name string) (bool, error) {
 }
 
 func downloadBot(url string, output *os.File) error {
+	if !strings.HasSuffix(url, ".zip") {
+		return stacktrace.NewError("wrong suffix")
+	}
+
 	var netClient = &http.Client{
 		Timeout: time.Second * 30,
 	}
@@ -165,8 +170,19 @@ func getBotDirName(parentDir string) (string, error) {
 	if err != nil {
 		return "", stacktrace.Propagate(err, "failed to read files from dir: %s", parentDir)
 	}
-	if len(files) != 1 {
-		return "", stacktrace.NewError("there should be exactly 1 directory in parentDir. nFiles: %v", len(files))
+
+	switch len(files) {
+	case 1:
+		return files[0].Name(), nil
+	case 2:
+		switch {
+		case files[0].Name() == "__MACOSX":
+			return files[1].Name(), nil
+		case files[1].Name() == "__MACOSX":
+			return files[0].Name(), nil
+		}
 	}
-	return files[0].Name(), nil
+
+	return "", stacktrace.NewError("there should be exactly 1 directory in parentDir" +
+		"(on mac osx can also be __MACOSX. nFiles: %v", len(files))
 }

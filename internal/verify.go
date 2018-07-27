@@ -15,7 +15,7 @@ func GetBotLanguage(botDir string) *config.Language {
 		fmt.Fprintf(os.Stderr, "failed to read %s\n %s\n", botConfigPath, err)
 		os.Exit(config.FailedToGetLiaJson)
 	}
-	for _, langData := range config.GetCfg().Languages {
+	for _, langData := range config.Cfg.Languages {
 		if langData.Name == liaConfig.Language {
 			return &langData
 		}

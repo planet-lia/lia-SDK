@@ -13,7 +13,7 @@ const VERSION = "0.1.0"
 
 const ReleasesUrl = "https://github.com/liagame/lia-tools/releases/latest"
 
-var cfg *Config
+var Cfg *Config
 
 // Store path to this program executables
 var PathToBots string
@@ -41,16 +41,16 @@ func SetConfig(path string) error {
 		return stacktrace.Propagate(err, "couldn't open file. Location: %s", path)
 	}
 
-	cfg = &Config{}
-	if err := json.Unmarshal(configFile, cfg); err != nil {
+	Cfg = &Config{}
+	if err := json.Unmarshal(configFile, Cfg); err != nil {
 		return stacktrace.Propagate(err, "couldn't unmarshal config")
 	}
 
 	return nil
 }
 
-func GetCfg() *Config {
-	if cfg == nil {
+func Setup() {
+	if Cfg == nil {
 		if PathToBots == "" {
 			// Set PathToBots to executable path
 			ex, err := os.Executable()
@@ -70,5 +70,4 @@ func GetCfg() *Config {
 			os.Exit(FailedToReadConfig)
 		}
 	}
-	return cfg
 }

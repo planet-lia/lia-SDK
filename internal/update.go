@@ -1,15 +1,15 @@
 package internal
 
 import (
-	"time"
-	"net/http"
+	"encoding/json"
 	"fmt"
-	"os"
+	"github.com/fatih/color"
 	"github.com/liagame/lia-cli/config"
 	"io/ioutil"
-	"encoding/json"
+	"net/http"
+	"os"
 	"path/filepath"
-	"github.com/fatih/color"
+	"time"
 )
 
 func Update(checkOnly bool) {
@@ -96,7 +96,7 @@ func isUpdateAvailable() bool {
 }
 
 type ReleaseConfig struct {
-	Tag string `json:"tag"`
+	Tag         string `json:"tag"`
 	LastChecked string `json:"lastChecked"`
 }
 
@@ -119,7 +119,6 @@ func getLocalReleaseConfig() (*ReleaseConfig, error) {
 func getLatestReleaseTag() string {
 	var client = &http.Client{
 		Timeout: time.Second * 30,
-
 	}
 
 	url := config.ReleasesUrl
@@ -165,6 +164,6 @@ func getLatestReleaseTag() string {
 }
 
 func printLinkToDownloads() {
-	fmt.Printf("Visit %s to download new version. When downloaded just " +
+	fmt.Printf("Visit %s to download new version. When downloaded just "+
 		"replace the old content.\n\n", color.GreenString(config.ReleasesUrl))
 }

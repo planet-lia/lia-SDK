@@ -30,7 +30,7 @@ func FetchBotByLanguage(lang string, name string) {
 
 // Find repository from config file based on lang parameter
 func getRepositoryURL(lang string) (string, error) {
-	for _, langData := range config.GetCfg().Languages {
+	for _, langData := range config.Cfg.Languages {
 		if lang == langData.Name {
 			return langData.BotURL, nil
 		}

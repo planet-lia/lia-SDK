@@ -1,5 +1,20 @@
 package cmd_test
 
+import (
+	"fmt"
+	"github.com/liagame/lia-cli/config"
+	"github.com/liagame/lia-cli/internal"
+	"github.com/liagame/lia-cli/pkg/advancedcopy"
+	"io/ioutil"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"runtime"
+	"strings"
+	"syscall"
+	"testing"
+)
+
 /*func TestCmdFetch(t *testing.T) {
 	cases := []struct {
 		url string
@@ -32,16 +47,16 @@ package cmd_test
 	}
 }*/
 
-/*func TestCmdFetch(t *testing.T) {
+func TestCmdFetch(t *testing.T) {
 	url := "https://github.com/liagame/java-bot/archive/master.zip"
 	name := "birko"
 	customBotDir := ""
 	//isErr := false
 	//errMsg := "failed to fetch java bot and put into working dir"
 
-
 	if os.Getenv("RUN_FUNC") == "1" {
 		setupTmpConfigPaths()
+		config.Setup()
 		internal.FetchBot(url, name, customBotDir)
 
 		return
@@ -52,7 +67,7 @@ package cmd_test
 }
 
 func getCmdStatus(funcName string) int {
-	cmd := exec.Command(os.Args[0], "-test.run=" + funcName)
+	cmd := exec.Command(os.Args[0], "-test.run="+funcName)
 	cmd.Env = append(os.Environ(), "RUN_FUNC=1")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -87,9 +102,8 @@ func setupTmpConfigPaths() {
 	pathToData := filepath.Join(wd[:index], "build", "data")
 	pathToTmpData := filepath.Join(config.PathToBots, "data")
 
-	if err := copy.Dir(pathToData, pathToTmpData); err != nil {
-		msg := fmt.Sprintf("failed to copy data to executable path %s", err)
+	if err := advancedcopy.Dir(pathToData, pathToTmpData); err != nil {
+		msg := fmt.Sprintf("failed to advancedcopy data to executable path %s", err)
 		panic(msg)
 	}
 }
-*/

@@ -11,7 +11,7 @@ func Tutorial(tutorialNumber int, botDir string, debug bool) {
 	gameFlags := &GameFlags{
 		GameSeed:   0,
 		MapSeed:    0,
-		Port:       config.GetCfg().GamePort,
+		Port:       config.Cfg.GamePort,
 		MapPath:    getTutorialMap(tutorialNumber),
 		ReplayPath: createReplayFileName(),
 		ConfigPath: "",

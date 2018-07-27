@@ -105,7 +105,6 @@ func downloadBot(url string, output *os.File) error {
 		Timeout: time.Second * 30,
 	}
 
-
 	response, err := netClient.Get(url)
 	if err != nil {
 		return stacktrace.Propagate(err, "failed to download bot from %s", url)

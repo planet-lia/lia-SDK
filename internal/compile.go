@@ -3,7 +3,7 @@ package internal
 import (
 	"fmt"
 	"github.com/liagame/lia-cli/config"
-	"github.com/liagame/lia-cli/pkg/copy"
+	"github.com/liagame/lia-cli/pkg/advancedcopy"
 	"github.com/palantir/stacktrace"
 	"os"
 	"os/exec"
@@ -21,7 +21,7 @@ func Compile(botDir string) {
 
 	// Prepare bot
 	fmt.Println("Preparing bot...")
-	if err := prepareBot(botDirAbsPath,  lang); err != nil {
+	if err := prepareBot(botDirAbsPath, lang); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to run prepare bot script for bot %s and lang %s. %s\n", botDirAbsPath, lang.Name, err)
 		os.Exit(config.PreparingBotFailed)
 	}
@@ -45,12 +45,12 @@ func prepareBot(botDir string, lang *config.Language) error {
 
 	var cmd *exec.Cmd
 	if runtime.GOOS == "windows" {
-		cmd = exec.Command(config.GetCfg().PathToBash, prepareScript, botDir)
+		cmd = exec.Command(config.Cfg.PathToBash, prepareScript, botDir)
 	} else {
 		if err := makeFileExecutable(pathToLanguages, prepareScript); err != nil {
 			return stacktrace.Propagate(err, "")
 		}
-		cmd = exec.Command("./" + prepareScript, botDir)
+		cmd = exec.Command("./"+prepareScript, botDir)
 	}
 	cmd.Dir = pathToLanguages
 	cmd.Stdout = os.Stdout
@@ -83,7 +83,7 @@ func copyRunScript(botDir string, lang *config.Language) error {
 	botRunScriptPath := filepath.Join(botDir, "run.sh")
 
 	// Copy run script to bot
-	if err := copy.File(globalRunScriptPath, botRunScriptPath); err != nil {
+	if err := advancedcopy.File(globalRunScriptPath, botRunScriptPath); err != nil {
 		return stacktrace.Propagate(err, "failed to copy run script from %s to %s\n", globalRunScriptPath, botRunScriptPath)
 	}
 

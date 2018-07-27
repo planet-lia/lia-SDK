@@ -1,12 +1,12 @@
-package copy
+package advancedcopy
 
 import (
-	"io"
-	"os"
-	"io/ioutil"
-	"path"
 	"fmt"
 	"github.com/palantir/stacktrace"
+	"io"
+	"io/ioutil"
+	"os"
+	"path"
 )
 
 // File copies a single file from src to dst
@@ -34,7 +34,6 @@ func File(src, dst string) error {
 	}
 	return os.Chmod(dst, srcinfo.Mode())
 }
-
 
 // Dir copies a whole directory recursively
 func Dir(src string, dst string) error {

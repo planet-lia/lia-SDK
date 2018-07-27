@@ -42,7 +42,7 @@ func GenerateGame(bot1Dir string, bot2Dir string, gameFlags *GameFlags) {
 	}
 	// Set port if not already set
 	if gameFlags.Port == 0 {
-		gameFlags.Port = config.GetCfg().GamePort
+		gameFlags.Port = config.Cfg.GamePort
 	}
 
 	// Create channel that will listen to results
@@ -164,7 +164,7 @@ func runBot(cmdRef *CommandRef, name, uid string, port int) error {
 
 	var cmd *exec.Cmd
 	if runtime.GOOS == "windows" {
-		cmd = exec.Command(config.GetCfg().PathToBash, runScriptName, strconv.Itoa(port), uid)
+		cmd = exec.Command(config.Cfg.PathToBash, runScriptName, strconv.Itoa(port), uid)
 	} else {
 		cmd = exec.Command(runScriptName, strconv.Itoa(port), uid)
 	}

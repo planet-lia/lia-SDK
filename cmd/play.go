@@ -10,7 +10,7 @@ var viewReplay bool
 var playCmd = &cobra.Command{
 	Use:   "play <bot1Dir> <bot2Dir>",
 	Short: "Compiles and generates a game between bot1 and bot2",
-	Long:  `Compiles and generates a game between bot1 and bot2. If config is not specified then default config will be used and 
+	Long: `Compiles and generates a game between bot1 and bot2. If config is not specified then default config will be used and 
 if at least one of the bots is set to be in debug mode, the -debug.json config will be used.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		internal.UpdateIfTime(true)

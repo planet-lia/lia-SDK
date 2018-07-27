@@ -28,21 +28,21 @@ func TestCmdFetch(t *testing.T) {
 		},
 		{
 			url:             "https://github.com/liagame",
-			name:            "mirko",
+			name:            "birko",
 			hasCustomBotDir: false,
 			exitStatus:      lia_cli.BotDownloadFailed,
 			desc:            "try to download non zip file",
 		},
 		{
 			url:             "https://github.com/liagame.zip",
-			name:            "mirko",
+			name:            "birko",
 			hasCustomBotDir: false,
 			exitStatus:      lia_cli.BotDownloadFailed,
 			desc:            "try to download bot from non existent file",
 		},
 		{
 			url:             "https://github.com/liagame/java-bot/archive/master.zip",
-			name:            "mirko",
+			name:            "birko",
 			hasCustomBotDir: true,
 			exitStatus:      lia_cli.OK,
 			desc:            "download bot mirko and put it into custom bot Dir",
@@ -63,12 +63,12 @@ func TestCmdFetch(t *testing.T) {
 				var err error
 				customBotDir, err = ioutil.TempDir("", "")
 				if err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
 			}
 			defer func() {
 				if err := os.RemoveAll(customBotDir); err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
 			}()
 
@@ -79,10 +79,10 @@ func TestCmdFetch(t *testing.T) {
 			if c.hasCustomBotDir {
 				empty, err := tests.IsEmpty(customBotDir)
 				if err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
 				if empty {
-					t.Error("hasCustomBotDir should not be empty")
+					t.Fatal("hasCustomBotDir should not be empty")
 				}
 			}
 
@@ -92,11 +92,11 @@ func TestCmdFetch(t *testing.T) {
 
 	// Run test and check exit status
 	for i, c := range cases {
-		output, exitStatus := tests.GetCmdStatus("TestCmdFetch", i)
+		output, exitStatus := tests.GetCmdStatus("TestCmdFetch", i, false)
 		if exitStatus != c.exitStatus {
 			t.Logf("%s", c.desc)
 			t.Logf("%s", output)
-			t.Errorf("exit status is %v but should be %v", exitStatus, c.exitStatus)
+			t.Fatalf("exit status is %v but should be %v", exitStatus, c.exitStatus)
 		}
 	}
 }

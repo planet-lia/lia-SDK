@@ -159,7 +159,7 @@ type CommandRef struct {
 }
 
 func runBot(cmdRef *CommandRef, name, uid string, port int) error {
-	runScriptName := "./run.sh"
+	runScriptName := "run.sh"
 
 	botDir := filepath.Join(config.PathToBots, name)
 
@@ -167,7 +167,7 @@ func runBot(cmdRef *CommandRef, name, uid string, port int) error {
 	if runtime.GOOS == "windows" {
 		cmd = exec.Command(config.Cfg.PathToBash, runScriptName, strconv.Itoa(port), uid)
 	} else {
-		cmd = exec.Command(runScriptName, strconv.Itoa(port), uid)
+		cmd = exec.Command("/bin/bash", runScriptName, strconv.Itoa(port), uid)
 	}
 
 	cmdRef.cmd = cmd

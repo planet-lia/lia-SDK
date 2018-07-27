@@ -4,6 +4,7 @@ import (
 	"github.com/liagame/lia-cli"
 	"github.com/liagame/lia-cli/internal"
 	"github.com/liagame/lia-cli/internal/config"
+	"github.com/liagame/lia-cli/tests"
 	"io/ioutil"
 	"os"
 	"strconv"
@@ -51,8 +52,8 @@ func TestCmdFetch(t *testing.T) {
 	// Run actual tests
 	for i, c := range cases {
 		if os.Getenv("RUN_FUNC") == strconv.Itoa(i) {
-			setupTmpConfigPaths()
-			defer cleanupTmpFiles()
+			tests.SetupTmpConfigPaths()
+			defer tests.CleanupTmpFiles()
 			config.Setup()
 
 			customBotDir := ""
@@ -76,7 +77,7 @@ func TestCmdFetch(t *testing.T) {
 
 			// Check custom bot dir
 			if c.hasCustomBotDir {
-				empty, err := IsEmpty(customBotDir)
+				empty, err := tests.IsEmpty(customBotDir)
 				if err != nil {
 					t.Error(err)
 				}
@@ -91,7 +92,7 @@ func TestCmdFetch(t *testing.T) {
 
 	// Run test and check exit status
 	for i, c := range cases {
-		output, exitStatus := getCmdStatus("TestCmdFetch", i)
+		output, exitStatus := tests.GetCmdStatus("TestCmdFetch", i)
 		if exitStatus != c.exitStatus {
 			t.Logf("%s", c.desc)
 			t.Logf("%s", output)

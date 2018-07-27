@@ -15,7 +15,7 @@ import (
 	"syscall"
 )
 
-func getCmdStatus(funcName string, envValue int) (string, int) {
+func GetCmdStatus(funcName string, envValue int) (string, int) {
 	cmd := exec.Command(os.Args[0], "-test.run="+funcName)
 	cmd.Env = append(os.Environ(), "RUN_FUNC="+strconv.Itoa(envValue))
 	output, err := cmd.CombinedOutput()
@@ -27,7 +27,7 @@ func getCmdStatus(funcName string, envValue int) (string, int) {
 	return string(output), 0
 }
 
-func setupTmpConfigPaths() {
+func SetupTmpConfigPaths() {
 	// Set tmp path to bots
 	var err error
 	config.PathToBots, err = ioutil.TempDir("", "")
@@ -55,7 +55,7 @@ func setupTmpConfigPaths() {
 	}
 }
 
-func cleanupTmpFiles() {
+func CleanupTmpFiles() {
 	err := os.RemoveAll(config.PathToBots)
 	if err != nil {
 		panic(err)

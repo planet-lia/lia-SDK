@@ -30,8 +30,8 @@ func TestCmdVerify(t *testing.T) {
 	// Run actual tests
 	for i, c := range cases {
 		if os.Getenv("RUN_FUNC") == strconv.Itoa(i) {
-			setupTmpConfigPaths()
-			defer cleanupTmpFiles()
+			SetupTmpConfigPaths()
+			defer CleanupTmpFiles()
 			config.Setup()
 
 			// Run command
@@ -43,7 +43,7 @@ func TestCmdVerify(t *testing.T) {
 
 	// Run test and check exit status
 	for i, c := range cases {
-		output, exitStatus := getCmdStatus("TestCmdVerify", i)
+		output, exitStatus := GetCmdStatus("TestCmdVerify", i)
 		if exitStatus != c.exitStatus {
 			t.Logf("%s", c.desc)
 			t.Logf("%s", output)

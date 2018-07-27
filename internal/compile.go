@@ -48,30 +48,16 @@ func prepareBot(botDir string, lang *config.Language) error {
 	if runtime.GOOS == "windows" {
 		cmd = exec.Command(config.Cfg.PathToBash, prepareScript, botDir)
 	} else {
-		if err := makeFileExecutable(pathToLanguages, prepareScript); err != nil {
-			return stacktrace.Propagate(err, "")
-		}
-		cmd = exec.Command("./"+prepareScript, botDir)
+		cmd = exec.Command("/bin/bash", prepareScript, botDir)
 	}
 	cmd.Dir = pathToLanguages
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+
 	if err := cmd.Run(); err != nil {
 		return stacktrace.Propagate(err, "prepare script failed %s\n", botDir)
 	}
 
-	return nil
-}
-
-func makeFileExecutable(dir string, file string) error {
-	cmd := exec.Command("chmod", "+x", file)
-	cmd.Dir = dir
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	if err := cmd.Run(); err != nil {
-		return stacktrace.Propagate(err, "failed to make %s executable", file)
-	}
 	return nil
 }
 
@@ -88,11 +74,5 @@ func copyRunScript(botDir string, lang *config.Language) error {
 		return stacktrace.Propagate(err, "failed to copy run script from %s to %s\n", globalRunScriptPath, botRunScriptPath)
 	}
 
-	// Make it executable
-	if runtime.GOOS != "windows" {
-		if err := makeFileExecutable(botDir, "run.sh"); err != nil {
-			return stacktrace.Propagate(err, "")
-		}
-	}
 	return nil
 }

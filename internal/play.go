@@ -7,10 +7,7 @@ import (
 	"time"
 )
 
-func Play(args []string, gameFlags *GameFlags, viewReplay bool) {
-	bot1Dir := args[0]
-	bot2Dir := args[1]
-
+func Play(bot1Dir string, bot2Dir string, gameFlags *GameFlags, viewReplay bool) {
 	Compile(bot1Dir)
 	if bot1Dir != bot2Dir {
 		Compile(bot2Dir)

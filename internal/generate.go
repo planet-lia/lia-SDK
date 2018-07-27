@@ -4,7 +4,8 @@ import (
 	"bytes"
 	"crypto/rand"
 	"fmt"
-	"github.com/liagame/lia-cli/config"
+	"github.com/liagame/lia-cli"
+	"github.com/liagame/lia-cli/internal/config"
 	"github.com/palantir/stacktrace"
 	"io"
 	"os"
@@ -100,7 +101,7 @@ func GenerateGame(bot1Dir string, bot2Dir string, gameFlags *GameFlags) {
 		err := <-result
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "failed to generate game\n %s\n", err)
-			defer os.Exit(config.FailedToGenerateGame)
+			defer os.Exit(lia_cli.FailedToGenerateGame)
 			break
 		}
 	}
@@ -140,7 +141,7 @@ func getBotUid(debug bool) string {
 	uid, err := generateUuid()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to generate uid. %s", err)
-		os.Exit(config.Generic)
+		os.Exit(lia_cli.Generic)
 	}
 	return uid
 }

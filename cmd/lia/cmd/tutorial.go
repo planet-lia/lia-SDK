@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/liagame/lia-cli/config"
+	"github.com/liagame/lia-cli"
 	"github.com/liagame/lia-cli/internal"
 	"github.com/spf13/cobra"
 	"os"
@@ -22,7 +22,7 @@ var tutorialCmd = &cobra.Command{
 		tutorialNumber, err := strconv.Atoi(args[0])
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "failed to convert %s to number.\n %s\n", args[0], err)
-			os.Exit(config.Generic)
+			os.Exit(lia_cli.Generic)
 		}
 		botDir := args[1]
 

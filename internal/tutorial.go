@@ -1,7 +1,7 @@
 package internal
 
 import (
-	"github.com/liagame/lia-cli/config"
+	"github.com/liagame/lia-cli/internal/config"
 	"path/filepath"
 	"strconv"
 )

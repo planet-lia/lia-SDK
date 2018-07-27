@@ -3,7 +3,8 @@ package internal
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/liagame/lia-cli/config"
+	"github.com/liagame/lia-cli"
+	"github.com/liagame/lia-cli/internal/config"
 	"github.com/palantir/stacktrace"
 	"io/ioutil"
 	"os"
@@ -17,7 +18,7 @@ func ShowVersions() {
 	liaCfgVersion, err := getConfigVersion(liaCfgName)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to read from file %s\n %s", liaCfgName, err)
-		os.Exit(config.FailedToReadConfig)
+		os.Exit(lia_cli.FailedToReadConfig)
 	}
 
 	// Get game cfg version
@@ -25,7 +26,7 @@ func ShowVersions() {
 	gameCfgVersion, err := getConfigVersion(gameCfgName)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to read from file %s\n %s", gameCfgName, err)
-		os.Exit(config.FailedToReadConfig)
+		os.Exit(lia_cli.FailedToReadConfig)
 	}
 
 	// Get game generator version
@@ -34,7 +35,7 @@ func ShowVersions() {
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to get game-generator version\n %s", err)
-		os.Exit(config.GameGeneratorFailed)
+		os.Exit(lia_cli.GameGeneratorFailed)
 	}
 	gameGeneratorVersion := string(out)
 
@@ -44,7 +45,7 @@ func ShowVersions() {
 	out, err = cmd.Output()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to get replay-viewer version\n %s", err)
-		os.Exit(config.ReplayViewerFailed)
+		os.Exit(lia_cli.ReplayViewerFailed)
 	}
 	replayViewerVersion := string(out)
 

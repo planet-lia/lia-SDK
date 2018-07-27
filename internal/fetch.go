@@ -3,7 +3,8 @@ package internal
 import (
 	"archive/zip"
 	"fmt"
-	"github.com/liagame/lia-cli/config"
+	"github.com/liagame/lia-cli"
+	"github.com/liagame/lia-cli/internal/config"
 	"github.com/mholt/archiver"
 	"github.com/palantir/stacktrace"
 	"io"
@@ -20,7 +21,7 @@ func FetchBot(url string, name string, customBotDir string) {
 	tmpFile, err := ioutil.TempFile("", "")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error while creating tmp tmpFile %s\n", err)
-		os.Exit(config.OsCallFailed)
+		os.Exit(lia_cli.OsCallFailed)
 	}
 	defer os.Remove(tmpFile.Name())
 
@@ -28,7 +29,7 @@ func FetchBot(url string, name string, customBotDir string) {
 	fmt.Printf("Downloading bot from %s...\n", url)
 	if err := downloadBot(url, tmpFile); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to download bot from %s.\n %s\n", url, err)
-		defer os.Exit(config.BotDownloadFailed)
+		defer os.Exit(lia_cli.BotDownloadFailed)
 		return // need to call like that so that other defers are called (removing files etc...)
 	}
 
@@ -37,14 +38,14 @@ func FetchBot(url string, name string, customBotDir string) {
 	tmpBotParentDir, err := ioutil.TempDir("", "")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to create tmp bot dir. %s", err)
-		defer os.Exit(config.OsCallFailed)
+		defer os.Exit(lia_cli.OsCallFailed)
 		return
 	}
 	defer os.RemoveAll(tmpBotParentDir)
 
 	if err := archiver.Zip.Open(tmpFile.Name(), tmpBotParentDir); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to extract bot with target %s\n%v\n", tmpBotParentDir, err)
-		defer os.Exit(config.OsCallFailed)
+		defer os.Exit(lia_cli.OsCallFailed)
 		return
 	}
 
@@ -52,7 +53,7 @@ func FetchBot(url string, name string, customBotDir string) {
 	botDirName, err := getBotDirName(tmpBotParentDir)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to get bot dir. %s\n", err)
-		defer os.Exit(config.Generic)
+		defer os.Exit(lia_cli.Generic)
 		return
 	}
 
@@ -64,11 +65,11 @@ func FetchBot(url string, name string, customBotDir string) {
 	// Check if the bot with chosen name already exists
 	if isUsed, err := isNameUsed(name); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to check if name isUsed. %s", err)
-		defer os.Exit(config.Generic)
+		defer os.Exit(lia_cli.Generic)
 		return
 	} else if isUsed {
 		fmt.Fprintf(os.Stderr, "bot name %s already exists. Choose another name.\n", name)
-		defer os.Exit(config.BotExists)
+		defer os.Exit(lia_cli.BotExists)
 		return
 	}
 
@@ -82,7 +83,7 @@ func FetchBot(url string, name string, customBotDir string) {
 	}
 	if err := os.Rename(tmpBotDir, finalBotDir); err != nil {
 		fmt.Fprintf(os.Stderr, "failed move bot dir from %s to %s. %s\n", botDirName, finalBotDir, err)
-		defer os.Exit(config.OsCallFailed)
+		defer os.Exit(lia_cli.OsCallFailed)
 		return
 	}
 
@@ -183,6 +184,6 @@ func getBotDirName(parentDir string) (string, error) {
 		}
 	}
 
-	return "", stacktrace.NewError("there should be exactly 1 directory in parentDir" +
+	return "", stacktrace.NewError("there should be exactly 1 directory in parentDir"+
 		"(on mac osx can also be __MACOSX. nFiles: %v", len(files))
 }

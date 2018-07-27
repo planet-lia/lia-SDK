@@ -1,7 +1,7 @@
-package config
+package lia_cli
 
 const (
-	OK						 = 0
+	OK                       = 0
 	Generic                  = 1
 	BotExists                = 2
 	FailedToFindRepo         = 3

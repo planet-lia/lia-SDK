@@ -19,4 +19,5 @@ const (
 	ZippingBotFailed         = 15
 	FailedToGetLatestRelease = 16
 	FailedToReadReleaseFile  = 17
+	LiaSettingsFailure       = 18
 )

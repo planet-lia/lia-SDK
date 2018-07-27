@@ -30,6 +30,7 @@ func Play(args []string, gameFlags *GameFlags, viewReplay bool) {
 func createReplayFileName() string {
 	path := filepath.Join(config.PathToBots, "replays")
 	os.MkdirAll(path, os.ModePerm)
-	fileName := time.Now().Format(time.RFC3339) + ".lia"
+	//"2006-01-02T15:04:05Z07:00"
+	fileName := time.Now().Format("2006-01-02T15-04-05") + ".lia"
 	return filepath.Join(path, fileName)
 }

@@ -20,9 +20,10 @@ var PathToBots string
 var PathToData string
 
 type Config struct {
-	Version   string     `json:"version"`
-	GamePort  int        `json:"gamePort"`
-	Languages []Language `json:"languages"`
+	Version    string     `json:"version"`
+	GamePort   int        `json:"gamePort"`
+	PathToBash string     `json:"windowsPathToBash"`
+	Languages  []Language `json:"languages"`
 }
 
 type Language struct {
@@ -50,16 +51,20 @@ func SetConfig(path string) error {
 
 func GetCfg() *Config {
 	if cfg == nil {
-		// Set PathToBots to executable path
-		ex, err := os.Executable()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "failed to get executable location\n %s", err)
-			os.Exit(FailedToGetEnvironment)
+		if PathToBots == "" {
+			// Set PathToBots to executable path
+			ex, err := os.Executable()
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "failed to get executable location\n %s", err)
+				os.Exit(FailedToGetEnvironment)
+			}
+			PathToBots = filepath.Dir(ex)
 		}
-		PathToBots = filepath.Dir(ex)
+
 		PathToData = filepath.Join(PathToBots, "data")
 
 		pathToCfg := filepath.Join(PathToData, "cli-config.json")
+
 		if err := SetConfig(pathToCfg); err != nil {
 			fmt.Fprintf(os.Stderr, "couldn't get config\n %s", err)
 			os.Exit(FailedToReadConfig)

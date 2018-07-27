@@ -40,6 +40,10 @@ func GenerateGame(bot1Dir string, bot2Dir string, gameFlags *GameFlags) {
 			gameFlags.ConfigPath = strings.Replace(gameFlags.ConfigPath, ".json", "-debug.json", 1)
 		}
 	}
+	// Set port if not already set
+	if gameFlags.Port == 0 {
+		gameFlags.Port = config.GetCfg().GamePort
+	}
 
 	// Create channel that will listen to results
 	// from game generator and both bots
@@ -155,13 +159,16 @@ type CommandRef struct {
 
 func runBot(cmdRef *CommandRef, name, uid string, port int) error {
 	runScriptName := "./run.sh"
-	if runtime.GOOS == "windows" {
-		runScriptName = "run.bat"
-	}
 
 	botDir := filepath.Join(config.PathToBots, name)
 
-	cmd := exec.Command(runScriptName, strconv.Itoa(port), uid)
+	var cmd *exec.Cmd
+	if runtime.GOOS == "windows" {
+		cmd = exec.Command(config.GetCfg().PathToBash, runScriptName, strconv.Itoa(port), uid)
+	} else {
+		cmd = exec.Command(runScriptName, strconv.Itoa(port), uid)
+	}
+
 	cmdRef.cmd = cmd
 	cmd.Dir = botDir
 	cmd.Stdout = os.Stdout

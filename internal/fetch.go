@@ -105,6 +105,7 @@ func downloadBot(url string, output *os.File) error {
 		Timeout: time.Second * 30,
 	}
 
+
 	response, err := netClient.Get(url)
 	if err != nil {
 		return stacktrace.Propagate(err, "failed to download bot from %s", url)
@@ -166,7 +167,7 @@ func getBotDirName(parentDir string) (string, error) {
 		return "", stacktrace.Propagate(err, "failed to read files from dir: %s", parentDir)
 	}
 	if len(files) != 1 {
-		return "", stacktrace.NewError("there should be exactly 1 file in parentDir. nFiles: %v", len(files))
+		return "", stacktrace.NewError("there should be exactly 1 directory in parentDir. nFiles: %v", len(files))
 	}
 	return files[0].Name(), nil
 }

@@ -9,7 +9,7 @@ const (
 	ReplayViewerFailed       = 6
 	FailedGettingBotLang     = 7
 	PreparingBotFailed       = 8
-	CreatingRunScriptFailed  = 9
+	CopyingRunScriptFailed   = 9
 	FailedToReadConfig       = 10
 	FailedToGetEnvironment   = 11
 	GameGeneratorFailed      = 12

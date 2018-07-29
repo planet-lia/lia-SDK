@@ -3,8 +3,7 @@
 cd $1
 pip3 install virtualenv
 if ! [[ -d "env" ]]; then
-    virtualenv -p python3 venv
-    virtualenv --relocatable venv
-    source venv/bin/activate
+	python -m venv venv
+    source venv/Scripts/activate
 fi
-venv/bin/pip install -r requirements.txt
+venv/Scripts/pip install -r requirements.txt

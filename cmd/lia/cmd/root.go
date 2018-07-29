@@ -134,7 +134,7 @@ Loop:
 	}
 
 	if optIn {
-		fmt.Println("You have successfully opt in to anonymous usage analytics. Thank you for your feedback!")
+		fmt.Printf("You have successfully opt in to anonymous usage analytics. Thank you for your feedback!\n\n")
 	} else {
 		fmt.Print("You have successfully opt out from anonymous usage analytics. ")
 		fmt.Printf("To turn it on run %s\n\n", color.GreenString("./lia settings --analytics-opt-in"))

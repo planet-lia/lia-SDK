@@ -63,7 +63,6 @@ func Setup() {
 		}
 
 		PathToData = filepath.Join(PathToBots, "data")
-
 		pathToCfg := filepath.Join(PathToData, "cli-config.json")
 
 		if err := SetConfig(pathToCfg); err != nil {

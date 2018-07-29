@@ -56,7 +56,7 @@ func SetupTmpConfigPaths() {
 	} else {
 		index = strings.LastIndex(wd, "/")
 	}
-	pathToData := filepath.Join(wd[:index], "build", "data")
+	pathToData := filepath.Join(wd[:index], "assets")
 	pathToTmpData := filepath.Join(config.PathToBots, "data")
 
 	if err := advancedcopy.Dir(pathToData, pathToTmpData); err != nil {

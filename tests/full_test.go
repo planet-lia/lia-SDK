@@ -75,7 +75,7 @@ func getSupportedLanguages() []string {
 	} else {
 		index = strings.LastIndex(wd, "/")
 	}
-	pathToConfig := filepath.Join(wd[:index], "build", "data", "cli-config.json")
+	pathToConfig := filepath.Join(wd[:index], "assets", "cli-config.json")
 
 	err = config.SetConfig(pathToConfig)
 	if err != nil {

@@ -13,6 +13,8 @@ import (
 const VERSION = "0.1.0"
 
 const ReleasesUrl = "https://github.com/liagame/lia-tools/releases/latest"
+const SettingsFile = ".lia"
+const SettingsFileExtension = "json"
 
 var Cfg *Config
 

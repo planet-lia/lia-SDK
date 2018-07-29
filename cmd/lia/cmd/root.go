@@ -1,13 +1,17 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
-	"os"
-
+	"github.com/liagame/lia-cli"
 	"github.com/liagame/lia-cli/internal"
+	"github.com/liagame/lia-cli/internal/config"
+	"github.com/liagame/lia-cli/internal/settings"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"os"
+	"strings"
 )
 
 var cfgFile string
@@ -36,7 +40,7 @@ var rootCmd = &cobra.Command{
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		os.Exit(lia_cli.Generic)
 	}
 }
 
@@ -50,6 +54,9 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
+
+	viper.SetConfigType(config.SettingsFileExtension)
+
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
@@ -58,18 +65,78 @@ func initConfig() {
 		home, err := homedir.Dir()
 		if err != nil {
 			fmt.Println(err)
-			os.Exit(1)
+			os.Exit(lia_cli.LiaSettingsFailure)
+			return
 		}
 
-		// Search config in home directory with name ".lia-cli" (without extension).
+		// Search config in home directory for lia settings file
 		viper.AddConfigPath(home)
-		viper.SetConfigName(".lia-cli")
+		viper.SetConfigName(config.SettingsFile)
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		fmt.Println("Using settings file:", viper.ConfigFileUsed())
+
+	} else {
+		// In case we don't find a lia settings file, create one
+		// using the default parameters
+		fmt.Println("Creating new settings file.")
+		if err := settings.Create(); err != nil {
+			fmt.Printf("Failed to create lia settings file. Error: %v\n", err)
+			os.Exit(lia_cli.LiaSettingsFailure)
+			return
+		}
+
+		// Successfully created new settings file
+		if err := viper.ReadInConfig(); err != nil {
+			fmt.Printf("Failed to read from newly created settings file. Error: %v\n", err)
+			os.Exit(lia_cli.LiaSettingsFailure)
+			return
+		}
 	}
+
+	// If analyticsAllow is set to null in the lia settings file or if
+	// the analyticsAllowedVersion does not match the config version,
+	// ask the user for permission to collect anonymous analytics.
+	if viper.Get("analyticsAllow") == nil || viper.Get("analyticsAllowedVersion") != config.VERSION {
+		analyticsOptIn := askAnaylticsOptIn()
+		viper.Set("analyticsAllow", analyticsOptIn)
+		viper.Set("analyticsAllowedVersion", config.VERSION)
+		viper.WriteConfig()
+	}
+
+}
+
+// Ask users to decide if they want to opt-in to our
+// anonymous usage tracking.
+func askAnaylticsOptIn() (optIn bool) {
+	optIn = true
+
+Loop:
+	for {
+		scanner := bufio.NewScanner(os.Stdin)
+		fmt.Print("Opt in to anonymous usage tracking [Y/n]: ")
+		scanner.Scan()
+		text := scanner.Text()
+
+		switch strings.ToUpper(text) {
+		case "N", "NO", "NAH":
+			optIn = false
+			fallthrough
+		case "Y", "YES", "WOW", "NSA":
+			break Loop
+		}
+
+	}
+
+	if optIn {
+		fmt.Println("You have successfully opt in to anonymous usage analytics. Thank you for your feedback!")
+	} else {
+		fmt.Println("You have successfully opt out from anonymous usage analytics. To turn it on run \"./lia settings --analytics-opt-in\"\n")
+	}
+
+	return optIn
 }

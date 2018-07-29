@@ -20,7 +20,7 @@ do
     platformSplit=(${platform//\// })
     GOOS=${platformSplit[0]}
     GOARCH=${platformSplit[1]}
-    buildDir="build/"${GOOS}'-'${GOARCH}
+    buildDir="build/lia-sdk-"${GOOS}'-'${GOARCH}
 
     # Recreate buildDir
     rm -r ${buildDir} 2> /dev/null

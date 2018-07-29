@@ -29,10 +29,10 @@ Use "lia [command] --help" for more information about a command.
 ```
 
 ## Build
-```go
-go build -o build/lia
+```bash
+chmod +x scrpits/build.sh
+./scripts/build.sh
 ```
-[How to build go programs.](https://www.digitalocean.com/community/tutorials/how-to-build-go-executables-for-multiple-platforms-on-ubuntu-16-04)
 
 ### Dependencies ###
 ```bash
@@ -40,4 +40,6 @@ go get github.com/spf13/cobra
 go get github.com/palantir/stacktrace
 go get github.com/mholt/archiver
 go get github.com/fatih/color
+go get github.com/satori/go.uuid
+
 ```

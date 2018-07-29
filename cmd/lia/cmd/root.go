@@ -12,6 +12,7 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"strings"
+	"github.com/fatih/color"
 )
 
 var cfgFile string
@@ -135,7 +136,8 @@ Loop:
 	if optIn {
 		fmt.Println("You have successfully opt in to anonymous usage analytics. Thank you for your feedback!")
 	} else {
-		fmt.Println("You have successfully opt out from anonymous usage analytics. To turn it on run \"./lia settings --analytics-opt-in\"\n")
+		fmt.Print("You have successfully opt out from anonymous usage analytics. ")
+		fmt.Printf("To turn it on run %s\n\n", color.GreenString("./lia settings --analytics-opt-in"))
 	}
 
 	return optIn

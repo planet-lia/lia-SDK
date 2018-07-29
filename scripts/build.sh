@@ -2,7 +2,9 @@
 
 platforms=("linux/amd64" "linux/386" "windows/amd64" "windows/386" "darwin/amd64")
 
-cd ..
+# Cd to root of the project
+pathToScript="`dirname \"$0\"`"
+cd ${pathToScript}/..
 
 # Run tests
 go test ./...

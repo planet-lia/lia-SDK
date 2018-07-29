@@ -1,12 +1,8 @@
 package analytics
 
-import (
-	"net/url"
-)
-
 const propertyID = "UA-122844498-1"
 
-func Log(cmd string, metadata map[string]string) {
+/*func Log(cmd string, metadata map[string]string) {
 	// TODO - check if allowed to log
 
 	v := url.Values{
@@ -20,3 +16,4 @@ func Log(cmd string, metadata map[string]string) {
 	}
 
 }
+*/

@@ -1,16 +1,16 @@
 package tests
 
 import (
-	"testing"
+	"fmt"
+	"github.com/liagame/lia-cli"
+	"github.com/liagame/lia-cli/internal"
 	"github.com/liagame/lia-cli/internal/config"
 	"os"
-	"strconv"
-	"github.com/liagame/lia-cli/internal"
-	"fmt"
 	"path/filepath"
-	"github.com/liagame/lia-cli"
-	"strings"
 	"runtime"
+	"strconv"
+	"strings"
+	"testing"
 )
 
 func TestFull(t *testing.T) {
@@ -31,15 +31,15 @@ func TestFull(t *testing.T) {
 
 			// Play
 			gameFlags := &internal.GameFlags{
-				GameSeed: 1,
-				MapSeed: 1,
-				Port: 8887,
+				GameSeed:   1,
+				MapSeed:    1,
+				Port:       8887,
 				ReplayPath: pathToReplay,
 			}
 			internal.Play(botName, botName, gameFlags, false)
 
 			// Check if replay was created and is not empty
-			fi, err := os.Stat(pathToReplay);
+			fi, err := os.Stat(pathToReplay)
 			if err != nil {
 				t.Fatal(err)
 			}

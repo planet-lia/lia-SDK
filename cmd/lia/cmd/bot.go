@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/liagame/lia-cli/internal"
+	"github.com/liagame/lia-cli/internal/analytics"
 	"github.com/spf13/cobra"
 )
 
@@ -11,6 +12,11 @@ var botCmd = &cobra.Command{
 	Long:  `Create new bot with specified language and chosen name`,
 	Args:  cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
+		analytics.Log("command", "bot", map[string]string{
+			"language": args[0],
+			"name":     args[1],
+		})
+
 		internal.UpdateIfTime(true)
 		internal.FetchBotByLanguage(args[0], args[1])
 	},

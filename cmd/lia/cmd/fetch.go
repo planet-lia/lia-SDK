@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/liagame/lia-cli/internal"
+	"github.com/liagame/lia-cli/internal/analytics"
 	"github.com/spf13/cobra"
 )
 
@@ -14,6 +16,12 @@ var fetchCmd = &cobra.Command{
 the argument is provided.`,
 	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
+		analytics.Log("command", "fetch", map[string]string{
+			"url":  args[0],
+			"name": args[1],
+			"dir":  fmt.Sprint(cmd.Flags().GetString("dir")),
+		})
+
 		internal.UpdateIfTime(true)
 
 		url := args[0]

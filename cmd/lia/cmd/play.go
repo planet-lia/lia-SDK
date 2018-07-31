@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/liagame/lia-cli/internal"
+	"github.com/liagame/lia-cli/internal/analytics"
 	"github.com/spf13/cobra"
 )
 
@@ -14,6 +15,19 @@ var playCmd = &cobra.Command{
 if at least one of the bots is set to be in debug mode, the -debug.json config will be used.`,
 	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
+		analytics.Log("command", "generate", map[string]string{
+			"bot1Dir":    args[0],
+			"bot2Dir":    args[1],
+			"viewReplay": analytics.ParseBoolFlagToString(cmd, "viewReplay"),
+			"gseed":      analytics.ParseIntFlagToString(cmd, "gseed"),
+			"mseed":      analytics.ParseIntFlagToString(cmd, "mseed"),
+			"port":       analytics.ParseIntFlagToString(cmd, "port"),
+			"map":        analytics.ParseStringFlag(cmd, "map"),
+			"replay":     analytics.ParseStringFlag(cmd, "replay"),
+			"config":     analytics.ParseStringFlag(cmd, "config"),
+			"debug":      analytics.ParseIntSliceFlagToString(cmd, "debug"),
+		})
+
 		internal.UpdateIfTime(true)
 		internal.Play(args[0], args[1], &gameFlags, viewReplay)
 	},

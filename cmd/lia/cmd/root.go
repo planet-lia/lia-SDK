@@ -3,6 +3,7 @@ package cmd
 import (
 	"bufio"
 	"fmt"
+	"github.com/fatih/color"
 	"github.com/liagame/lia-cli"
 	"github.com/liagame/lia-cli/internal"
 	"github.com/liagame/lia-cli/internal/config"
@@ -12,7 +13,6 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"strings"
-	"github.com/fatih/color"
 )
 
 var cfgFile string
@@ -141,4 +141,3 @@ Loop:
 
 	return optIn
 }
-

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+runTests=$1
+
 platforms=("linux/amd64" "linux/386" "windows/amd64" "windows/386" "darwin/amd64")
 
 # Cd to root of the project
@@ -7,7 +9,9 @@ pathToScript="`dirname \"$0\"`"
 cd ${pathToScript}/..
 
 # Run tests
-go test ./...
+if [[ $runTests != "false" ]]; then
+    go test ./...
+fi
 if [[ $? != 0 ]]; then
     (>&2 echo "Running tests failed.")
     exit $?

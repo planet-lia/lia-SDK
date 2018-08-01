@@ -6,16 +6,24 @@ import (
 	"github.com/liagame/lia-cli/internal/config"
 	"os"
 	"os/exec"
+	"runtime"
 )
 
 func ShowReplayViewer(replayFile string) {
-	cmd := exec.Command("java", "-jar", "replay-viewer.jar")
+	var args []string
+	if runtime.GOOS == "darwin" {
+		args = append(args, "-XstartOnFirstThread", "-Dorg.lwjgl.system.allocator=system")
+	}
+	args = append(args, "-jar", "replay-viewer.jar")
+	if replayFile != "" {
+		args = append(args, replayFile)
+	}
+
+	cmd := exec.Command("java", args...)
 	cmd.Dir = config.PathToData
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	if replayFile != "" {
-		cmd.Args = append(cmd.Args, replayFile)
-	}
+
 	if err := cmd.Run(); err != nil {
 		fmt.Fprintf(os.Stderr, "couldn't run replay: %s\n", err)
 		os.Exit(lia_cli.ReplayViewerFailed)

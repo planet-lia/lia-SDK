@@ -184,12 +184,12 @@ func runBot(cmdRef *CommandRef, name, uid string, port int) error {
 }
 
 func runGameGenerator(started chan bool, cmdRef *CommandRef, gameFlags *GameFlags, nameBot1, nameBot2, uidBot1, uidBot2 string) error {
-	cmd := exec.Command(
-		"java", "-jar", "game-engine.jar",
-		"-g", fmt.Sprint(gameFlags.GameSeed),
-		"-m", fmt.Sprint(gameFlags.MapSeed),
-		"-p", fmt.Sprint(gameFlags.Port),
-	)
+	var args []string
+	if runtime.GOOS == "darwin" {
+		args = append(args, "-XstartOnFirstThread", "-Dorg.lwjgl.system.allocator=system")
+	}
+	args = append(args, "-jar", "game-engine.jar")
+	cmd := exec.Command("java", args...)
 	cmdRef.cmd = cmd
 
 	// Append string flags if they are not empty

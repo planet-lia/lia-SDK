@@ -185,7 +185,7 @@ func runBot(cmdRef *CommandRef, name, uid string, port int) error {
 
 func runGameGenerator(started chan bool, cmdRef *CommandRef, gameFlags *GameFlags, nameBot1, nameBot2, uidBot1, uidBot2 string) error {
 	cmd := exec.Command(
-		"java", "-jar", "game-generator.jar",
+		"java", "-jar", "game-engine.jar",
 		"-g", fmt.Sprint(gameFlags.GameSeed),
 		"-m", fmt.Sprint(gameFlags.MapSeed),
 		"-p", fmt.Sprint(gameFlags.Port),

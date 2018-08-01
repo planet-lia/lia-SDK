@@ -12,6 +12,6 @@
 *.out
 
 
-# CHANGEG
+# CHANGES
 build/
 .idea/

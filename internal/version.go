@@ -30,7 +30,7 @@ func ShowVersions() {
 	}
 
 	// Get game generator version
-	cmd := exec.Command("java", "-jar", "game-generator.jar", "--version")
+	cmd := exec.Command("java", "-jar", "game-engine.jar", "--version")
 	cmd.Dir = config.PathToData
 	out, err := cmd.Output()
 	if err != nil {

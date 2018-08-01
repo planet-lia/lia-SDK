@@ -103,17 +103,16 @@ func initConfig() {
 	// the analyticsAllowedVersion does not match the config version,
 	// ask the user for permission to collect anonymous analytics.
 	if viper.Get("analyticsAllow") == nil || viper.Get("analyticsAllowedVersion") != config.VERSION {
-		analyticsOptIn := askAnaylticsOptIn()
+		analyticsOptIn := askAnalyticsOptIn()
 		viper.Set("analyticsAllow", analyticsOptIn)
 		viper.Set("analyticsAllowedVersion", config.VERSION)
 		viper.WriteConfig()
 	}
-
 }
 
 // Ask users to decide if they want to opt-in to our
 // anonymous usage tracking.
-func askAnaylticsOptIn() (optIn bool) {
+func askAnalyticsOptIn() (optIn bool) {
 	optIn = true
 
 Loop:
@@ -142,3 +141,4 @@ Loop:
 
 	return optIn
 }
+

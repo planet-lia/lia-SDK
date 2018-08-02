@@ -28,21 +28,18 @@ Flags:
 Use "lia [command] --help" for more information about a command.
 ```
 
-## Build
+
+## Development
+### Dependencies
+Install all dependencies and update them by cd-ing into the repository
+root and running:
+```bash
+go get -u ./...
+```
+
+### Build
 ```bash
 chmod +x scrpits/build.sh
 ./scripts/build.sh
 ```
 
-### Dependencies ###
-```bash
-go get github.com/spf13/cobra
-go get github.com/palantir/stacktrace
-go get github.com/mholt/archiver
-go get github.com/fatih/color
-go get github.com/satori/go.uuid
-go get github.com/spf13/viper
-go get github.com/mitchellh/go-homedir
-go get github.com/inconshreveable/mousetrap
-
-```

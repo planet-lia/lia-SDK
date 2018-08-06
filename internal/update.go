@@ -13,8 +13,15 @@ import (
 	"time"
 )
 
+const ReleaseRequestFailed = "failed"
+
 func Update(checkOnly bool) {
-	available := isUpdateAvailable()
+	latestTag := getLatestReleaseTag()
+	if latestTag == ReleaseRequestFailed {
+		return
+	}
+
+	available := isUpdateAvailable(latestTag)
 	if available {
 		printLinkToDownloads()
 	} else {
@@ -81,12 +88,12 @@ func timeToCheckForUpdate() (bool, error) {
 	return latestTime.Add(time.Hour * 24).Before(timeNow), nil
 }
 
-func isUpdateAvailable() bool {
-	latestTag := getLatestReleaseTag()
+func isUpdateAvailable(latestTag string) bool {
 	localRelease, err := getLocalReleaseConfig()
 
 	if err != nil {
 		fmt.Printf("\nCan't get local release version. Error: %s\n", err)
+	} else if latestTag == ReleaseRequestFailed {
 	} else if latestTag > localRelease.Tag {
 		fmt.Printf("\nUpdate available %s -> %s.\n", color.WhiteString(localRelease.Tag), color.GreenString(latestTag))
 	} else {
@@ -133,7 +140,7 @@ func getLatestReleaseTag() string {
 	res, err := client.Do(req)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "faied to get latest release. %s\n", err)
-		os.Exit(lia_cli.FailedToGetLatestRelease)
+		return ReleaseRequestFailed
 	}
 	defer res.Body.Close()
 

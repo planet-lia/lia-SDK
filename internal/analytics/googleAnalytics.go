@@ -6,9 +6,9 @@ import (
 	"github.com/liagame/lia-cli"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"net/http"
-	"net/url"
+		"net/url"
 	"os"
+	"net/http"
 )
 
 const propertyID = "UA-122844498-1"
@@ -38,7 +38,12 @@ func Log(category string, action string, metadata map[string]string) {
 
 	v.Set("el", string(dataJson))
 
-	http.PostForm("https://www.google-analytics.com/collect", v)
+	if viper.Get("testing") == nil {
+		http.PostForm("https://www.google-analytics.com/collect", v)
+	} else if viper.Get("testing") == false {
+		http.PostForm("https://www.google-analytics.com/collect", v)
+	}
+
 }
 
 func ParseStringFlag(cmd *cobra.Command, name string) string {

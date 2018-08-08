@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/liagame/lia-cli/internal"
+	"github.com/liagame/lia-cli/internal/analytics"
 	"github.com/spf13/cobra"
 )
 
@@ -13,6 +14,21 @@ var generateCmd = &cobra.Command{
 	Long:  `Generates a game. This is a low level command.`,
 	Args:  cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
+		analytics.Log("command", "generate", map[string]string{
+			"bot1Dir":    args[0],
+			"id1":        args[1],
+			"bot2Dir":    args[2],
+			"id2":        args[3],
+			"viewReplay": analytics.ParseBoolFlagToString(cmd, "viewReplay"),
+			"gseed":      analytics.ParseIntFlagToString(cmd, "gseed"),
+			"mseed":      analytics.ParseIntFlagToString(cmd, "mseed"),
+			"port":       analytics.ParseIntFlagToString(cmd, "port"),
+			"map":        analytics.ParseStringFlag(cmd, "map"),
+			"replay":     analytics.ParseStringFlag(cmd, "replay"),
+			"config":     analytics.ParseStringFlag(cmd, "config"),
+			"debug":      analytics.ParseIntSliceFlagToString(cmd, "debug"),
+		})
+
 		internal.UpdateIfTime(true)
 		internal.GenerateGame(args[0], args[1], &gameFlags)
 	},

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/liagame/lia-cli"
 	"github.com/liagame/lia-cli/internal"
+	"github.com/liagame/lia-cli/internal/analytics"
 	"github.com/spf13/cobra"
 	"os"
 	"strconv"
@@ -17,6 +18,12 @@ var tutorialCmd = &cobra.Command{
 	Long:  `Runs tutorial specified by number with chosen bot.`,
 	Args:  cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
+		analytics.Log("command", "tutorial", map[string]string{
+			"number": args[0],
+			"botDir": args[1],
+			"debug":  analytics.ParseBoolFlagToString(cmd, "debug"),
+		})
+
 		internal.UpdateIfTime(true)
 
 		tutorialNumber, err := strconv.Atoi(args[0])

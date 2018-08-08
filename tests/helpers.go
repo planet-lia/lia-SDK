@@ -1,10 +1,12 @@
 package tests
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/liagame/lia-cli/internal/config"
 	"github.com/liagame/lia-cli/pkg/advancedcopy"
 	"io"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -12,8 +14,6 @@ import (
 	"strconv"
 	"strings"
 	"syscall"
-	"io/ioutil"
-	"encoding/json"
 )
 
 func GetCmdStatus(funcName string, envValue int, printToStdout bool) (string, int) {
@@ -93,8 +93,6 @@ func changeGameDurationInConfig(path string) {
 	}
 
 }
-
-
 
 func CleanupTmpFiles() {
 	err := os.RemoveAll(config.PathToBots)

@@ -1,39 +1,585 @@
 {
-  "width": 120,
-  "height": 67.5,
+  "width": 72.0,
+  "height": 40.5,
   "background": {
-    "r": 0.3,
-    "g": 0.3,
-    "b": 0.3,
+    "r": 0.34509805,
+    "g": 0.34509805,
+    "b": 0.34509805,
     "a": 1.0
   },
   "obstacles": [
     {
-      "x": 15.026,
-      "y": 30.936,
-      "width": 7.071,
-      "height": 33.840,
-      "color": { "r": 0.5, "g": 0.5, "b": 0, "a": 1 }
+      "x": 0.0,
+      "y": 37.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
     },
     {
-      "x": 22.476,
-      "y": 56.442,
-      "width": 10,
-      "height": 10,
-      "src": "cooler.png"
+      "x": 3.0,
+      "y": 37.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 6.0,
+      "y": 37.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 9.0,
+      "y": 37.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 12.0,
+      "y": 37.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 15.0,
+      "y": 37.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 18.0,
+      "y": 37.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 21.0,
+      "y": 37.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 24.0,
+      "y": 37.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 27.0,
+      "y": 37.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 30.0,
+      "y": 37.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 33.0,
+      "y": 37.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 36.0,
+      "y": 37.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 39.0,
+      "y": 37.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 42.0,
+      "y": 37.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 45.0,
+      "y": 37.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 48.0,
+      "y": 37.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 51.0,
+      "y": 37.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 54.0,
+      "y": 37.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 57.0,
+      "y": 37.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 33.0,
+      "y": 16.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 33.0,
+      "y": 19.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 33.0,
+      "y": 22.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 33.0,
+      "y": 25.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 33.0,
+      "y": 28.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 33.0,
+      "y": 31.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 33.0,
+      "y": 34.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 36.0,
+      "y": 16.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 36.0,
+      "y": 19.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 36.0,
+      "y": 31.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 36.0,
+      "y": 34.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 39.0,
+      "y": 16.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 39.0,
+      "y": 19.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 39.0,
+      "y": 31.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 39.0,
+      "y": 34.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 42.0,
+      "y": 16.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 42.0,
+      "y": 19.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 42.0,
+      "y": 22.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 42.0,
+      "y": 25.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 42.0,
+      "y": 28.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 42.0,
+      "y": 31.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 42.0,
+      "y": 34.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 15.0,
+      "y": 0.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 15.0,
+      "y": 3.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 15.0,
+      "y": 6.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 15.0,
+      "y": 9.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 15.0,
+      "y": 12.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 15.0,
+      "y": 15.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 15.0,
+      "y": 18.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 18.0,
+      "y": 0.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 18.0,
+      "y": 3.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 18.0,
+      "y": 15.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 18.0,
+      "y": 18.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 21.0,
+      "y": 0.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 21.0,
+      "y": 3.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 21.0,
+      "y": 15.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 21.0,
+      "y": 18.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 24.0,
+      "y": 0.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 24.0,
+      "y": 3.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 24.0,
+      "y": 6.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 24.0,
+      "y": 9.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 24.0,
+      "y": 12.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 24.0,
+      "y": 15.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 24.0,
+      "y": 18.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 33.0,
+      "y": 5.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 36.0,
+      "y": 5.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 39.0,
+      "y": 5.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 42.0,
+      "y": 5.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 33.0,
+      "y": 8.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 36.0,
+      "y": 8.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 39.0,
+      "y": 8.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 42.0,
+      "y": 8.5,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 54.0,
+      "y": 0.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 54.0,
+      "y": 3.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 54.0,
+      "y": 6.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 54.0,
+      "y": 9.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 54.0,
+      "y": 12.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 54.0,
+      "y": 15.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 54.0,
+      "y": 18.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
+    },
+    {
+      "x": 54.0,
+      "y": 21.0,
+      "width": 3.0,
+      "height": 3.0,
+      "src": "block.png"
     }
   ],
   "units": [
     {
       "team": "TEAM_1",
-      "x": 3.0,
+      "x": 5.0,
       "y": 3.0,
       "rotation": 0.0
     },
     {
       "team": "TEAM_2",
-      "x": 115.0,
-      "y": 62.0,
+      "x": 63.0,
+      "y": 4.0,
       "rotation": 0.0
     }
   ]

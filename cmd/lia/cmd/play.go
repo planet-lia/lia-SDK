@@ -26,10 +26,11 @@ if at least one of the bots is set to be in debug mode, the -debug.json config w
 			"replay":     analytics.ParseStringFlag(cmd, "replay"),
 			"config":     analytics.ParseStringFlag(cmd, "config"),
 			"debug":      analytics.ParseIntSliceFlagToString(cmd, "debug"),
+			"width": analytics.ParseStringFlag(cmd, "width"),
 		})
 
 		internal.UpdateIfTime(true)
-		internal.Play(args[0], args[1], &gameFlags, viewReplay)
+		internal.Play(args[0], args[1], &gameFlags, viewReplay, replayViewerWidth)
 	},
 }
 
@@ -45,4 +46,6 @@ func init() {
 	playCmd.Flags().StringVarP(&gameFlags.ConfigPath, "config", "c", "", "choose custom config")
 	playCmd.Flags().IntSliceVarP(&gameFlags.DebugBots, "debug", "d", []int{}, "specify which bots you want to run manually, "+
 		"Examples: -d 1,2 -- debug bot1 and bot2, -d 2 -- debug bot2)")
+	playCmd.Flags().StringVarP(&replayViewerWidth, "width", "w", "","choose width of replay window," +
+		" height will be calcualted automatically")
 }

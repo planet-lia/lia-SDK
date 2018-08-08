@@ -6,15 +6,27 @@ import (
 	"github.com/liagame/lia-cli"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"net/http"
-	"net/url"
+		"net/url"
 	"os"
+	"net/http"
+	"github.com/liagame/lia-cli/internal/config"
 )
 
-const propertyID = "UA-122844498-1"
 
 func isTrackingAllowed() bool {
 	return viper.GetBool("analyticsAllow")
+}
+
+func isTestingMode() bool {
+	return viper.Get("testing") == nil
+}
+
+func getPropertyId() string {
+	if isTestingMode() {
+		return config.PropertyID
+	} else {
+		return config.TestPropertyID
+	}
 }
 
 func Log(category string, action string, metadata map[string]string) {
@@ -24,7 +36,7 @@ func Log(category string, action string, metadata map[string]string) {
 
 	v := url.Values{
 		"v":   {"1"},
-		"tid": {propertyID},
+		"tid": {getPropertyId()},
 		"cid": {viper.GetString("TrackingId")},
 		"t":   {"event"},
 		"ec":  {category},
@@ -38,11 +50,7 @@ func Log(category string, action string, metadata map[string]string) {
 
 	v.Set("el", string(dataJson))
 
-	if viper.Get("testing") == nil {
-		http.PostForm("https://www.google-analytics.com/collect", v)
-	} else if viper.Get("testing") == false {
-		http.PostForm("https://www.google-analytics.com/collect", v)
-	}
+	http.PostForm("https://www.google-analytics.com/collect", v)
 
 }
 

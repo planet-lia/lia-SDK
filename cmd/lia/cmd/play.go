@@ -15,7 +15,7 @@ var playCmd = &cobra.Command{
 if at least one of the bots is set to be in debug mode, the -debug.json config will be used.`,
 	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		analytics.Log("command", "generate", map[string]string{
+		analytics.Log("command", "play", map[string]string{
 			"bot1Dir":    args[0],
 			"bot2Dir":    args[1],
 			"viewReplay": analytics.ParseBoolFlagToString(cmd, "viewReplay"),

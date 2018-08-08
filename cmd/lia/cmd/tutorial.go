@@ -21,8 +21,8 @@ var tutorialCmd = &cobra.Command{
 		analytics.Log("command", "tutorial", map[string]string{
 			"number": args[0],
 			"botDir": args[1],
-			"debug": analytics.ParseBoolFlagToString(cmd, "debug"),
-			"width": analytics.ParseStringFlag(cmd, "width"),
+			"debug":  analytics.ParseBoolFlagToString(cmd, "debug"),
+			"width":  analytics.ParseStringFlag(cmd, "width"),
 		})
 
 		internal.UpdateIfTime(true)
@@ -43,6 +43,6 @@ func init() {
 
 	tutorialCmd.Flags().BoolVarP(&debugMode, "debug", "d", false, "toggle if you want to manually run your bot (eg. "+
 		"through debug mode in IDE)")
-	tutorialCmd.Flags().StringVarP(&replayViewerWidth, "width", "w", "","choose width of replay window," +
+	tutorialCmd.Flags().StringVarP(&replayViewerWidth, "width", "w", "", "choose width of replay window,"+
 		" height will be calcualted automatically")
 }

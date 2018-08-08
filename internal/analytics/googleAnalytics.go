@@ -6,9 +6,9 @@ import (
 	"github.com/liagame/lia-cli"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-		"net/url"
-	"os"
 	"net/http"
+	"net/url"
+	"os"
 )
 
 const propertyID = "UA-122844498-1"

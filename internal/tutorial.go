@@ -6,8 +6,6 @@ import (
 	"strconv"
 )
 
-
-
 func Tutorial(tutorialNumber int, botDir string, debug bool, replayViewerWidth string) {
 
 	gameFlags := &GameFlags{

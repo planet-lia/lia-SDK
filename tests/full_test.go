@@ -12,6 +12,7 @@ import (
 	"strings"
 	"testing"
 )
+
 // Add custom replayViewerWidth for testing
 var replayViewerWidth string
 

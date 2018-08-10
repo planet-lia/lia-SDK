@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func Play(bot1Dir string, bot2Dir string, gameFlags *GameFlags, viewReplay bool) {
+func Play(bot1Dir string, bot2Dir string, gameFlags *GameFlags, viewReplay bool, replayViewerWidth string) {
 	Compile(bot1Dir)
 	if bot1Dir != bot2Dir {
 		Compile(bot2Dir)
@@ -20,7 +20,7 @@ func Play(bot1Dir string, bot2Dir string, gameFlags *GameFlags, viewReplay bool)
 	GenerateGame(bot1Dir, bot2Dir, gameFlags)
 
 	if viewReplay {
-		ShowReplayViewer(gameFlags.ReplayPath)
+		ShowReplayViewer(gameFlags.ReplayPath, replayViewerWidth)
 	}
 }
 

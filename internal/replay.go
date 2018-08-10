@@ -9,7 +9,7 @@ import (
 	"runtime"
 )
 
-func ShowReplayViewer(replayFile string) {
+func ShowReplayViewer(replayFile string, replayViewerWidth string) {
 	var args []string
 	if runtime.GOOS == "darwin" {
 		args = append(args, "-XstartOnFirstThread", "-Dorg.lwjgl.system.allocator=system")
@@ -18,7 +18,9 @@ func ShowReplayViewer(replayFile string) {
 	if replayFile != "" {
 		args = append(args, replayFile)
 	}
-
+	if replayViewerWidth != "" {
+		args = append(args, "-w", replayViewerWidth)
+	}
 	cmd := exec.Command("java", args...)
 	cmd.Dir = config.PathToData
 	cmd.Stdout = os.Stdout

@@ -15,6 +15,8 @@ const VERSION = "0.1.0"
 const ReleasesUrl = "https://github.com/liagame/lia-SDK/releases/latest"
 const SettingsFile = ".lia"
 const SettingsFileExtension = "json"
+const PropertyID = "UA-122844498-1" // Id of google analytics project
+const TestPropertyID = "UA-122844498-2"
 
 var Cfg *Config
 

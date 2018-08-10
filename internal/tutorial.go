@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func Tutorial(tutorialNumber int, botDir string, debug bool) {
+func Tutorial(tutorialNumber int, botDir string, debug bool, replayViewerWidth string) {
 
 	gameFlags := &GameFlags{
 		GameSeed:   0,
@@ -20,10 +20,10 @@ func Tutorial(tutorialNumber int, botDir string, debug bool) {
 
 	Compile(botDir)
 
-	tutorialBotDir := filepath.Join("lia", "tutorials", strconv.Itoa(tutorialNumber), "bot")
+	tutorialBotDir := filepath.Join("data", "tutorials", strconv.Itoa(tutorialNumber), "bot")
 	GenerateGame(botDir, tutorialBotDir, gameFlags)
 
-	ShowReplayViewer(gameFlags.ReplayPath)
+	ShowReplayViewer(gameFlags.ReplayPath, replayViewerWidth)
 }
 
 func getTutorialMap(tutorialNumber int) string {

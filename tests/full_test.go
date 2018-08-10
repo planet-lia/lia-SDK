@@ -13,6 +13,9 @@ import (
 	"testing"
 )
 
+// Add custom replayViewerWidth for testing
+var replayViewerWidth string
+
 func TestFull(t *testing.T) {
 	supportedLanguages := getSupportedLanguages()
 
@@ -36,7 +39,7 @@ func TestFull(t *testing.T) {
 				Port:       8887,
 				ReplayPath: pathToReplay,
 			}
-			internal.Play(botName, botName, gameFlags, false)
+			internal.Play(botName, botName, gameFlags, false, replayViewerWidth)
 
 			// Check if replay was created and is not empty
 			fi, err := os.Stat(pathToReplay)

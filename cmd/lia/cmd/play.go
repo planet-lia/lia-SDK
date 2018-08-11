@@ -15,9 +15,12 @@ var playCmd = &cobra.Command{
 if at least one of the bots is set to be in debug mode, the -debug.json config will be used.`,
 	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
+		bot1Dir := args[0]
+		bot2Dir := args[1]
+
 		analytics.Log("command", "play", map[string]string{
-			"bot1Dir":    args[0],
-			"bot2Dir":    args[1],
+			"bot1Dir":    bot1Dir,
+			"bot2Dir":    bot2Dir,
 			"viewReplay": analytics.ParseBoolFlagToString(cmd, "viewReplay"),
 			"gseed":      analytics.ParseIntFlagToString(cmd, "gseed"),
 			"mseed":      analytics.ParseIntFlagToString(cmd, "mseed"),
@@ -30,7 +33,7 @@ if at least one of the bots is set to be in debug mode, the -debug.json config w
 		})
 
 		internal.UpdateIfTime(true)
-		internal.Play(args[0], args[1], &gameFlags, viewReplay, replayViewerWidth)
+		internal.Play(bot1Dir, bot2Dir, &gameFlags, viewReplay, replayViewerWidth)
 	},
 }
 

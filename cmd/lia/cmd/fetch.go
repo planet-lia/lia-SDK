@@ -16,16 +16,17 @@ var fetchCmd = &cobra.Command{
 the argument is provided.`,
 	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
+		url := args[0]
+		name := args[1]
+
 		analytics.Log("command", "fetch", map[string]string{
-			"url":  args[0],
-			"name": args[1],
+			"url":  url,
+			"name": name,
 			"dir":  fmt.Sprint(cmd.Flags().GetString("dir")),
 		})
 
 		internal.UpdateIfTime(true)
 
-		url := args[0]
-		name := args[1]
 		internal.FetchBot(url, name, customBotDir)
 	},
 }

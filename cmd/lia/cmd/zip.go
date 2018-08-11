@@ -12,12 +12,14 @@ var zipCmd = &cobra.Command{
 	Long:  `Verifies, compiles and zips the bot in botDir. Final zip can be uploaded to the website.`,
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		botDir := args[0]
+
 		analytics.Log("command", "zip", map[string]string{
-			"botDir": args[0],
+			"botDir": botDir,
 		})
 
 		internal.UpdateIfTime(true)
-		internal.Zip(args[0])
+		internal.Zip(botDir)
 	},
 }
 

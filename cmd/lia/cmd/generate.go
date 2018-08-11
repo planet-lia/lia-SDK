@@ -9,16 +9,17 @@ import (
 var gameFlags = internal.GameFlags{}
 
 var generateCmd = &cobra.Command{
-	Use:   "generate <bot1Dir> <id1> <bot2Dir> <id2>",
+	Use:   "generate <bot1Dir> <bot2Dir>",
 	Short: "Generates a game",
 	Long:  `Generates a game. This is a low level command.`,
 	Args:  cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
+		bot1Dir := args[0]
+		bot2Dir := args[1]
+
 		analytics.Log("command", "generate", map[string]string{
-			"bot1Dir":    args[0],
-			"id1":        args[1],
-			"bot2Dir":    args[2],
-			"id2":        args[3],
+			"bot1Dir":    bot1Dir,
+			"bot2Dir":    bot2Dir,
 			"viewReplay": analytics.ParseBoolFlagToString(cmd, "viewReplay"),
 			"gseed":      analytics.ParseIntFlagToString(cmd, "gseed"),
 			"mseed":      analytics.ParseIntFlagToString(cmd, "mseed"),
@@ -30,7 +31,7 @@ var generateCmd = &cobra.Command{
 		})
 
 		internal.UpdateIfTime(true)
-		internal.GenerateGame(args[0], args[1], &gameFlags)
+		internal.GenerateGame(bot1Dir, bot2Dir, &gameFlags)
 	},
 }
 

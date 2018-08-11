@@ -12,12 +12,14 @@ var verifyCmd = &cobra.Command{
 	Long:  `Verifies if the content in bot-dir is valid.`,
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		botDir := args[0]
+
 		analytics.Log("command", "verify", map[string]string{
-			"botDir": args[0],
+			"botDir": botDir,
 		})
 
 		internal.UpdateIfTime(true)
-		internal.GetBotLanguage(args[0])
+		internal.GetBotLanguage(botDir)
 	},
 }
 

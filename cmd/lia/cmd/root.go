@@ -47,6 +47,10 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+	cobra.MousetrapHelpText = `This is a command line tool.
+
+You need to open GitBash and run commands from there (eg. "./lia help").
+`
 
 	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", false, "show tools version")
 

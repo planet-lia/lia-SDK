@@ -11,7 +11,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -116,7 +115,7 @@ func GenerateGame(bot1Dir string, bot2Dir string, gameFlags *GameFlags) {
 }
 
 func parseBotName(botDir string) string {
-	if runtime.GOOS == "windows" {
+	if config.OperatingSystem == "windows" {
 		split := strings.Split(botDir, "\\")
 		return split[len(split)-1]
 	} else {
@@ -164,7 +163,7 @@ func runBot(cmdRef *CommandRef, name, uid string, port int) error {
 	botDir := filepath.Join(config.PathToBots, name)
 
 	var cmd *exec.Cmd
-	if runtime.GOOS == "windows" {
+	if config.OperatingSystem == "windows" {
 		cmd = exec.Command(config.Cfg.PathToBash, runScriptName, strconv.Itoa(port), uid)
 	} else {
 		cmd = exec.Command("/bin/bash", runScriptName, strconv.Itoa(port), uid)

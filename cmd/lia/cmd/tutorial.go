@@ -23,7 +23,7 @@ var tutorialCmd = &cobra.Command{
 
 		analytics.Log("command", "tutorial", map[string]string{
 			"numberStr": numberStr,
-			"botDir": botDir,
+			"botDir": analytics.TrimPath(botDir),
 			"debug":  analytics.ParseBoolFlagToString(cmd, "debug"),
 			"width":  analytics.ParseStringFlag(cmd, "width"),
 		})

@@ -15,7 +15,7 @@ var zipCmd = &cobra.Command{
 		botDir := args[0]
 
 		analytics.Log("command", "zip", map[string]string{
-			"botDir": botDir,
+			"botDir": analytics.TrimPath(botDir),
 		})
 
 		internal.UpdateIfTime(true)

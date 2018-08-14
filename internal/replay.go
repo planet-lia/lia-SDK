@@ -6,12 +6,11 @@ import (
 	"github.com/liagame/lia-cli/internal/config"
 	"os"
 	"os/exec"
-	"runtime"
 )
 
 func ShowReplayViewer(replayFile string, replayViewerWidth string) {
 	var args []string
-	if runtime.GOOS == "darwin" {
+	if config.OperatingSystem == "darwin" {
 		args = append(args, "-XstartOnFirstThread", "-Dorg.lwjgl.system.allocator=system")
 	}
 	args = append(args, "-jar", "replay-viewer.jar")

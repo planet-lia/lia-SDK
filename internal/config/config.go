@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"runtime"
 )
 
 const VERSION = "0.1.0"
@@ -17,6 +18,8 @@ const SettingsFile = ".lia"
 const SettingsFileExtension = "json"
 const PropertyID = "UA-122844498-1" // Id of google analytics project
 const TestPropertyID = "UA-122844498-2"
+
+var OperatingSystem = runtime.GOOS
 
 var Cfg *Config
 

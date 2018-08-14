@@ -15,7 +15,7 @@ var verifyCmd = &cobra.Command{
 		botDir := args[0]
 
 		analytics.Log("command", "verify", map[string]string{
-			"botDir": botDir,
+			"botDir": analytics.TrimPath(botDir),
 		})
 
 		internal.UpdateIfTime(true)

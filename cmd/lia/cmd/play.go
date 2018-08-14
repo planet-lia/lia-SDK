@@ -19,15 +19,15 @@ if at least one of the bots is set to be in debug mode, the -debug.json config w
 		bot2Dir := args[1]
 
 		analytics.Log("command", "play", map[string]string{
-			"bot1Dir":    bot1Dir,
-			"bot2Dir":    bot2Dir,
+			"bot1Dir":    analytics.TrimPath(bot1Dir),
+			"bot2Dir":    analytics.TrimPath(bot2Dir),
 			"viewReplay": analytics.ParseBoolFlagToString(cmd, "viewReplay"),
 			"gseed":      analytics.ParseIntFlagToString(cmd, "gseed"),
 			"mseed":      analytics.ParseIntFlagToString(cmd, "mseed"),
 			"port":       analytics.ParseIntFlagToString(cmd, "port"),
-			"map":        analytics.ParseStringFlag(cmd, "map"),
-			"replay":     analytics.ParseStringFlag(cmd, "replay"),
-			"config":     analytics.ParseStringFlag(cmd, "config"),
+			"map":        analytics.TrimPath(analytics.ParseStringFlag(cmd, "map")),
+			"replay":     analytics.TrimPath(analytics.ParseStringFlag(cmd, "replay")),
+			"config":     analytics.TrimPath(analytics.ParseStringFlag(cmd, "config")),
 			"debug":      analytics.ParseIntSliceFlagToString(cmd, "debug"),
 			"width":      analytics.ParseStringFlag(cmd, "width"),
 		})

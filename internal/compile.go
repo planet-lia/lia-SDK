@@ -9,7 +9,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"runtime"
 )
 
 func Compile(botDir string) {
@@ -38,14 +37,14 @@ func Compile(botDir string) {
 
 func prepareBot(botDir string, lang *config.Language) error {
 	prepareScript := lang.PrepareUnix
-	if runtime.GOOS == "windows" {
+	if config.OperatingSystem == "windows" {
 		prepareScript = lang.PrepareWindows
 	}
 
 	pathToLanguages := filepath.Join(config.PathToData, "languages")
 
 	var cmd *exec.Cmd
-	if runtime.GOOS == "windows" {
+	if config.OperatingSystem == "windows" {
 		cmd = exec.Command(config.Cfg.PathToBash, prepareScript, botDir)
 	} else {
 		cmd = exec.Command("/bin/bash", prepareScript, botDir)
@@ -63,7 +62,7 @@ func prepareBot(botDir string, lang *config.Language) error {
 
 func copyRunScript(botDir string, lang *config.Language) error {
 	runScript := lang.RunUnix
-	if runtime.GOOS == "windows" {
+	if config.OperatingSystem == "windows" {
 		runScript = lang.RunWindows
 	}
 	globalRunScriptPath := filepath.Join(config.PathToData, "languages", runScript)

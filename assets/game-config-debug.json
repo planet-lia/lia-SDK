@@ -8,21 +8,21 @@
   "bots": {
     "initResponseTimeout": 1000000,
     "tickResponseTimeout": 1000000,
-    "ticksPerRequest": 5,
+    "ticksPerRequest": 3,
     "maxFailedResponses": 1000000,
     "initialConnectionTimeout": 1000000
   },
   "gameDetails": {
     "mapWidth": 144,
     "mapHeight": 81,
-    "gameDuration": 100,
+    "gameDuration": 500,
     "background": {
       "r": 0.2,
       "g": 0.2,
       "b": 0.2,
       "a": 1.0
     },
-    "unitsPerTeam": 1,
+    "unitsPerTeam": 16,
     "teamKill": true,
     "mapType": -1
   },

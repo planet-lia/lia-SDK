@@ -15,7 +15,7 @@ Available Commands:
   play        Compiles and generates a game between bot1 and bot2
   replay      Runs a replay viewer
   settings    Views the user's settings
-  tutorial    Runs tutorial specified by number with chosen bot
+  playground  Runs playground specified by number with chosen bot
   update      Updates Lia development tools
   verify      Verifies if the content in bot-dir is valid
   zip         Verifies, compiles and zips the bot in botDir

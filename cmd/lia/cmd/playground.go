@@ -12,17 +12,18 @@ import (
 
 var debugMode bool
 
-var tutorialCmd = &cobra.Command{
-	Use:   "tutorial <number> <botDir>",
-	Short: "Runs tutorial specified by number with chosen bot",
-	Long:  `Runs tutorial specified by number with chosen bot.`,
+var playgroundCmd = &cobra.Command{
+	Use:   "playground <number> <botDir>",
+	Short: "Runs playground specified by number with chosen bot",
+	Long:  `Runs playground specified by number with chosen bot. Number 1 represent a 1v1 battle and 
+number 2 and 3 uses in house Lia bots as opponents in a normal match.`,
 	Args:  cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		numberStr := args[0]
 		botDir := args[1]
 
-		analytics.Log("command", "tutorial", map[string]string{
-			"numberStr": numberStr,
+		analytics.Log("command", "playground", map[string]string{
+			"number": numberStr,
 			"botDir": analytics.TrimPath(botDir),
 			"debug":  analytics.ParseBoolFlagToString(cmd, "debug"),
 			"width":  analytics.ParseStringFlag(cmd, "width"),
@@ -36,15 +37,15 @@ var tutorialCmd = &cobra.Command{
 			os.Exit(lia_cli.Generic)
 		}
 
-		internal.Tutorial(number, botDir, debugMode, replayViewerWidth)
+		internal.Playground(number, botDir, debugMode, true, replayViewerWidth)
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(tutorialCmd)
+	rootCmd.AddCommand(playgroundCmd)
 
-	tutorialCmd.Flags().BoolVarP(&debugMode, "debug", "d", false, "toggle if you want to manually run your bot (eg. "+
+	playgroundCmd.Flags().BoolVarP(&debugMode, "debug", "d", false, "toggle if you want to manually run your bot (eg. "+
 		"through debug mode in IDE)")
-	tutorialCmd.Flags().StringVarP(&replayViewerWidth, "width", "w", "", "choose width of replay window,"+
+	playgroundCmd.Flags().StringVarP(&replayViewerWidth, "width", "w", "", "choose width of replay window,"+
 		" height will be calculated automatically")
 }

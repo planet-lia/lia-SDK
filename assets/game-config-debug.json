@@ -15,7 +15,7 @@
   "gameDetails": {
     "mapWidth": 144,
     "mapHeight": 81,
-    "gameDuration": 500,
+    "gameDuration": 250,
     "background": {
       "r": 0.2,
       "g": 0.2,

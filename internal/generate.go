@@ -92,8 +92,8 @@ func GenerateGame(bot1Dir string, bot2Dir string, gameFlags *GameFlags) {
 	}
 
 	// Attempt to kill the process to prevent daemons
-	killProcess(cmdBot1, fmt.Sprintf("failed to kill bot %s\n", bot1Dir))
-	killProcess(cmdBot2, fmt.Sprintf("failed to kill bot %s\n", bot2Dir))
+	killProcess(cmdBot1)
+	killProcess(cmdBot2)
 
 	// Wait for outputs to appear on the console (nicer way to fix this?)
 	time.Sleep(time.Millisecond * 100)
@@ -130,10 +130,10 @@ func getBotUid(debug bool) string {
 	return uid
 }
 
-func killProcess(cmdRef *CommandRef, errorMsg string) {
+func killProcess(cmdRef *CommandRef) {
 	if cmdRef.cmd != nil {
 		if err := cmdRef.cmd.Process.Kill(); err != nil {
-			fmt.Fprintf(os.Stderr, "%s %s", errorMsg, err)
+			// Ignore, no valuable information
 		}
 	}
 }

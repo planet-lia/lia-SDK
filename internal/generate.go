@@ -73,7 +73,7 @@ func GenerateGame(bot1Dir string, bot2Dir string, gameFlags *GameFlags) {
 		fmt.Printf("Running bot %s\n", botDir)
 		err := runBot(cmdBot, botDir, botUid, gameFlags.Port)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "running bot %s failed\n %s\n", botDir, err)
+			fmt.Fprintf(os.Stderr, "%s\n", err)
 		}
 		cmdBot.cmd = nil
 	}

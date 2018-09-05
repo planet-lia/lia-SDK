@@ -68,45 +68,30 @@ func GenerateGame(bot1Dir string, bot2Dir string, gameFlags *GameFlags) {
 	// Wait until game generator has started
 	<-generatorStarted
 
-	// Run bot 1
-	if !bot1Debug {
-		go func() {
-			fmt.Printf("Running bot %s\n", bot1Dir)
-			err := runBot(cmdBot1, bot1Dir, uidBot1, gameFlags.Port)
-			cmdBot1.cmd = nil
-			result <- err
-		}()
-	}
-
-	// Run bot 2
-	if !bot2Debug {
-		go func() {
-			fmt.Printf("Running bot %s\n", bot2Dir)
-			err := runBot(cmdBot2, bot2Dir, uidBot2, gameFlags.Port)
-			cmdBot2.cmd = nil
-			result <- err
-		}()
-	}
-
-	// Wait for all routines to finish
-	nGoRoutines := 3
-	if bot1Debug {
-		nGoRoutines--
-	}
-	if bot2Debug {
-		nGoRoutines--
-	}
-	for i := 0; i < nGoRoutines; i++ {
-		err := <-result
+	// Run bots
+	runBotWrapper := func(cmdBot *CommandRef, botDir, botUid string) {
+		fmt.Printf("Running bot %s\n", botDir)
+		err := runBot(cmdBot, botDir, botUid, gameFlags.Port)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "failed to generate game\n %s\n", err)
-			defer os.Exit(lia_cli.FailedToGenerateGame)
-			break
+			fmt.Fprintf(os.Stderr, "running bot %s failed\n %s\n", botDir, err)
 		}
+		cmdBot.cmd = nil
+	}
+	if !bot1Debug {
+		go runBotWrapper(cmdBot1, bot1Dir, uidBot1)
+	}
+	if !bot2Debug {
+		go runBotWrapper(cmdBot2, bot2Dir, uidBot2)
+	}
+
+	// Wait for game engine to finish
+	err := <-result
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to generate game\n %s\n", err)
+		defer os.Exit(lia_cli.FailedToGenerateGame)
 	}
 
 	// Attempt to kill the process to prevent daemons
-	killProcess(cmdGameGenerator, fmt.Sprintf("failed to kill game generator\n"))
 	killProcess(cmdBot1, fmt.Sprintf("failed to kill bot %s\n", bot1Dir))
 	killProcess(cmdBot2, fmt.Sprintf("failed to kill bot %s\n", bot2Dir))
 

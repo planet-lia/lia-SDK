@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd $1
+cd "$1"
 pip3 install virtualenv
 if ! [[ -d "env" ]]; then
 	python -m venv venv

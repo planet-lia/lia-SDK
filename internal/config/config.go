@@ -3,7 +3,7 @@ package config
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/liagame/lia-cli"
+	"github.com/liagame/lia-SDK"
 	"github.com/palantir/stacktrace"
 	"io/ioutil"
 	"os"
@@ -64,7 +64,7 @@ func Setup() {
 			ex, err := os.Executable()
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "failed to get executable location\n %s", err)
-				os.Exit(lia_cli.FailedToGetEnvironment)
+				os.Exit(lia_SDK.FailedToGetEnvironment)
 			}
 			PathToBots = filepath.Dir(ex)
 		}
@@ -74,7 +74,7 @@ func Setup() {
 
 		if err := SetConfig(pathToCfg); err != nil {
 			fmt.Fprintf(os.Stderr, "couldn't get config\n %s", err)
-			os.Exit(lia_cli.FailedToReadConfig)
+			os.Exit(lia_SDK.FailedToReadConfig)
 		}
 	}
 }

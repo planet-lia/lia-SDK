@@ -3,7 +3,7 @@ package settings
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/liagame/lia-cli/internal/config"
+	"github.com/liagame/lia-SDK/internal/config"
 	"github.com/mitchellh/go-homedir"
 	"github.com/palantir/stacktrace"
 	"github.com/satori/go.uuid"

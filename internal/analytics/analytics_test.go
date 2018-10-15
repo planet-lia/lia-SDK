@@ -2,7 +2,7 @@ package analytics
 
 import (
 	"testing"
-	"github.com/liagame/lia-cli/internal/config"
+	"github.com/liagame/lia-SDK/internal/config"
 )
 
 func TestAnalytics(t *testing.T) {

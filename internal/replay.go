@@ -2,8 +2,8 @@ package internal
 
 import (
 	"fmt"
-	"github.com/liagame/lia-cli"
-	"github.com/liagame/lia-cli/internal/config"
+	"github.com/liagame/lia-SDK"
+	"github.com/liagame/lia-SDK/internal/config"
 	"os"
 	"os/exec"
 )
@@ -27,6 +27,6 @@ func ShowReplayViewer(replayFile string, replayViewerWidth string) {
 
 	if err := cmd.Run(); err != nil {
 		fmt.Fprintf(os.Stderr, "couldn't run replay: %s\n", err)
-		os.Exit(lia_cli.ReplayViewerFailed)
+		os.Exit(lia_SDK.ReplayViewerFailed)
 	}
 }

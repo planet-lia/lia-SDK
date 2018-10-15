@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/liagame/lia-cli/cmd/lia/cmd"
-	"github.com/liagame/lia-cli/internal/config"
+	"github.com/liagame/lia-SDK/cmd/lia/cmd"
+	"github.com/liagame/lia-SDK/internal/config"
 )
 
 func main() {

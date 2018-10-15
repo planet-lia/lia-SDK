@@ -3,12 +3,12 @@ package analytics
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/liagame/lia-cli"
+	"github.com/liagame/lia-SDK"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 		"net/url"
 	"net/http"
-	"github.com/liagame/lia-cli/internal/config"
+	"github.com/liagame/lia-SDK/internal/config"
 	"strings"
 	"os"
 )
@@ -46,7 +46,7 @@ func Log(category string, action string, metadata map[string]string) {
 	}
 	dataJson, err := json.Marshal(metadata)
 	if err != nil {
-		os.Exit(lia_cli.PreparingAnalyticsDataFailed)
+		os.Exit(lia_SDK.PreparingAnalyticsDataFailed)
 	}
 
 	v.Set("el", string(dataJson))
@@ -58,7 +58,7 @@ func Log(category string, action string, metadata map[string]string) {
 func ParseStringFlag(cmd *cobra.Command, name string) string {
 	value, err := cmd.Flags().GetString(name)
 	if err != nil {
-		os.Exit(lia_cli.PreparingAnalyticsDataFailed)
+		os.Exit(lia_SDK.PreparingAnalyticsDataFailed)
 	}
 	return value
 }
@@ -66,7 +66,7 @@ func ParseStringFlag(cmd *cobra.Command, name string) string {
 func ParseIntFlagToString(cmd *cobra.Command, name string) string {
 	value, err := cmd.Flags().GetInt(name)
 	if err != nil {
-		os.Exit(lia_cli.PreparingAnalyticsDataFailed)
+		os.Exit(lia_SDK.PreparingAnalyticsDataFailed)
 	}
 	return fmt.Sprint(value)
 }
@@ -74,7 +74,7 @@ func ParseIntFlagToString(cmd *cobra.Command, name string) string {
 func ParseBoolFlagToString(cmd *cobra.Command, name string) string {
 	value, err := cmd.Flags().GetBool(name)
 	if err != nil {
-		os.Exit(lia_cli.PreparingAnalyticsDataFailed)
+		os.Exit(lia_SDK.PreparingAnalyticsDataFailed)
 	}
 	return fmt.Sprint(value)
 }
@@ -82,7 +82,7 @@ func ParseBoolFlagToString(cmd *cobra.Command, name string) string {
 func ParseIntSliceFlagToString(cmd *cobra.Command, name string) string {
 	value, err := cmd.Flags().GetIntSlice(name)
 	if err != nil {
-		os.Exit(lia_cli.PreparingAnalyticsDataFailed)
+		os.Exit(lia_SDK.PreparingAnalyticsDataFailed)
 	}
 	return fmt.Sprint(value)
 }

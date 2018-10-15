@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/fatih/color"
-	"github.com/liagame/lia-cli"
-	"github.com/liagame/lia-cli/internal/config"
+	"github.com/liagame/lia-SDK"
+	"github.com/liagame/lia-SDK/internal/config"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -44,7 +44,7 @@ func shouldCheckForUpdate() bool {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "\nCan't get local release version. Error: %s\n", err)
 		printLinkToDownloads()
-		os.Exit(lia_cli.FailedToReadReleaseFile)
+		os.Exit(lia_SDK.FailedToReadReleaseFile)
 	}
 
 	return timeToCheck
@@ -54,7 +54,7 @@ func updateLastCheckedField() {
 	releaseCfg, err := getLocalReleaseConfig()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to get release config. %s", err)
-		os.Exit(lia_cli.FailedToReadReleaseFile)
+		os.Exit(lia_SDK.FailedToReadReleaseFile)
 	}
 
 	releaseCfg.LastChecked = time.Now().Format(time.RFC3339)
@@ -63,13 +63,13 @@ func updateLastCheckedField() {
 	data, err := json.Marshal(releaseCfg)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to marshal release. %s", err)
-		os.Exit(lia_cli.Generic)
+		os.Exit(lia_SDK.Generic)
 	}
 
 	err = ioutil.WriteFile(path, data, 0644)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to write release data to file. %s", err)
-		os.Exit(lia_cli.Generic)
+		os.Exit(lia_SDK.Generic)
 	}
 }
 
@@ -133,7 +133,7 @@ func getLatestReleaseTag() string {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "faied to create request. %s\n", err)
-		os.Exit(lia_cli.Generic)
+		os.Exit(lia_SDK.Generic)
 	}
 	req.Header.Add("Accept", "application/json")
 
@@ -146,26 +146,26 @@ func getLatestReleaseTag() string {
 
 	if res.StatusCode != 200 {
 		fmt.Fprintf(os.Stderr, "faied to get latest release. Status: %s\n", res.Status)
-		os.Exit(lia_cli.FailedToGetLatestRelease)
+		os.Exit(lia_SDK.FailedToGetLatestRelease)
 	}
 
 	// Convert body to bytes
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to read response body. %s\n", err)
-		os.Exit(lia_cli.FailedToGetLatestRelease)
+		os.Exit(lia_SDK.FailedToGetLatestRelease)
 	}
 
 	// Get tag
 	var objmap map[string]*json.RawMessage
 	if err := json.Unmarshal(body, &objmap); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to convert response body to json. %s\n", err)
-		os.Exit(lia_cli.FailedToGetLatestRelease)
+		os.Exit(lia_SDK.FailedToGetLatestRelease)
 	}
 	var tag string
 	if err := json.Unmarshal(*objmap["tag_name"], &tag); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to unmarshal tag_name field. %s\n", err)
-		os.Exit(lia_cli.FailedToGetLatestRelease)
+		os.Exit(lia_SDK.FailedToGetLatestRelease)
 	}
 
 	return tag

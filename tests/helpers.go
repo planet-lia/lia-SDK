@@ -3,8 +3,8 @@ package tests
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/liagame/lia-cli/internal/config"
-	"github.com/liagame/lia-cli/pkg/advancedcopy"
+	"github.com/liagame/lia-SDK/internal/config"
+	"github.com/liagame/lia-SDK/pkg/advancedcopy"
 	"io"
 	"io/ioutil"
 	"os"

@@ -2,9 +2,9 @@ package internal
 
 import (
 	"fmt"
-	"github.com/liagame/lia-cli"
-	"github.com/liagame/lia-cli/internal/config"
-	"github.com/liagame/lia-cli/pkg/advancedcopy"
+	"github.com/liagame/lia-SDK"
+	"github.com/liagame/lia-SDK/internal/config"
+	"github.com/liagame/lia-SDK/pkg/advancedcopy"
 	"github.com/palantir/stacktrace"
 	"os"
 	"os/exec"
@@ -23,13 +23,13 @@ func Compile(botDir string) {
 	fmt.Println("Preparing bot...")
 	if err := prepareBot(botDirAbsPath, lang); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to run prepare bot script for bot %s and lang %s. %s\n", botDirAbsPath, lang.Name, err)
-		os.Exit(lia_cli.PreparingBotFailed)
+		os.Exit(lia_SDK.PreparingBotFailed)
 	}
 
 	// Copy run script into bot dir
 	if err := copyRunScript(botDirAbsPath, lang); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to create run script for bot %s. %s\n", botDirAbsPath, err)
-		os.Exit(lia_cli.CopyingRunScriptFailed)
+		os.Exit(lia_SDK.CopyingRunScriptFailed)
 	}
 
 	fmt.Println("Completed.")

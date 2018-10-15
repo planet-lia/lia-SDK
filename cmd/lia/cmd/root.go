@@ -4,10 +4,10 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/fatih/color"
-	"github.com/liagame/lia-cli"
-	"github.com/liagame/lia-cli/internal"
-	"github.com/liagame/lia-cli/internal/config"
-	"github.com/liagame/lia-cli/internal/settings"
+	"github.com/liagame/lia-SDK"
+	"github.com/liagame/lia-SDK/internal"
+	"github.com/liagame/lia-SDK/internal/config"
+	"github.com/liagame/lia-SDK/internal/settings"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -41,7 +41,7 @@ var rootCmd = &cobra.Command{
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
-		os.Exit(lia_cli.Generic)
+		os.Exit(lia_SDK.Generic)
 	}
 }
 
@@ -70,7 +70,7 @@ func initConfig() {
 		home, err := homedir.Dir()
 		if err != nil {
 			fmt.Println(err)
-			os.Exit(lia_cli.LiaSettingsFailure)
+			os.Exit(lia_SDK.LiaSettingsFailure)
 			return
 		}
 
@@ -91,14 +91,14 @@ func initConfig() {
 		fmt.Println("Creating new settings file.")
 		if err := settings.Create(); err != nil {
 			fmt.Printf("Failed to create lia settings file. Error: %v\n", err)
-			os.Exit(lia_cli.LiaSettingsFailure)
+			os.Exit(lia_SDK.LiaSettingsFailure)
 			return
 		}
 
 		// Successfully created new settings file
 		if err := viper.ReadInConfig(); err != nil {
 			fmt.Printf("Failed to read from newly created settings file. Error: %v\n", err)
-			os.Exit(lia_cli.LiaSettingsFailure)
+			os.Exit(lia_SDK.LiaSettingsFailure)
 			return
 		}
 	}

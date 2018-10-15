@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/liagame/lia-cli"
-	"github.com/liagame/lia-cli/internal"
-	"github.com/liagame/lia-cli/internal/analytics"
+	"github.com/liagame/lia-SDK"
+	"github.com/liagame/lia-SDK/internal"
+	"github.com/liagame/lia-SDK/internal/analytics"
 	"github.com/spf13/cobra"
 	"os"
 	"strconv"
@@ -34,7 +34,7 @@ number 2 and 3 uses in house Lia bots as opponents in a normal match.`,
 		number, err := strconv.Atoi(numberStr)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "failed to convert %s to number.\n %s\n", numberStr, err)
-			os.Exit(lia_cli.Generic)
+			os.Exit(lia_SDK.Generic)
 		}
 
 		internal.Playground(number, botDir, debugMode, true, replayViewerWidth)

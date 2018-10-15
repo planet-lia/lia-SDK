@@ -1,4 +1,4 @@
-package lia_cli
+package lia_SDK
 
 const (
 	OK                           = 0

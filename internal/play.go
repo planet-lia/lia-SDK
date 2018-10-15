@@ -1,7 +1,7 @@
 package internal
 
 import (
-	"github.com/liagame/lia-cli/internal/config"
+	"github.com/liagame/lia-SDK/internal/config"
 	"os"
 	"path/filepath"
 	"time"

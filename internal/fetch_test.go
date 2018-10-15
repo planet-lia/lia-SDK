@@ -1,10 +1,10 @@
 package internal_test
 
 import (
-	"github.com/liagame/lia-cli"
-	"github.com/liagame/lia-cli/internal"
-	"github.com/liagame/lia-cli/internal/config"
-	"github.com/liagame/lia-cli/tests"
+	"github.com/liagame/lia-SDK"
+	"github.com/liagame/lia-SDK/internal"
+	"github.com/liagame/lia-SDK/internal/config"
+	"github.com/liagame/lia-SDK/tests"
 	"io/ioutil"
 	"os"
 	"strconv"
@@ -23,28 +23,28 @@ func TestCmdFetch(t *testing.T) {
 			url:             "https://github.com/liagame/java-bot/archive/master.zip",
 			name:            "birko",
 			hasCustomBotDir: false,
-			exitStatus:      lia_cli.OK,
+			exitStatus:      lia_SDK.OK,
 			desc:            "downloading bot birko and put it into working dir",
 		},
 		{
 			url:             "https://github.com/liagame",
 			name:            "birko",
 			hasCustomBotDir: false,
-			exitStatus:      lia_cli.BotDownloadFailed,
+			exitStatus:      lia_SDK.BotDownloadFailed,
 			desc:            "try to download non zip file",
 		},
 		{
 			url:             "https://github.com/liagame.zip",
 			name:            "birko",
 			hasCustomBotDir: false,
-			exitStatus:      lia_cli.BotDownloadFailed,
+			exitStatus:      lia_SDK.BotDownloadFailed,
 			desc:            "try to download bot from non existent file",
 		},
 		{
 			url:             "https://github.com/liagame/java-bot/archive/master.zip",
 			name:            "birko",
 			hasCustomBotDir: true,
-			exitStatus:      lia_cli.OK,
+			exitStatus:      lia_SDK.OK,
 			desc:            "download bot mirko and put it into custom bot Dir",
 		},
 	}

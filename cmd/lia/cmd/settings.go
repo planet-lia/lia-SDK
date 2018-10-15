@@ -2,10 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/liagame/lia-cli/internal"
-	"github.com/liagame/lia-cli/internal/analytics"
-	"github.com/liagame/lia-cli/internal/config"
-	"github.com/liagame/lia-cli/internal/settings"
+	"github.com/liagame/lia-SDK/internal"
+	"github.com/liagame/lia-SDK/internal/analytics"
+	"github.com/liagame/lia-SDK/internal/config"
+	"github.com/liagame/lia-SDK/internal/settings"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

@@ -2,9 +2,9 @@ package tests
 
 import (
 	"fmt"
-	"github.com/liagame/lia-cli"
-	"github.com/liagame/lia-cli/internal"
-	"github.com/liagame/lia-cli/internal/config"
+	"github.com/liagame/lia-SDK"
+	"github.com/liagame/lia-SDK/internal"
+	"github.com/liagame/lia-SDK/internal/config"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -58,10 +58,10 @@ func TestFull(t *testing.T) {
 	for i, lang := range supportedLanguages {
 		fmt.Printf("testing language %s...\n", lang)
 		output, exitStatus := GetCmdStatus("TestFull", i, true)
-		if exitStatus != lia_cli.OK {
+		if exitStatus != lia_SDK.OK {
 			t.Logf("full test for language %s failed\n", lang)
 			t.Logf("%s", output)
-			t.Fatalf("exit status is %v but should be %v", exitStatus, lia_cli.OK)
+			t.Fatalf("exit status is %v but should be %v", exitStatus, lia_SDK.OK)
 		}
 	}
 }

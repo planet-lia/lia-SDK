@@ -28,17 +28,28 @@ func Playground(playgroundNumber int, botDir string, debug bool, viewReplay bool
 	GenerateGame(botDir, playgroundBotDir, gameFlags)
 
 	// Reads the replay file
-	in, _ := ioutil.ReadFile(gameFlags.ReplayPath)
+	in, err := ioutil.ReadFile(gameFlags.ReplayPath)
+	if err != nil {
+		t.Errorf("Failed when reading replay file: %s", err)
+	}
 
 	// Parses the replay file and outputs replayData
-	replayData, _ := x_vendor.GetReplayData(bytes.NewReader(in))
-
-	//If the user wins send data to google analytics
-	if replayData.GamerWinner == x_vendor.BOT_1 {
-		analytics.Log("playground", "win", map[string]string{
-			"playgroundNumber" : strconv.Itoa(playgroundNumber),
-		})
+	replayData, err := x_vendor.GetReplayData(bytes.NewReader(in))
+	if err != nil {
+		t.Errorf("Failed to parse replay file: %s", err)
 	}
+
+	//Check which bot won
+	var win bool = false
+	if replayData.GamerWinner == x_vendor.BOT_1 {
+		win = true;
+	}
+	//Push to analytics
+	analytics.Log("playground", "win", map[string]string{
+		"win": strconv.FormatBool(win),
+		"playgroundNumber" : strconv.Itoa(playgroundNumber),
+	})
+
 
 	if viewReplay {
 		ShowReplayViewer(gameFlags.ReplayPath, replayViewerWidth)

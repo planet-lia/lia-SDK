@@ -11,7 +11,7 @@ import (
 	"github.com/liagame/lia-SDK/internal/config"
 	"strings"
 	"os"
-)
+	)
 
 
 func isTrackingAllowed() bool {

@@ -27,26 +27,27 @@ func Playground(playgroundNumber int, botDir string, debug bool, viewReplay bool
 	playgroundBotDir := filepath.Join("data", "playgrounds", strconv.Itoa(playgroundNumber), "bot")
 	GenerateGame(botDir, playgroundBotDir, gameFlags)
 
+	//Define win, where true means that player won and false means that BOT won, undefined means an error occured
+	var win string = ""
 	// Reads the replay file
 	in, err := ioutil.ReadFile(gameFlags.ReplayPath)
 	if err != nil {
-		t.Errorf("Failed when reading replay file: %s", err)
+		win = "undefined"
 	}
 
 	// Parses the replay file and outputs replayData
 	replayData, err := x_vendor.GetReplayData(bytes.NewReader(in))
 	if err != nil {
-		t.Errorf("Failed to parse replay file: %s", err)
+		win = "undefined"
 	}
 
 	//Check which bot won
-	var win bool = false
-	if replayData.GamerWinner == x_vendor.BOT_1 {
-		win = true;
+	if win == "" {
+		win = strconv.FormatBool(replayData.GamerWinner == x_vendor.BOT_1)
 	}
 	//Push to analytics
 	analytics.Log("playground", "win", map[string]string{
-		"win": strconv.FormatBool(win),
+		"win": win,
 		"playgroundNumber" : strconv.Itoa(playgroundNumber),
 	})
 

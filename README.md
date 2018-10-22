@@ -43,3 +43,16 @@ chmod +x scrpits/build.sh
 ./scripts/build.sh
 ```
 
+## Analytics 
+To change your status to a tester in google analytics,
+find the .lia.json file in your home directory. There you should add a line
+so it looks someting like this.
+
+```json
+{
+  "analyticsallow": true,
+  "analyticsallowedversion": "sdk-version",
+  "trackingid": "your-tracking-id",
+  "testing": true
+}
+```

@@ -1,10 +1,14 @@
 package internal
 
 import (
+	"bytes"
+	"github.com/liagame/lia-SDK/internal/analytics"
 	"github.com/liagame/lia-SDK/internal/config"
+	"github.com/liagame/lia-SDK/x_vendor"
+	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strconv"
-	"os"
 )
 
 func Playground(playgroundNumber int, botDir string, debug bool, viewReplay bool, replayViewerWidth string) {
@@ -23,9 +27,32 @@ func Playground(playgroundNumber int, botDir string, debug bool, viewReplay bool
 	playgroundBotDir := filepath.Join("data", "playgrounds", strconv.Itoa(playgroundNumber), "bot")
 	GenerateGame(botDir, playgroundBotDir, gameFlags)
 
+	sendPlaygroundWinnerToAnalytics(gameFlags, playgroundNumber)
+
 	if viewReplay {
 		ShowReplayViewer(gameFlags.ReplayPath, replayViewerWidth)
 	}
+}
+
+func sendPlaygroundWinnerToAnalytics(gameFlags *GameFlags, playgroundNumber int) {
+	userWon := "undefined"
+
+	// Reads the replay file
+	in, err := ioutil.ReadFile(gameFlags.ReplayPath)
+	if err == nil {
+		// Parses the replay file and outputs replayData
+		replayData, err := x_vendor.GetReplayData(bytes.NewReader(in))
+		if err == nil {
+			// User's bot played as BOT_1
+			userWon = strconv.FormatBool(replayData.GamerWinner == x_vendor.BOT_1)
+		}
+	}
+
+	//Push to analytics
+	analytics.Log("playground", "userWon", map[string]string{
+		"userWon":          userWon,
+		"playgroundNumber": strconv.Itoa(playgroundNumber),
+	})
 }
 
 func getPlaygroundMap(playgroundNumber int) string {

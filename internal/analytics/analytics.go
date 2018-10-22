@@ -4,15 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/liagame/lia-SDK"
+	"github.com/liagame/lia-SDK/internal/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-		"net/url"
 	"net/http"
-	"github.com/liagame/lia-SDK/internal/config"
-	"strings"
+	"net/url"
 	"os"
+	"strings"
 )
-
 
 func isTrackingAllowed() bool {
 	return viper.GetBool("analyticsAllow")
@@ -93,5 +92,5 @@ func TrimPath(path string) string {
 		sep = "\\"
 	}
 	parts := strings.Split(path, sep)
-	return parts[len(parts) - 1]
+	return parts[len(parts)-1]
 }

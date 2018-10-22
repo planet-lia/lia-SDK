@@ -15,9 +15,9 @@ var debugMode bool
 var playgroundCmd = &cobra.Command{
 	Use:   "playground <number> <botDir>",
 	Short: "Runs playground specified by number with chosen bot",
-	Long:  `Runs playground specified by number with chosen bot. Number 1 represent a 1v1 battle and 
+	Long: `Runs playground specified by number with chosen bot. Number 1 represent a 1v1 battle and 
 number 2 and 3 uses in house Lia bots as opponents in a normal match.`,
-	Args:  cobra.ExactArgs(2),
+	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		numberStr := args[0]
 		botDir := args[1]

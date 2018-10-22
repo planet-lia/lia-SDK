@@ -1,14 +1,14 @@
 package analytics
 
 import (
-	"testing"
 	"github.com/liagame/lia-SDK/internal/config"
+	"testing"
 )
 
 func TestAnalytics(t *testing.T) {
 	cases := []struct {
-		os string
-		in string
+		os   string
+		in   string
 		want string
 	}{
 		{os: "", in: "/home/marko/bot1", want: "bot1"},

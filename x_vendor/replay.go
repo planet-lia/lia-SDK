@@ -1,13 +1,13 @@
 package x_vendor
 
 import (
-"bytes"
-"github.com/matttproud/golang_protobuf_extensions/pbutil"
-"github.com/palantir/stacktrace"
-"github.com/pkg/errors"
-"io"
-"fmt"
-"github.com/liagame/lia-SDK/x_vendor/curves"
+	"bytes"
+	"fmt"
+	"github.com/liagame/lia-SDK/x_vendor/curves"
+	"github.com/matttproud/golang_protobuf_extensions/pbutil"
+	"github.com/palantir/stacktrace"
+	"github.com/pkg/errors"
+	"io"
 )
 
 type ReplayData struct {
@@ -15,8 +15,8 @@ type ReplayData struct {
 	GamerWinner        Winner
 	Bot1RemainingUnits int
 	Bot2RemainingUnits int
-	Bot1CrashTime float32
-	Bot2CrashTime float32
+	Bot1CrashTime      float32
+	Bot2CrashTime      float32
 }
 
 type Winner string
@@ -82,8 +82,8 @@ func parseReplayElements(elements []curves.Element) (*ReplayData, error) {
 		GamerWinner:        winner,
 		Bot1RemainingUnits: remainingUnitsTeam1,
 		Bot2RemainingUnits: remainingUnitsTeam2,
-		Bot1CrashTime: gameOverEvent.Bot1CrashTime,
-		Bot2CrashTime: gameOverEvent.Bot2CrashTime,
+		Bot1CrashTime:      gameOverEvent.Bot1CrashTime,
+		Bot2CrashTime:      gameOverEvent.Bot2CrashTime,
 	}, nil
 }
 
@@ -171,4 +171,3 @@ func inArray(list []int32, value int32) bool {
 	}
 	return false
 }
-

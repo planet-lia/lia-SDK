@@ -1,13 +1,13 @@
 package tests
 
 import (
-	"os"
-	"github.com/liagame/lia-SDK/internal/config"
-	"github.com/liagame/lia-SDK/internal"
 	"fmt"
 	"github.com/liagame/lia-SDK"
-	"testing"
+	"github.com/liagame/lia-SDK/internal"
+	"github.com/liagame/lia-SDK/internal/config"
+	"os"
 	"strconv"
+	"testing"
 )
 
 func TestPlayground(t *testing.T) {

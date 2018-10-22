@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"github.com/liagame/lia-SDK/x_vendor/curves"
 	"github.com/matttproud/golang_protobuf_extensions/pbutil"
-	"github.com/palantir/stacktrace"
 	"github.com/pkg/errors"
 	"io"
+	"os"
 )
 
 type ReplayData struct {
@@ -56,7 +56,8 @@ func parseReplayFile(replay []byte) ([]curves.Element, error) {
 		if err == io.EOF {
 			break // End of file
 		} else if err != nil {
-			return nil, stacktrace.Propagate(err, "failed to parse replay file")
+			fmt.Fprintf(os.Stderr, "Failed to parse replay file.")
+			return nil, err
 		}
 		elements = append(elements, *el)
 	}
@@ -67,12 +68,14 @@ func parseReplayFile(replay []byte) ([]curves.Element, error) {
 func parseReplayElements(elements []curves.Element) (*ReplayData, error) {
 	gameOverEvent, err := GetGameOverEvent(elements)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get gameOverTime. Err %s", err)
+		fmt.Fprintf(os.Stderr, "Failed to get gameOverTime.")
+		return nil, err
 	}
 
 	winner, err := getWinner(elements)
 	if err != nil {
-		return nil, stacktrace.Propagate(err, "failed to get winner")
+		fmt.Fprintf(os.Stderr, "Failed to get winner.")
+		return nil, err
 	}
 
 	remainingUnitsTeam1, remainingUnitsTeam2 := getRemainingUnits(elements)

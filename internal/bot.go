@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/liagame/lia-SDK"
 	"github.com/liagame/lia-SDK/internal/config"
-	"github.com/palantir/stacktrace"
 	"os"
 )
 
@@ -22,6 +21,7 @@ func FetchBotByLanguage(lang string, name string) {
 	url, err := getRepositoryURL(lang)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
+		ShowSupportedLanguages()
 		os.Exit(lia_SDK.FailedToFindRepo)
 	}
 	url += "/archive/master.zip"
@@ -37,5 +37,5 @@ func getRepositoryURL(lang string) (string, error) {
 		}
 	}
 
-	return "", stacktrace.NewError("BotRepo not found: %v", lang)
+	return "", fmt.Errorf("BotRepo not found: %v. Use one of the supported languages.", lang)
 }

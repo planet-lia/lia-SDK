@@ -2,7 +2,6 @@ package advancedcopy
 
 import (
 	"fmt"
-	"github.com/palantir/stacktrace"
 	"io"
 	"io/ioutil"
 	"os"
@@ -17,20 +16,20 @@ func File(src, dst string) error {
 	var srcinfo os.FileInfo
 
 	if srcfd, err = os.Open(src); err != nil {
-		return stacktrace.Propagate(err, "")
+		return err
 	}
 	defer srcfd.Close()
 
 	if dstfd, err = os.Create(dst); err != nil {
-		return stacktrace.Propagate(err, "")
+		return err
 	}
 	defer dstfd.Close()
 
 	if _, err = io.Copy(dstfd, srcfd); err != nil {
-		return stacktrace.Propagate(err, "")
+		return err
 	}
 	if srcinfo, err = os.Stat(src); err != nil {
-		return stacktrace.Propagate(err, "")
+		return err
 	}
 	return os.Chmod(dst, srcinfo.Mode())
 }
@@ -42,15 +41,15 @@ func Dir(src string, dst string) error {
 	var srcinfo os.FileInfo
 
 	if srcinfo, err = os.Stat(src); err != nil {
-		return stacktrace.Propagate(err, "")
+		return err
 	}
 
 	if err = os.MkdirAll(dst, srcinfo.Mode()); err != nil {
-		return stacktrace.Propagate(err, "")
+		return err
 	}
 
 	if fds, err = ioutil.ReadDir(src); err != nil {
-		return stacktrace.Propagate(err, "")
+		return err
 	}
 	for _, fd := range fds {
 		srcfp := path.Join(src, fd.Name())

@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/liagame/lia-SDK"
 	"github.com/liagame/lia-SDK/internal/config"
-	"github.com/palantir/stacktrace"
 	"io"
 	"os"
 	"os/exec"
@@ -161,7 +160,8 @@ func runBot(cmdRef *CommandRef, name, uid string, port int) error {
 
 	err := cmd.Run()
 	if err != nil {
-		return stacktrace.Propagate(err, "running bot %s failed", name)
+		fmt.Fprintf(os.Stderr, "Running bot %s failed", name)
+		return err
 	}
 
 	return nil
@@ -196,11 +196,13 @@ func runGameGenerator(started chan bool, cmdRef *CommandRef, gameFlags *GameFlag
 	// Get pipes for stdout and stderr
 	stdoutIn, err := cmd.StdoutPipe()
 	if err != nil {
-		return stacktrace.Propagate(err, "failed to create stdout pipe for game generator")
+		fmt.Fprintf(os.Stderr, "Failed to create stdout pipe for game generator.")
+		return err
 	}
 	stderrIn, err := cmd.StderrPipe()
 	if err != nil {
-		return stacktrace.Propagate(err, "failed to create stdin pipe for game generator")
+		fmt.Fprintf(os.Stderr, "Failed to create stdin pipe for game generator.")
+		return err
 	}
 	// Create multi writer that will pass result to stdout, stderr and buffers
 	var stdoutBuf, stderrBuf bytes.Buffer
@@ -231,14 +233,17 @@ func runGameGenerator(started chan bool, cmdRef *CommandRef, gameFlags *GameFlag
 
 	// Run game generator
 	if err := cmd.Run(); err != nil {
-		return stacktrace.Propagate(err, "game generator failed.")
+		fmt.Fprintf(os.Stderr, "Game generator failed.")
+		return err
 	}
 
 	if errStdout != nil {
-		return stacktrace.Propagate(err, "failed to capture stdout\n")
+		fmt.Fprintf(os.Stderr, "Failed to capture stdout.")
+		return err
 	}
 	if errStderr != nil {
-		return stacktrace.Propagate(err, "failed to capture stderr\n")
+		fmt.Fprintf(os.Stderr, "Failed to capture stderr.")
+		return err
 	}
 
 	return nil
@@ -248,7 +253,8 @@ func generateUuid() (string, error) {
 	b := make([]byte, 16)
 	_, err := rand.Read(b)
 	if err != nil {
-		return "", stacktrace.Propagate(err, "failed to get random number")
+		fmt.Fprintf(os.Stderr, "Failed to get random number.")
+		return "", err
 	}
 	uuid := fmt.Sprintf("%x-%x-%x-%x-%x", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
 	return uuid, nil

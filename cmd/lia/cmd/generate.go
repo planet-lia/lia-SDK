@@ -20,7 +20,6 @@ var generateCmd = &cobra.Command{
 		analytics.Log("command", "generate", map[string]string{
 			"bot1Dir":    analytics.TrimPath(bot1Dir),
 			"bot2Dir":    analytics.TrimPath(bot2Dir),
-			"viewReplay": analytics.ParseBoolFlagToString(cmd, "viewReplay"),
 			"gseed":      analytics.ParseIntFlagToString(cmd, "gseed"),
 			"mseed":      analytics.ParseIntFlagToString(cmd, "mseed"),
 			"port":       analytics.ParseIntFlagToString(cmd, "port"),

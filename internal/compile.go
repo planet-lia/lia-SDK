@@ -5,7 +5,6 @@ import (
 	"github.com/liagame/lia-SDK"
 	"github.com/liagame/lia-SDK/internal/config"
 	"github.com/liagame/lia-SDK/pkg/advancedcopy"
-	"github.com/palantir/stacktrace"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -54,7 +53,8 @@ func prepareBot(botDir string, lang *config.Language) error {
 	cmd.Stderr = os.Stderr
 
 	if err := cmd.Run(); err != nil {
-		return stacktrace.Propagate(err, "prepare script failed %s\n", botDir)
+		fmt.Fprintf(os.Stderr, "Prepare script failed %s\n", botDir)
+		return err
 	}
 
 	return nil
@@ -70,7 +70,8 @@ func copyRunScript(botDir string, lang *config.Language) error {
 
 	// Copy run script to bot
 	if err := advancedcopy.File(globalRunScriptPath, botRunScriptPath); err != nil {
-		return stacktrace.Propagate(err, "failed to copy run script from %s to %s\n", globalRunScriptPath, botRunScriptPath)
+		fmt.Fprintf(os.Stderr, "Failed to copy run script from %s to %s", globalRunScriptPath, botRunScriptPath)
+		return err
 	}
 
 	return nil

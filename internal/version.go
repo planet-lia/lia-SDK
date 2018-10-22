@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/liagame/lia-SDK"
 	"github.com/liagame/lia-SDK/internal/config"
-	"github.com/palantir/stacktrace"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -65,17 +64,17 @@ func getConfigVersion(fileName string) (string, error) {
 	// Read config file
 	b, err := ioutil.ReadFile(path)
 	if err != nil {
-		return "", stacktrace.Propagate(err, "")
+		return "", err
 	}
 
 	// Get version
 	var objmap map[string]*json.RawMessage
 	if err := json.Unmarshal(b, &objmap); err != nil {
-		return "", stacktrace.Propagate(err, "")
+		return "", err
 	}
 	var version string
 	if err := json.Unmarshal(*objmap["version"], &version); err != nil {
-		return "", stacktrace.Propagate(err, "")
+		return "", err
 	}
 
 	version = fmt.Sprintf("%s version: %s", fileName, version)

@@ -32,7 +32,7 @@ func TestPlayground(t *testing.T) {
 	}
 
 	// Run test for all supported playgrounds and check exit status
-	for i := 1; i < 3; i++ {
+	for i := 1; i <= 1; i++ {
 		fmt.Printf("testing playground %d...\n", i)
 		output, exitStatus := GetCmdStatus("TestPlayground", i, true)
 		if exitStatus != lia_SDK.OK {

@@ -24,7 +24,7 @@ func FetchBotByLanguage(lang string, name string) {
 		ShowSupportedLanguages()
 		os.Exit(lia_SDK.FailedToFindRepo)
 	}
-	url += "/archive/master.zip"
+	url += "/archive/v0.2.0.zip"
 
 	FetchBot(url, name, "")
 }

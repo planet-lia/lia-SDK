@@ -1,21 +1,22 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "simulation": {
     "ticksPerSecond": 30,
     "velocityIterationsPerTick": 6,
     "positionIterationsPerTick": 4
   },
   "bots": {
-    "initResponseTimeout": 1000000,
-    "tickResponseTimeout": 1000000,
+    "initResponseTimeout": 1000000.0,
+    "tickResponseTimeout": 1000000.0,
     "ticksPerRequest": 3,
     "maxFailedResponses": 1000000,
-    "initialConnectionTimeout": 1000000
+    "initialConnectionTimeout": 100000.0,
+    "requestsSumTimeout": 1000000.0
   },
   "gameDetails": {
     "mapWidth": 144,
     "mapHeight": 81,
-    "gameDuration": 250,
+    "gameDuration": 200,
     "background": {
       "r": 0.2,
       "g": 0.2,
@@ -43,17 +44,20 @@
     "timeBetweenShoots": 0.2,
     "nBulletsInMagazine": 3,
     "reloadTime": 1,
-    "bulletRange": 40,
-    "respawnTime": 10,
+    "bulletRange": 42,
     "healthRecoveryTime": 1.0,
     "healthRecoveryPoints": 8,
-    "recoveryStartsAfter": 8.0
+    "recoveryStartsAfter": 8.0,
+    "speechBubbleDuration": 2.5,
+    "minSpeechBubbleTimeSpacing": 10.0,
+    "maxSimultaneousSpeechBubblesPerTeam": 5,
+    "startSpeechBubbleNotAllowedDuration": 0.0,
+    "maxSpeechBubbleTextLength": 23
   },
   "viewingArea": {
-    "length": 30,
-    "width": 16,
-    "offset": -1,
-    "lineWidth": 2
+    "length": 28,
+    "width": 20,
+    "offset": -1
   },
   "bullets": {
     "size": 0.4,

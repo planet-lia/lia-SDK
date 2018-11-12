@@ -24,7 +24,15 @@ do
     platformSplit=(${platform//\// })
     GOOS=${platformSplit[0]}
     GOARCH=${platformSplit[1]}
-    buildDir="build/lia-sdk-"${GOOS}'-'${GOARCH}
+
+
+    if [[ ${GOARCH} == "amd64" ]]; then
+        archName="x64"
+    else
+        archName="x32"
+    fi
+
+    buildDir="build/lia-sdk-"${GOOS}'-'${archName}
 
     if [[ ${#platformSplit[@]} == 3 ]]; then
        CGO_ENABLED=0

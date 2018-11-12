@@ -62,7 +62,7 @@
   "bullets": {
     "size": 0.4,
     "velocity": 32,
-    "damage": 40
+    "damage": 22
   },
   "healthBar": {
     "width": 1.8,

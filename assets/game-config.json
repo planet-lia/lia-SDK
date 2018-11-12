@@ -6,16 +6,16 @@
     "positionIterationsPerTick": 4
   },
   "bots": {
-    "initResponseTimeout": 40.0,
-    "tickResponseTimeout": 30.0,
+    "initResponseTimeout": 4.0,
+    "tickResponseTimeout": 2.0,
     "ticksPerRequest": 3,
     "maxFailedResponses": 8,
-    "initialConnectionTimeout": 50.0,
+    "initialConnectionTimeout": 30.0,
     "requestsSumTimeout": 300.0
   },
   "gameDetails": {
-    "mapWidth": 144,
-    "mapHeight": 81,
+    "mapWidth": 160,
+    "mapHeight": 90,
     "gameDuration": 200,
     "background": {
       "r": 0.2,
@@ -62,7 +62,7 @@
   "bullets": {
     "size": 0.4,
     "velocity": 32,
-    "damage": 40
+    "damage": 22
   },
   "healthBar": {
     "width": 1.8,

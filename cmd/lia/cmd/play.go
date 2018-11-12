@@ -50,5 +50,5 @@ func init() {
 	playCmd.Flags().IntSliceVarP(&gameFlags.DebugBots, "debug", "d", []int{}, "specify which bots you want to run manually, "+
 		"Examples: -d 1,2 -- debug bot1 and bot2, -d 2 -- debug bot2)")
 	playCmd.Flags().StringVarP(&replayViewerWidth, "width", "w", "", "choose width of replay window,"+
-		" height will be calcualted automatically")
+		" height will be calculated automatically")
 }

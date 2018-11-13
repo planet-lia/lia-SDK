@@ -20,7 +20,6 @@ func Compile(botDir string) {
 
 	// Prepare bot
 	fmt.Println("Preparing bot...")
-	fmt.Println("The first run is a bit slower, later runs will be much faster.")
 	if err := prepareBot(botDirAbsPath, lang); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to run prepare bot script for bot %s and lang %s. %s\n", botDirAbsPath, lang.Name, err)
 		os.Exit(lia_SDK.PreparingBotFailed)

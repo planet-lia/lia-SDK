@@ -172,6 +172,6 @@ func getLatestReleaseTag() string {
 }
 
 func printLinkToDownloads() {
-	fmt.Printf("Visit %s to download new version. When downloaded just "+
-		"replace the old content.\n\n", color.GreenString(config.ReleasesUrl))
+	fmt.Printf("Visit %s to download new version. When downloaded simply "+
+		"replace old lia executable and data folders with new ones.\n\n", color.GreenString(config.ReleasesUrl))
 }

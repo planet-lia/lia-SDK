@@ -28,9 +28,6 @@
     "mapType": -1
   },
   "obstacles": {
-    "nObstacles": {"min": 5, "max": 12},
-    "minObstacleSize": {"min":0.8, "max": 2},
-    "maxObstacleSize": {"min": 5, "max": 8},
     "blockSize": 3.0,
     "blockToCoolerRatio": 0.8
   },

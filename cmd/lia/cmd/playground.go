@@ -24,7 +24,6 @@ number 2 and 3 uses in house Lia bots as opponents in a normal match.`,
 
 		analytics.Log("command", "playground", map[string]string{
 			"number": numberStr,
-			"botDir": analytics.TrimPath(botDir),
 			"debug":  analytics.ParseBoolFlagToString(cmd, "debug"),
 			"width":  analytics.ParseStringFlag(cmd, "width"),
 		})

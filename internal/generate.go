@@ -39,6 +39,7 @@ func GenerateGame(bot1Dir string, bot2Dir string, gameFlags *GameFlags) {
 			gameFlags.ConfigPath = strings.Replace(gameFlags.ConfigPath, ".json", "-debug.json", 1)
 		}
 	}
+
 	// Set port if not already set
 	if gameFlags.Port == 0 {
 		gameFlags.Port = config.Cfg.GamePort

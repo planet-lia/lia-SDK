@@ -14,9 +14,7 @@ var verifyCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		botDir := args[0]
 
-		analytics.Log("command", "verify", map[string]string{
-			"botDir": analytics.TrimPath(botDir),
-		})
+		analytics.Log("command", "verify", map[string]string{})
 
 		internal.UpdateIfTime(true)
 		internal.GetBotLanguage(botDir)

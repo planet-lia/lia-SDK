@@ -14,9 +14,8 @@ var compileCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		botDir := args[0]
 
-		analytics.Log("command", "compile", map[string]string{
-			"botDir": botDir,
-		})
+		analytics.Log("command", "compile", map[string]string{})
+
 		internal.UpdateIfTime(true)
 		internal.Compile(botDir)
 	},

@@ -21,7 +21,6 @@ argument then that replay is played, else replay chooser is opened.`,
 		}
 
 		analytics.Log("command", "replay", map[string]string{
-			"pathToReplay": analytics.TrimPath(replayFile),
 			"width":        analytics.ParseStringFlag(cmd, "width"),
 		})
 

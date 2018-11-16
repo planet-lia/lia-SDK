@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/liagame/lia-SDK/internal"
 	"github.com/liagame/lia-SDK/internal/analytics"
 	"github.com/spf13/cobra"
@@ -21,8 +20,6 @@ the argument is provided.`,
 
 		analytics.Log("command", "fetch", map[string]string{
 			"url":  url,
-			"name": name,
-			"dir":  fmt.Sprint(cmd.Flags().GetString("dir")),
 		})
 
 		internal.UpdateIfTime(true)

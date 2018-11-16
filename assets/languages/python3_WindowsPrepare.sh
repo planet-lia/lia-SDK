@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
 cd "$1"
-pip3 install virtualenv
-if ! [[ -d "env" ]]; then
+if ! [[ -d "venv" ]]; then
+    pip3 install virtualenv
 	python -m venv venv
-    source venv/Scripts/activate
 fi
 venv/Scripts/pip install -r requirements.txt

@@ -3,9 +3,8 @@ package internal
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/liagame/lia-cli"
-	"github.com/liagame/lia-cli/internal/config"
-	"github.com/palantir/stacktrace"
+	"github.com/liagame/lia-SDK"
+	"github.com/liagame/lia-SDK/internal/config"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -18,7 +17,7 @@ func ShowVersions() {
 	liaCfgVersion, err := getConfigVersion(liaCfgName)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to read from file %s\n %s", liaCfgName, err)
-		os.Exit(lia_cli.FailedToReadConfig)
+		os.Exit(lia_SDK.FailedToReadConfig)
 	}
 
 	// Get game cfg version
@@ -26,7 +25,7 @@ func ShowVersions() {
 	gameCfgVersion, err := getConfigVersion(gameCfgName)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to read from file %s\n %s", gameCfgName, err)
-		os.Exit(lia_cli.FailedToReadConfig)
+		os.Exit(lia_SDK.FailedToReadConfig)
 	}
 
 	// Get game generator version
@@ -35,7 +34,7 @@ func ShowVersions() {
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to get game-generator version\n %s", err)
-		os.Exit(lia_cli.GameGeneratorFailed)
+		os.Exit(lia_SDK.GameGeneratorFailed)
 	}
 	gameGeneratorVersion := string(out)
 
@@ -45,11 +44,11 @@ func ShowVersions() {
 	out, err = cmd.Output()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to get replay-viewer version\n %s", err)
-		os.Exit(lia_cli.ReplayViewerFailed)
+		os.Exit(lia_SDK.ReplayViewerFailed)
 	}
 	replayViewerVersion := string(out)
 
-	liaCliVersion := "lia-cli version: " + config.VERSION
+	liaCliVersion := "lia-SDK version: " + config.VERSION
 
 	fmt.Printf("%s\n%s\n%s\n%s%s",
 		liaCliVersion,
@@ -65,17 +64,17 @@ func getConfigVersion(fileName string) (string, error) {
 	// Read config file
 	b, err := ioutil.ReadFile(path)
 	if err != nil {
-		return "", stacktrace.Propagate(err, "")
+		return "", err
 	}
 
 	// Get version
 	var objmap map[string]*json.RawMessage
 	if err := json.Unmarshal(b, &objmap); err != nil {
-		return "", stacktrace.Propagate(err, "")
+		return "", err
 	}
 	var version string
 	if err := json.Unmarshal(*objmap["version"], &version); err != nil {
-		return "", stacktrace.Propagate(err, "")
+		return "", err
 	}
 
 	version = fmt.Sprintf("%s version: %s", fileName, version)

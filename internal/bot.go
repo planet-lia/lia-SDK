@@ -2,9 +2,8 @@ package internal
 
 import (
 	"fmt"
-	"github.com/liagame/lia-cli"
-	"github.com/liagame/lia-cli/internal/config"
-	"github.com/palantir/stacktrace"
+	"github.com/liagame/lia-SDK"
+	"github.com/liagame/lia-SDK/internal/config"
 	"os"
 )
 
@@ -12,19 +11,20 @@ func FetchBotByLanguage(lang string, name string) {
 	// Check if the bot with name already exists
 	if isUsed, err := isNameUsed(name); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to check if name isUsed. %s", err)
-		os.Exit(lia_cli.Generic)
+		os.Exit(lia_SDK.Generic)
 	} else if isUsed {
 		fmt.Fprintf(os.Stderr, "bot name %s already exists. Choose another name.\n", name)
-		os.Exit(lia_cli.BotExists)
+		os.Exit(lia_SDK.BotExists)
 	}
 
 	// Fetch repository url for specified language
 	url, err := getRepositoryURL(lang)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
-		os.Exit(lia_cli.FailedToFindRepo)
+		ShowSupportedLanguages()
+		os.Exit(lia_SDK.FailedToFindRepo)
 	}
-	url += "/archive/master.zip"
+	url += "/archive/v" + config.VERSION + ".zip"
 
 	FetchBot(url, name, "")
 }
@@ -37,5 +37,5 @@ func getRepositoryURL(lang string) (string, error) {
 		}
 	}
 
-	return "", stacktrace.NewError("BotRepo not found: %v", lang)
+	return "", fmt.Errorf("BotRepo not found: %v. Use one of the supported languages.", lang)
 }

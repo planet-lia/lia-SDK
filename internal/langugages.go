@@ -3,7 +3,7 @@ package internal
 import (
 	"fmt"
 	"github.com/fatih/color"
-	"github.com/liagame/lia-cli/internal/config"
+	"github.com/liagame/lia-SDK/internal/config"
 )
 
 func ShowSupportedLanguages() {

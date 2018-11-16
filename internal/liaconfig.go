@@ -2,8 +2,9 @@ package internal
 
 import (
 	"encoding/json"
-	"github.com/palantir/stacktrace"
 	"io/ioutil"
+	"fmt"
+	"os"
 )
 
 type LiaConfig struct {
@@ -13,12 +14,14 @@ type LiaConfig struct {
 func getConfig(path string) (*LiaConfig, error) {
 	configFile, err := ioutil.ReadFile(path)
 	if err != nil {
-		return nil, stacktrace.Propagate(err, "couldn't open file. Location: %s", path)
+		fmt.Fprintf(os.Stderr, "Couldn't open file. Location: %s.", path)
+		return nil, err
 	}
 
 	cfg := &LiaConfig{}
 	if err := json.Unmarshal(configFile, cfg); err != nil {
-		return nil, stacktrace.Propagate(err, "couldn't unmarshal lia config")
+		fmt.Fprintf(os.Stderr, "Couldn't unmarshal lia config.")
+		return nil, err
 	}
 
 	return cfg, nil

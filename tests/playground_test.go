@@ -1,13 +1,13 @@
 package tests
 
 import (
-	"os"
-	"github.com/liagame/lia-cli/internal/config"
-	"github.com/liagame/lia-cli/internal"
 	"fmt"
-	"github.com/liagame/lia-cli"
-	"testing"
+	"github.com/liagame/lia-SDK"
+	"github.com/liagame/lia-SDK/internal"
+	"github.com/liagame/lia-SDK/internal/config"
+	"os"
 	"strconv"
+	"testing"
 )
 
 func TestPlayground(t *testing.T) {
@@ -32,13 +32,13 @@ func TestPlayground(t *testing.T) {
 	}
 
 	// Run test for all supported playgrounds and check exit status
-	for i := 1; i < 3; i++ {
+	for i := 1; i <= 1; i++ {
 		fmt.Printf("testing playground %d...\n", i)
 		output, exitStatus := GetCmdStatus("TestPlayground", i, true)
-		if exitStatus != lia_cli.OK {
+		if exitStatus != lia_SDK.OK {
 			t.Logf("playground %d failed\n", i)
 			t.Logf("%s", output)
-			t.Fatalf("exit status is %v but should be %v", exitStatus, lia_cli.OK)
+			t.Fatalf("exit status is %v but should be %v", exitStatus, lia_SDK.OK)
 		}
 	}
 }

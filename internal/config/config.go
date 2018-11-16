@@ -3,15 +3,14 @@ package config
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/liagame/lia-cli"
-	"github.com/palantir/stacktrace"
+	"github.com/liagame/lia-SDK"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
 )
 
-const VERSION = "0.1.0"
+const VERSION = "0.2.0"
 
 const ReleasesUrl = "https://github.com/liagame/lia-SDK/releases/latest"
 const SettingsFile = ".lia"
@@ -46,12 +45,14 @@ type Language struct {
 func SetConfig(path string) error {
 	configFile, err := ioutil.ReadFile(path)
 	if err != nil {
-		return stacktrace.Propagate(err, "couldn't open file. Location: %s", path)
+		fmt.Fprintf(os.Stderr, "Couldn't open file. Location: %s", path)
+		return err
 	}
 
 	Cfg = &Config{}
 	if err := json.Unmarshal(configFile, Cfg); err != nil {
-		return stacktrace.Propagate(err, "couldn't unmarshal config")
+		fmt.Fprintf(os.Stderr, "Couldn't unmarshal config")
+		return err
 	}
 
 	return nil
@@ -64,7 +65,7 @@ func Setup() {
 			ex, err := os.Executable()
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "failed to get executable location\n %s", err)
-				os.Exit(lia_cli.FailedToGetEnvironment)
+				os.Exit(lia_SDK.FailedToGetEnvironment)
 			}
 			PathToBots = filepath.Dir(ex)
 		}
@@ -74,7 +75,7 @@ func Setup() {
 
 		if err := SetConfig(pathToCfg); err != nil {
 			fmt.Fprintf(os.Stderr, "couldn't get config\n %s", err)
-			os.Exit(lia_cli.FailedToReadConfig)
+			os.Exit(lia_SDK.FailedToReadConfig)
 		}
 	}
 }

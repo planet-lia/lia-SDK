@@ -3,9 +3,8 @@ package settings
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/liagame/lia-cli/internal/config"
+	"github.com/liagame/lia-SDK/internal/config"
 	"github.com/mitchellh/go-homedir"
-	"github.com/palantir/stacktrace"
 	"github.com/satori/go.uuid"
 	"os"
 	"path/filepath"
@@ -26,16 +25,16 @@ var defaultSettings = struct {
 func Create() error {
 	home, err := homedir.Dir()
 	if err != nil {
-		fmt.Printf("Failed to find homedir, could not generate .lia.json file")
-		return stacktrace.Propagate(err, "failed to find homedir")
+		fmt.Fprintf(os.Stderr, "Failed to find homedir, could not generate .lia.json file")
+		return err
 	}
 
 	newConfigPath := filepath.Join(home, fmt.Sprintf("%s.%s", config.SettingsFile, config.SettingsFileExtension))
 
 	f, err := os.Create(newConfigPath)
 	if err != nil {
-		fmt.Printf("Failed to create config file in: %s\n", newConfigPath)
-		return stacktrace.Propagate(err, "failed to create config file")
+		fmt.Fprintf(os.Stderr, "Failed to create config file in: %s\n", newConfigPath)
+		return err
 	}
 	defer f.Close()
 

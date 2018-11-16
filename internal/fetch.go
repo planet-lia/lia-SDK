@@ -3,10 +3,9 @@ package internal
 import (
 	"archive/zip"
 	"fmt"
-	"github.com/liagame/lia-cli"
-	"github.com/liagame/lia-cli/internal/config"
+	"github.com/liagame/lia-SDK"
+	"github.com/liagame/lia-SDK/internal/config"
 	"github.com/mholt/archiver"
-	"github.com/palantir/stacktrace"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -14,6 +13,7 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+	"github.com/pkg/errors"
 )
 
 func FetchBot(url string, name string, customBotDir string) {
@@ -21,7 +21,7 @@ func FetchBot(url string, name string, customBotDir string) {
 	tmpFile, err := ioutil.TempFile("", "")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error while creating tmp tmpFile %s\n", err)
-		os.Exit(lia_cli.OsCallFailed)
+		os.Exit(lia_SDK.OsCallFailed)
 	}
 	defer os.Remove(tmpFile.Name())
 
@@ -29,7 +29,7 @@ func FetchBot(url string, name string, customBotDir string) {
 	fmt.Printf("Downloading bot from %s...\n", url)
 	if err := downloadBot(url, tmpFile); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to download bot from %s.\n %s\n", url, err)
-		defer os.Exit(lia_cli.BotDownloadFailed)
+		defer os.Exit(lia_SDK.BotDownloadFailed)
 		return // need to call like that so that other defers are called (removing files etc...)
 	}
 
@@ -38,14 +38,14 @@ func FetchBot(url string, name string, customBotDir string) {
 	tmpBotParentDir, err := ioutil.TempDir("", "")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to create tmp bot dir. %s", err)
-		defer os.Exit(lia_cli.OsCallFailed)
+		defer os.Exit(lia_SDK.OsCallFailed)
 		return
 	}
 	defer os.RemoveAll(tmpBotParentDir)
 
 	if err := archiver.Zip.Open(tmpFile.Name(), tmpBotParentDir); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to extract bot with target %s\n%v\n", tmpBotParentDir, err)
-		defer os.Exit(lia_cli.OsCallFailed)
+		defer os.Exit(lia_SDK.OsCallFailed)
 		return
 	}
 
@@ -53,7 +53,7 @@ func FetchBot(url string, name string, customBotDir string) {
 	botDirName, err := getBotDirName(tmpBotParentDir)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to get bot dir. %s\n", err)
-		defer os.Exit(lia_cli.Generic)
+		defer os.Exit(lia_SDK.Generic)
 		return
 	}
 
@@ -65,11 +65,11 @@ func FetchBot(url string, name string, customBotDir string) {
 	// Check if the bot with chosen name already exists
 	if isUsed, err := isNameUsed(name); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to check if name isUsed. %s", err)
-		defer os.Exit(lia_cli.Generic)
+		defer os.Exit(lia_SDK.Generic)
 		return
 	} else if isUsed {
 		fmt.Fprintf(os.Stderr, "bot name %s already exists. Choose another name.\n", name)
-		defer os.Exit(lia_cli.BotExists)
+		defer os.Exit(lia_SDK.BotExists)
 		return
 	}
 
@@ -83,7 +83,7 @@ func FetchBot(url string, name string, customBotDir string) {
 	}
 	if err := os.Rename(tmpBotDir, finalBotDir); err != nil {
 		fmt.Fprintf(os.Stderr, "failed move bot dir from %s to %s. %s\n", botDirName, finalBotDir, err)
-		defer os.Exit(lia_cli.OsCallFailed)
+		defer os.Exit(lia_SDK.OsCallFailed)
 		return
 	}
 
@@ -104,7 +104,7 @@ func isNameUsed(name string) (bool, error) {
 
 func downloadBot(url string, output *os.File) error {
 	if !strings.HasSuffix(url, ".zip") {
-		return stacktrace.NewError("wrong suffix")
+		return errors.New("wrong suffix")
 	}
 
 	var netClient = &http.Client{
@@ -113,17 +113,19 @@ func downloadBot(url string, output *os.File) error {
 
 	response, err := netClient.Get(url)
 	if err != nil {
-		return stacktrace.Propagate(err, "failed to download bot from %s", url)
+		fmt.Fprintf(os.Stderr, "Failed to download bot from %s", url)
+		return err
 	}
 	defer response.Body.Close()
 
 	if response.StatusCode != 200 {
-		return stacktrace.NewError("failed to download bot. %v", *response)
+		return fmt.Errorf("failed to download bot. %v", *response)
 	}
 
 	_, err = io.Copy(output, response.Body)
 	if err != nil {
-		return stacktrace.Propagate(err, "failed to store downloaded bot")
+		fmt.Fprintf(os.Stderr, "failed to store downloaded bot")
+		return err
 	}
 
 	return nil
@@ -132,11 +134,13 @@ func downloadBot(url string, output *os.File) error {
 func unzipBot(archive string, target string) error {
 	reader, err := zip.OpenReader(archive)
 	if err != nil {
-		return stacktrace.Propagate(err, "opening reader failed")
+		fmt.Fprintf(os.Stderr, "Opening reader failed")
+		return err
 	}
 
 	if err := os.MkdirAll(target, 0755); err != nil {
-		return stacktrace.Propagate(err, "creating target dir failed")
+		fmt.Fprintf(os.Stderr, "Creating target dir failed")
+		return err
 	}
 
 	for _, file := range reader.File {
@@ -148,18 +152,18 @@ func unzipBot(archive string, target string) error {
 
 		fileReader, err := file.Open()
 		if err != nil {
-			return stacktrace.Propagate(err, "")
+			return err
 		}
 		defer fileReader.Close()
 
 		targetFile, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode())
 		if err != nil {
-			return stacktrace.Propagate(err, "")
+			return err
 		}
 		defer targetFile.Close()
 
 		if _, err := io.Copy(targetFile, fileReader); err != nil {
-			return stacktrace.Propagate(err, "")
+			return err
 		}
 	}
 
@@ -169,7 +173,8 @@ func unzipBot(archive string, target string) error {
 func getBotDirName(parentDir string) (string, error) {
 	files, err := ioutil.ReadDir(parentDir)
 	if err != nil {
-		return "", stacktrace.Propagate(err, "failed to read files from dir: %s", parentDir)
+		fmt.Fprintf(os.Stderr, "failed to read files from dir: %s", parentDir)
+		return "", err
 	}
 
 	switch len(files) {
@@ -184,6 +189,6 @@ func getBotDirName(parentDir string) (string, error) {
 		}
 	}
 
-	return "", stacktrace.NewError("there should be exactly 1 directory in parentDir"+
+	return "", fmt.Errorf("there should be exactly 1 directory in parentDir"+
 		"(on mac osx can also be __MACOSX. nFiles: %v", len(files))
 }

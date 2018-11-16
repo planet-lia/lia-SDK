@@ -13,7 +13,7 @@ func ShowReplayViewer(replayFile string, replayViewerWidth string) {
 	if config.OperatingSystem == "darwin" {
 		args = append(args, "-XstartOnFirstThread", "-Dorg.lwjgl.system.allocator=system")
 	}
-	args = append(args, "-jar", "replay-viewer.jar")
+	args = append(args, "-jar", config.PathToData + "/replay-viewer.jar")
 	if replayFile != "" {
 		args = append(args, replayFile)
 	}
@@ -21,7 +21,7 @@ func ShowReplayViewer(replayFile string, replayViewerWidth string) {
 		args = append(args, "-w", replayViewerWidth)
 	}
 	cmd := exec.Command("java", args...)
-	cmd.Dir = config.PathToData
+	cmd.Dir = config.PathToBots
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 

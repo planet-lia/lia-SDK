@@ -1,4 +1,9 @@
-# Lia CLI
+# Lia-SDK
+
+Download latest release [here](https://github.com/liagame/lia-SDK/releases).
+
+
+## Lia CLI
 ```bash
 lia is a CLI tool for easier development of Lia bots.
 

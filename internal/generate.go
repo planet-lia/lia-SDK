@@ -160,7 +160,7 @@ func runBot(cmdRef *CommandRef, name, uid string, port int) error {
 	cmd.Stderr = os.Stderr
 
 	err := cmd.Run()
-	if err != nil && !strings.Contains(err.Error(), "signal=killed") {
+	if err != nil && !strings.Contains(err.Error(), "killed") {
 		fmt.Fprintf(os.Stderr, "Running bot %s failed.\n", name)
 		return err
 	}

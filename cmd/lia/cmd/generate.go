@@ -25,7 +25,7 @@ var generateCmd = &cobra.Command{
 			"debug":      analytics.ParseIntSliceFlagToString(cmd, "debug"),
 		})
 
-		internal.UpdateIfTime(true)
+		internal.CheckForUpdate()
 		internal.GenerateGame(bot1Dir, bot2Dir, &gameFlags)
 	},
 }

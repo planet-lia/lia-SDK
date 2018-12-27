@@ -16,7 +16,7 @@ var zipCmd = &cobra.Command{
 
 		analytics.Log("command", "zip", map[string]string{})
 
-		internal.UpdateIfTime(true)
+		internal.CheckForUpdate()
 		internal.Zip(botDir)
 	},
 }

@@ -22,7 +22,7 @@ the argument is provided.`,
 			"url":  url,
 		})
 
-		internal.UpdateIfTime(true)
+		internal.CheckForUpdate()
 
 		internal.FetchBot(url, name, customBotDir)
 	},

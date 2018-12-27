@@ -28,7 +28,7 @@ if at least one of the bots is set to be in debug mode, the -debug.json config w
 			"width":      analytics.ParseStringFlag(cmd, "width"),
 		})
 
-		internal.UpdateIfTime(true)
+		internal.CheckForUpdate()
 		internal.Play(bot1Dir, bot2Dir, &gameFlags, viewReplay, replayViewerWidth)
 	},
 }

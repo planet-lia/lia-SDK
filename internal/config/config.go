@@ -10,7 +10,7 @@ import (
 	"runtime"
 )
 
-const VERSION = "0.2.0"
+const VERSION = "0.2.0" // TOOD update to 1.0.0
 
 const ReleasesUrl = "https://github.com/liagame/lia-SDK/releases/latest"
 const SettingsFile = ".lia"

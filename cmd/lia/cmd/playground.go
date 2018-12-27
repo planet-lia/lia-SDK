@@ -28,7 +28,7 @@ number 2 and 3 uses in house Lia bots as opponents in a normal match.`,
 			"width":  analytics.ParseStringFlag(cmd, "width"),
 		})
 
-		internal.UpdateIfTime(true)
+		internal.CheckForUpdate()
 
 		number, err := strconv.Atoi(numberStr)
 		if err != nil {

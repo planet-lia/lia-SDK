@@ -10,11 +10,14 @@ cd ${pathToScript}/..
 
 # Run tests
 if [[ $runTests != "false" ]]; then
-   go test ./...
-fi
-if [[ $? != 0 ]]; then
-    (>&2 echo "Running tests failed.")
-    exit $?
+    go test ./...
+
+    exit_status=$?
+    if [[ ${exit_status} != 0 ]]; then
+        echo ${exit_status}
+        (>&2 echo "Running tests failed.")
+        exit ${exit_status}
+    fi
 fi
 
 for platform in "${platforms[@]}"

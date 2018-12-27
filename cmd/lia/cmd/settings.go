@@ -25,7 +25,7 @@ var settingsCmd = &cobra.Command{
 			"analyticsOptOut": analytics.ParseBoolFlagToString(cmd, "analyticsOptOut"),
 		})
 
-		internal.UpdateIfTime(true)
+		internal.CheckForUpdate()
 
 		if resetTrackingId {
 			oldTrackingId := viper.GetString("trackingId")

@@ -16,7 +16,7 @@ var botCmd = &cobra.Command{
 			"language": args[0],
 		})
 
-		internal.UpdateIfTime(true)
+		internal.CheckForUpdate()
 		internal.FetchBotByLanguage(args[0], args[1])
 	},
 }

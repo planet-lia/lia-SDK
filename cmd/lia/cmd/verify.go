@@ -16,7 +16,7 @@ var verifyCmd = &cobra.Command{
 
 		analytics.Log("command", "verify", map[string]string{})
 
-		internal.UpdateIfTime(true)
+		internal.CheckForUpdate()
 		internal.GetBotLanguage(botDir)
 	},
 }

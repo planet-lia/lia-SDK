@@ -24,7 +24,7 @@ var rootCmd = &cobra.Command{
 	Short: "The core Lia development tool",
 	Long:  `lia is a CLI tool for easier development of Lia bots.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		internal.UpdateIfTime(true)
+		internal.CheckForUpdate()
 
 		if showVersion {
 			internal.ShowVersions()

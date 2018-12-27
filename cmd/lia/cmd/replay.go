@@ -24,7 +24,7 @@ argument then that replay is played, else replay chooser is opened.`,
 			"width":        analytics.ParseStringFlag(cmd, "width"),
 		})
 
-		internal.UpdateIfTime(true)
+		internal.CheckForUpdate()
 
 		internal.ShowReplayViewer(replayFile, replayViewerWidth)
 	},

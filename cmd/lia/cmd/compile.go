@@ -16,7 +16,7 @@ var compileCmd = &cobra.Command{
 
 		analytics.Log("command", "compile", map[string]string{})
 
-		internal.UpdateIfTime(true)
+		internal.CheckForUpdate()
 		internal.Compile(botDir)
 	},
 }

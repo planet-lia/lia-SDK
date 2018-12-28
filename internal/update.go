@@ -11,6 +11,10 @@ import (
 	"path/filepath"
 	"time"
 	"github.com/fatih/color"
+	"github.com/mholt/archiver"
+	"runtime"
+	"github.com/inconshreveable/go-update"
+	"bytes"
 )
 
 const ReleaseRequestFailed = "failed"
@@ -35,8 +39,100 @@ func CheckForUpdate() {
 
 
 func Update() {
-	// TODO
+	url := config.ReleaseZipUrlBase
+
+	// Detect the operating system
+	switch runtime.GOOS {
+	case "windows": url += "windows-x64.zip"
+	case "darwin": url += "darwin-x64.zip"
+	default: url += "linux-x64.zip"
+	}
+
+	// Create temporary file
+	tmpFile, err := ioutil.TempFile("", "")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error while creating tmp file %s\n", err)
+		os.Exit(lia_SDK.OsCallFailed)
+	}
+	defer os.Remove(tmpFile.Name())
+
+	// Download update zip
+	fmt.Printf("Downloading latest release from %s.\n", url)
+	if err := downloadZip(url, tmpFile); err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to download update from %s.\n %s\n", url, err)
+		defer os.Exit(lia_SDK.UpdateDownloadFailed)
+		return // need to call like that so that other defers are called (removing files etc...)
+	}
+
+	// Extract update zip to tmpUpdateParentDir
+	fmt.Println("Preparing bot...")
+	tmpUpdateParentDir, err := ioutil.TempDir("", "")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to create tmp update dir. %s", err)
+		defer os.Exit(lia_SDK.OsCallFailed)
+		return
+	}
+	defer os.RemoveAll(tmpUpdateParentDir)
+
+	if err := archiver.Zip.Open(tmpFile.Name(), tmpUpdateParentDir); err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to extract update with target %s\n%v\n", tmpUpdateParentDir, err)
+		defer os.Exit(lia_SDK.OsCallFailed)
+		return
+	}
+
+	// Get update dir name in temporary file
+	updateDirName, err := getDirName(tmpUpdateParentDir)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to get update dir name. %s\n", err)
+		defer os.Exit(lia_SDK.Generic)
+		return
+	}
+
+	// Get the path to the update dir
+	updateDirPath := filepath.Join(tmpUpdateParentDir, updateDirName)
+
+	// Check if data directory exists
+	if _, err := os.Stat(config.PathToData); !os.IsNotExist(err) {
+
+		fmt.Println("Removing current data/ directory.")
+		if err := os.RemoveAll(config.PathToData); err != nil {
+			fmt.Fprintf(os.Stderr, "Failed to delete current data/ directory. " +
+				"If nothing else helps please download and replace it manualy from %s. Error: %s\n", url, err)
+			defer os.Exit(lia_SDK.Generic)
+		}
+	}
+
+	fmt.Println("Replacing old data/ directory with a new one.")
+	pathToNewDataDir := updateDirPath + "/data"
+	if err := os.Rename(pathToNewDataDir, config.PathToData); err != nil {
+		fmt.Fprintf(os.Stderr, "Failed move new data dir from %s to %s. %s\n",
+			pathToNewDataDir, config.PathToData, err)
+		defer os.Exit(lia_SDK.OsCallFailed)
+		return
+	}
+
+	fmt.Println("Replacing lia executable.")
+
+	pathToNewLiaExecutable := updateDirPath + "/lia"
+	if runtime.GOOS == "windows" {
+		pathToNewLiaExecutable += ".exe"
+	}
+
+	liaExecutableBytes, err := ioutil.ReadFile(pathToNewLiaExecutable)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to read lia executable to buffer. %s\n", err)
+		defer os.Exit(lia_SDK.Generic)
+	}
+
+	// Replace lia executable
+	if err := update.Apply(bytes.NewReader(liaExecutableBytes), update.Options{}); err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to update lia executable. %s\n", err)
+		defer os.Exit(lia_SDK.Generic)
+	}
+
+	fmt.Println("Lia was updated sucessfully!")
 }
+
 
 func isTimeToCheckForUpdate() bool {
 	timeToCheck, err := timeToCheckForUpdate()

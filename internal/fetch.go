@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"archive/zip"
 	"fmt"
 	"github.com/liagame/lia-SDK"
 	"github.com/liagame/lia-SDK/internal/config"
@@ -20,14 +19,14 @@ func FetchBot(url string, name string, customBotDir string) {
 	// Create temporary file
 	tmpFile, err := ioutil.TempFile("", "")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error while creating tmp tmpFile %s\n", err)
+		fmt.Fprintf(os.Stderr, "error while creating tmp file %s\n", err)
 		os.Exit(lia_SDK.OsCallFailed)
 	}
 	defer os.Remove(tmpFile.Name())
 
 	// Download bot zip
 	fmt.Printf("Downloading bot from %s...\n", url)
-	if err := downloadBot(url, tmpFile); err != nil {
+	if err := downloadZip(url, tmpFile); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to download bot from %s.\n %s\n", url, err)
 		defer os.Exit(lia_SDK.BotDownloadFailed)
 		return // need to call like that so that other defers are called (removing files etc...)
@@ -50,7 +49,7 @@ func FetchBot(url string, name string, customBotDir string) {
 	}
 
 	// Get bot dir name in temporary file
-	botDirName, err := getBotDirName(tmpBotParentDir)
+	botDirName, err := getDirName(tmpBotParentDir)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to get bot dir. %s\n", err)
 		defer os.Exit(lia_SDK.Generic)
@@ -102,7 +101,7 @@ func isNameUsed(name string) (bool, error) {
 	return true, err
 }
 
-func downloadBot(url string, output *os.File) error {
+func downloadZip(url string, output *os.File) error {
 	if !strings.HasSuffix(url, ".zip") {
 		return errors.New("wrong suffix")
 	}
@@ -131,46 +130,7 @@ func downloadBot(url string, output *os.File) error {
 	return nil
 }
 
-func unzipBot(archive string, target string) error {
-	reader, err := zip.OpenReader(archive)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Opening reader failed")
-		return err
-	}
-
-	if err := os.MkdirAll(target, 0755); err != nil {
-		fmt.Fprintf(os.Stderr, "Creating target dir failed")
-		return err
-	}
-
-	for _, file := range reader.File {
-		path := filepath.Join(target, file.Name)
-		if file.FileInfo().IsDir() {
-			os.MkdirAll(path, file.Mode())
-			continue
-		}
-
-		fileReader, err := file.Open()
-		if err != nil {
-			return err
-		}
-		defer fileReader.Close()
-
-		targetFile, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode())
-		if err != nil {
-			return err
-		}
-		defer targetFile.Close()
-
-		if _, err := io.Copy(targetFile, fileReader); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func getBotDirName(parentDir string) (string, error) {
+func getDirName(parentDir string) (string, error) {
 	files, err := ioutil.ReadDir(parentDir)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to read files from dir: %s", parentDir)

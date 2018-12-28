@@ -21,4 +21,5 @@ const (
 	FailedToReadReleaseFile      = 17
 	LiaSettingsFailure           = 18
 	PreparingAnalyticsDataFailed = 19
+	UpdateDownloadFailed         = 20
 )

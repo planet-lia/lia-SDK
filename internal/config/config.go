@@ -13,6 +13,8 @@ import (
 const VERSION = "0.2.0" // TOOD update to 1.0.0
 
 const ReleasesUrl = "https://github.com/liagame/lia-SDK/releases/latest"
+const ReleaseZipUrlBase = "https://github.com/liagame/lia-SDK/releases/download/v" + VERSION + "/lia-sdk-"
+
 const SettingsFile = ".lia"
 const SettingsFileExtension = "json"
 const PropertyID = "UA-122844498-1" // Id of google analytics project

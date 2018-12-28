@@ -12,9 +12,7 @@ var updateCmd = &cobra.Command{
 	Long:  "Updates Lia-SDK.",
 	Args:  cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		analytics.Log("command", "update", map[string]string{
-			"check": analytics.ParseBoolFlagToString(cmd, "check"),
-		})
+		analytics.Log("command", "update", map[string]string{})
 
 		internal.Update()
 	},

@@ -2,7 +2,7 @@
 
 runTests=$1
 
-platforms=("linux/amd64" "linux/386" "windows/amd64" "windows/386" "darwin/amd64" "linux/amd64/static")
+platforms=("linux/386" "windows/386" "darwin/amd64" "linux/amd64/static")
 
 # Cd to root of the project
 pathToScript="`dirname \"$0\"`"
@@ -27,15 +27,13 @@ do
     platformSplit=(${platform//\// })
     GOOS=${platformSplit[0]}
     GOARCH=${platformSplit[1]}
+    osName=${GOOS}
 
-
-    if [[ ${GOARCH} == "amd64" ]]; then
-        archName="x64"
-    else
-        archName="x32"
+    if [[ ${GOOS} == "darwin" ]]; then
+        osName="macos"
     fi
 
-    buildDir="build/lia-sdk-"${GOOS}'-'${archName}
+    buildDir="build/lia-sdk-"${osName}
 
     if [[ ${#platformSplit[@]} == 3 ]]; then
        CGO_ENABLED=0

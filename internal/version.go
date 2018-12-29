@@ -33,10 +33,10 @@ func ShowVersions() {
 	cmd.Dir = config.PathToData
 	out, err := cmd.Output()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to get game-generator version\n %s", err)
-		os.Exit(lia_SDK.GameGeneratorFailed)
+		fmt.Fprintf(os.Stderr, "failed to get game-engine version\n %s", err)
+		os.Exit(lia_SDK.GameEngineFailed)
 	}
-	gameGeneratorVersion := string(out)
+	gameEngineVersion := string(out)
 
 	// Get replay viewer version
 	cmd = exec.Command("java", "-jar", "replay-viewer.jar", "--version")
@@ -54,7 +54,7 @@ func ShowVersions() {
 		liaCliVersion,
 		liaCfgVersion,
 		gameCfgVersion,
-		gameGeneratorVersion,
+		gameEngineVersion,
 		replayViewerVersion)
 }
 

@@ -35,7 +35,7 @@ func init() {
 
 	generateCmd.Flags().IntVarP(&gameFlags.GameSeed, "gseed", "g", 0, "game seed. 0 means random")
 	generateCmd.Flags().IntVarP(&gameFlags.MapSeed, "mseed", "m", 0, "map seed. 0 means random")
-	generateCmd.Flags().IntVarP(&gameFlags.Port, "port", "p", 0, "port on which game generator will run. Default is 8887")
+	generateCmd.Flags().IntVarP(&gameFlags.Port, "port", "p", 0, "port on which game engine will run. Default is 8887")
 	generateCmd.Flags().StringVarP(&gameFlags.MapPath, "map", "M", "", "path to custom map settings")
 	generateCmd.Flags().StringVarP(&gameFlags.ReplayPath, "replay", "r", "", "choose custom replay name and location")
 	generateCmd.Flags().StringVarP(&gameFlags.ConfigPath, "config", "c", "", "choose custom config")

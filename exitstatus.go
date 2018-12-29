@@ -13,7 +13,7 @@ const (
 	CopyingRunScriptFailed       = 9
 	FailedToReadConfig           = 10
 	FailedToGetEnvironment       = 11
-	GameGeneratorFailed          = 12
+	GameEngineFailed             = 12
 	FailedToGetLiaJson           = 13
 	FailedToGenerateGame         = 14
 	ZippingBotFailed             = 15

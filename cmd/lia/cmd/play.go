@@ -39,7 +39,7 @@ func init() {
 	playCmd.Flags().BoolVarP(&viewReplay, "viewReplay", "v", true, "if set, the replay will not be opened in replay viewer")
 	playCmd.Flags().IntVarP(&gameFlags.GameSeed, "gseed", "g", 0, "game seed. 0 means random")
 	playCmd.Flags().IntVarP(&gameFlags.MapSeed, "mseed", "m", 0, "map seed. 0 means random")
-	playCmd.Flags().IntVarP(&gameFlags.Port, "port", "p", 0, "port on which game generator will run. Default is 8887")
+	playCmd.Flags().IntVarP(&gameFlags.Port, "port", "p", 0, "port on which game engine will run. Default is 8887")
 	playCmd.Flags().StringVarP(&gameFlags.MapPath, "map", "M", "", "path to custom map settings")
 	playCmd.Flags().StringVarP(&gameFlags.ReplayPath, "replay", "r", "", "choose custom replay name and location")
 	playCmd.Flags().StringVarP(&gameFlags.ConfigPath, "config", "c", "", "choose custom config")

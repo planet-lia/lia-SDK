@@ -46,34 +46,38 @@ func GenerateGame(bot1Dir string, bot2Dir string, gameFlags *GameFlags) {
 	}
 
 	// Create channel that will listen to results
-	// from game generator and both bots
+	// from game engine and both bots
 	result := make(chan error)
 
 	cmdBot1 := &CommandRef{}
 	cmdBot2 := &CommandRef{}
-	cmdGameGenerator := &CommandRef{}
+	cmdGameEngine := &CommandRef{}
 
-	generatorStarted := make(chan bool)
+	engineStarted := make(chan bool)
 
-	// Run game-generator
+	// Run game-engine
 	go func() {
-		fmt.Printf("Running game generator\n")
+		fmt.Printf("Running game engine\n")
 		bot1Name := parseBotName(bot1Dir)
 		bot2Name := parseBotName(bot2Dir)
-		err := runGameGenerator(generatorStarted, cmdGameGenerator, gameFlags, bot1Name, bot2Name, uidBot1, uidBot2)
-		cmdGameGenerator.cmd = nil
+		err := runGameEngine(engineStarted, cmdGameEngine, gameFlags, bot1Name, bot2Name, uidBot1, uidBot2)
+		cmdGameEngine.cmd = nil
 		result <- err
 	}()
 
-	// Wait until game generator has started
-	<-generatorStarted
+	// Wait until game engine has started
+	<-engineStarted
+
+	engineFinished := false
 
 	// Run bots
 	runBotWrapper := func(cmdBot *CommandRef, botDir, botUid string) {
 		fmt.Printf("Running bot %s\n", botDir)
 		err := runBot(cmdBot, botDir, botUid, gameFlags.Port)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "%s\n", err)
+			if !engineFinished {
+				fmt.Fprintf(os.Stderr, "Running bot %s failed. %s\n", botDir, err)
+			}
 		}
 		cmdBot.cmd = nil
 	}
@@ -90,6 +94,8 @@ func GenerateGame(bot1Dir string, bot2Dir string, gameFlags *GameFlags) {
 		fmt.Fprintf(os.Stderr, "failed to generate game\n %s\n", err)
 		defer os.Exit(lia_SDK.FailedToGenerateGame)
 	}
+
+	engineFinished = true
 
 	// Attempt to kill the process to prevent daemons
 	killProcess(cmdBot1)
@@ -160,15 +166,14 @@ func runBot(cmdRef *CommandRef, name, uid string, port int) error {
 	cmd.Stderr = os.Stderr
 
 	err := cmd.Run()
-	if err != nil && !strings.Contains(err.Error(), "killed") {
-		fmt.Fprintf(os.Stderr, "Running bot %s failed.\n", name)
+	if err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func runGameGenerator(started chan bool, cmdRef *CommandRef, gameFlags *GameFlags, nameBot1, nameBot2, uidBot1, uidBot2 string) error {
+func runGameEngine(started chan bool, cmdRef *CommandRef, gameFlags *GameFlags, nameBot1, nameBot2, uidBot1, uidBot2 string) error {
 	cmd := exec.Command(
 		"java", "-jar", "game-engine.jar",
 		"-g", fmt.Sprint(gameFlags.GameSeed),
@@ -197,12 +202,12 @@ func runGameGenerator(started chan bool, cmdRef *CommandRef, gameFlags *GameFlag
 	// Get pipes for stdout and stderr
 	stdoutIn, err := cmd.StdoutPipe()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to create stdout pipe for game generator.")
+		fmt.Fprintf(os.Stderr, "Failed to create stdout pipe for game engine.")
 		return err
 	}
 	stderrIn, err := cmd.StderrPipe()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to create stdin pipe for game generator.")
+		fmt.Fprintf(os.Stderr, "Failed to create stdin pipe for game engine.")
 		return err
 	}
 	// Create multi writer that will pass result to stdout, stderr and buffers
@@ -220,7 +225,7 @@ func runGameGenerator(started chan bool, cmdRef *CommandRef, gameFlags *GameFlag
 		_, errStderr = io.Copy(stderr, stderrIn)
 	}()
 
-	// Send true to started channel when game generator outputs something
+	// Send true to started channel when game engine outputs something
 	// (means that websocket server is prepared)
 	go func() {
 		for {
@@ -232,9 +237,9 @@ func runGameGenerator(started chan bool, cmdRef *CommandRef, gameFlags *GameFlag
 		}
 	}()
 
-	// Run game generator
+	// Run game engine
 	if err := cmd.Run(); err != nil {
-		fmt.Fprintf(os.Stderr, "Game generator failed.")
+		fmt.Fprintf(os.Stderr, "Game engine failed.")
 		return err
 	}
 

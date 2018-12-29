@@ -32,6 +32,10 @@ func GenerateGame(bot1Dir string, bot2Dir string, gameFlags *GameFlags) {
 	bot2Debug := contains(gameFlags.DebugBots, 2)
 	uidBot2 := getBotUid(bot2Debug)
 
+	if gameFlags.ReplayPath == "" {
+		gameFlags.ReplayPath = createReplayFileName()
+	}
+
 	// Set config path if not provided
 	if gameFlags.ConfigPath == "" {
 		gameFlags.ConfigPath = filepath.Join(gameFlags.ConfigPath, "game-config.json")
@@ -103,6 +107,14 @@ func GenerateGame(bot1Dir string, bot2Dir string, gameFlags *GameFlags) {
 
 	// Wait for outputs to appear on the console (nicer way to fix this?)
 	time.Sleep(time.Millisecond * 100)
+}
+
+func createReplayFileName() string {
+	path := filepath.Join(config.PathToBots, "replays")
+	os.MkdirAll(path, os.ModePerm)
+	//"2006-01-02T15:04:05Z07:00"
+	fileName := time.Now().Format("2006-01-02T15-04-05") + ".lia"
+	return filepath.Join(path, fileName)
 }
 
 func parseBotName(botDir string) string {

@@ -10,7 +10,7 @@ import (
 	"runtime"
 )
 
-const VERSION = "1.0.0"
+const VERSION = "0.2.0" // TODO change to 1.0.0, for now we download bots from v0.2.0
 
 const SettingsFile = ".lia"
 const SettingsFileExtension = "json"

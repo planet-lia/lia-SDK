@@ -32,9 +32,7 @@ func GenerateGame(bot1Dir string, bot2Dir string, gameFlags *GameFlags) {
 	bot2Debug := contains(gameFlags.DebugBots, 2)
 	uidBot2 := getBotUid(bot2Debug)
 
-	if gameFlags.ReplayPath == "" {
-		gameFlags.ReplayPath = createReplayFileName()
-	}
+	configureReplayFilePath(gameFlags)
 
 	// Set config path if not provided
 	if gameFlags.ConfigPath == "" {
@@ -109,12 +107,28 @@ func GenerateGame(bot1Dir string, bot2Dir string, gameFlags *GameFlags) {
 	time.Sleep(time.Millisecond * 100)
 }
 
-func createReplayFileName() string {
-	path := filepath.Join(config.PathToBots, "replays")
-	os.MkdirAll(path, os.ModePerm)
-	//"2006-01-02T15:04:05Z07:00"
-	fileName := time.Now().Format("2006-01-02T15-04-05") + ".lia"
-	return filepath.Join(path, fileName)
+func configureReplayFilePath(gameFlags *GameFlags) {
+	replayPath := gameFlags.ReplayPath
+
+	// If the replay file was not provided
+	if replayPath == "" {
+		path := filepath.Join(config.PathToBots, "replays")
+		os.MkdirAll(path, os.ModePerm)
+		//"2006-01-02T15:04:05Z07:00"
+		fileName := time.Now().Format("2006-01-02T15-04-05") + ".lia"
+		gameFlags.ReplayPath = filepath.Join(path, fileName)
+
+	} else {
+		if !strings.HasSuffix(replayPath, ".lia") {
+			fmt.Fprintf(os.Stderr, "ERROR: Provided replay file %s does not end with .lia suffix, please add it.",
+				replayPath)
+			os.Exit(lia_SDK.Generic)
+		}
+
+		if !filepath.IsAbs(replayPath) {
+			gameFlags.ReplayPath = filepath.Join(config.PathToBots, replayPath)
+		}
+	}
 }
 
 func parseBotName(botDir string) string {

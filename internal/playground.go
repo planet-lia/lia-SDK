@@ -17,7 +17,7 @@ func Playground(playgroundNumber int, botDir string, debug bool, viewReplay bool
 		MapSeed:    0,
 		Port:       config.Cfg.GamePort,
 		MapPath:    getPlaygroundMap(playgroundNumber),
-		ReplayPath: createReplayFileName(),
+		ReplayPath: "",
 		ConfigPath: "",
 		DebugBots:  setDebugSlice(debug),
 	}

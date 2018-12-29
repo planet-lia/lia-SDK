@@ -112,6 +112,32 @@ func initConfig() {
 		viper.Set("analyticsAllowedVersion", config.VERSION)
 		viper.WriteConfig()
 	}
+
+	// Get the username of currently logged in user
+	usernameWrapper := viper.Get("username")
+	if usernameWrapper == nil {
+		config.LoggedInUser = ""
+	} else {
+		username, ok := usernameWrapper.(string)
+		if !ok {
+			config.LoggedInUser = ""
+		} else {
+			config.LoggedInUser = username
+		}
+	}
+
+	// Get token of currently logged in user
+	tokenWrapper := viper.Get("token")
+	if tokenWrapper == nil {
+		config.UserToken = ""
+	} else {
+		token, ok := tokenWrapper.(string)
+		if !ok {
+			config.UserToken = ""
+		} else {
+			config.UserToken = token
+		}
+	}
 }
 
 // Ask users to decide if they want to opt-in to our

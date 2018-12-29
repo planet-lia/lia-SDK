@@ -11,6 +11,7 @@ import (
 )
 
 const VERSION = "0.2.0" // TODO change to 1.0.0, for now we download bots from v0.2.0
+const LiaHomePage = "https://liagame.com"
 
 const SettingsFile = ".lia"
 const SettingsFileExtension = "json"
@@ -22,7 +23,12 @@ const defaultReleasesBaseUrl = "https://github.com/liagame/lia-SDK/releases/"
 var ReleasesUrl string
 var ReleasesZipUrlBase string
 
+const defaultLiaBackendUrl = "https://prod.cloud1.liagame.com"
+var LoginUrl string
+var BotUploadUrl string
+
 func init() {
+	// Lia releases URLs
 	releasesBaseUrl := os.Getenv("RELEASES_BASE_URL")
 	if releasesBaseUrl == "" {
 		releasesBaseUrl = defaultReleasesBaseUrl
@@ -33,6 +39,16 @@ func init() {
 	ReleasesUrl = releasesBaseUrl + "latest"
 	// Base from where the releases can be downloaded
 	ReleasesZipUrlBase = releasesBaseUrl + "download"
+
+	// Lia backend URLs
+	liaBackendUrl := os.Getenv("LIA_BACKEND_URL")
+	if liaBackendUrl == "" {
+		liaBackendUrl = defaultLiaBackendUrl
+	} else {
+		fmt.Printf("Lia backend URL set to %s\n", liaBackendUrl)
+	}
+	LoginUrl = liaBackendUrl + "/auth/"
+	BotUploadUrl = liaBackendUrl + "/game/bot/upload/"
 }
 
 var OperatingSystem = runtime.GOOS
@@ -58,6 +74,9 @@ type Language struct {
 	PrepareWindows string `json:"prepareWindows"`
 	RunWindows     string `json:"runWindows"`
 }
+
+var LoggedInUser string
+var UserToken string
 
 func SetConfig(path string) error {
 	configFile, err := ioutil.ReadFile(path)

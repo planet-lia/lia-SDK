@@ -22,4 +22,5 @@ const (
 	LiaSettingsFailure           = 18
 	PreparingAnalyticsDataFailed = 19
 	UpdateDownloadFailed         = 20
+	FailedToGetToken			 = 21
 )

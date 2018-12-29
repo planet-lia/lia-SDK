@@ -26,7 +26,7 @@ func FetchBot(url string, name string, customBotDir string) {
 
 	// Download bot zip
 	fmt.Printf("Downloading bot from %s...\n", url)
-	if err := downloadZip(url, tmpFile); err != nil {
+	if err := downloadZip(url, tmpFile, 30); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to download bot from %s.\n %s\n", url, err)
 		defer os.Exit(lia_SDK.BotDownloadFailed)
 		return // need to call like that so that other defers are called (removing files etc...)
@@ -101,13 +101,13 @@ func isNameUsed(name string) (bool, error) {
 	return true, err
 }
 
-func downloadZip(url string, output *os.File) error {
+func downloadZip(url string, output *os.File, timeoutSeconds int) error {
 	if !strings.HasSuffix(url, ".zip") {
 		return errors.New("wrong suffix")
 	}
 
 	var netClient = &http.Client{
-		Timeout: time.Second * 30,
+		Timeout: time.Second * time.Duration(timeoutSeconds),
 	}
 
 	response, err := netClient.Get(url)

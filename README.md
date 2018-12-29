@@ -61,3 +61,6 @@ so it looks someting like this.
   "testing": true
 }
 ```
+
+## Automatic update testing
+To test the automatic update locally head [here](instructions/AutomaticUpdateTesting.md).

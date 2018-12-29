@@ -24,12 +24,7 @@ func CheckForUpdate() {
 		return
 	}
 
-	latestTag := getLatestReleaseTag()
-	if latestTag == ReleaseRequestFailed {
-		return
-	}
-
-	available := isUpdateAvailable(latestTag)
+	latestTag, available := isUpdateAvailable()
 	if available {
 		printNewUpdateAvailableNotification(latestTag)
 	} else {
@@ -37,16 +32,18 @@ func CheckForUpdate() {
 	}
 }
 
-
 func Update() {
-	url := config.ReleaseZipUrlBase
-
-	// Detect the operating system
-	switch runtime.GOOS {
-	case "windows": url += "windows-x64.zip"
-	case "darwin": url += "darwin-x64.zip"
-	default: url += "linux-x64.zip"
+	// Don't upgrade if the version is the same
+	latestTag, available := isUpdateAvailable()
+	if !available {
+		fmt.Println("Lia-SDK is up to date.")
+		return
 	}
+
+	fmt.Printf("Upgrading Lia-SDK to version %s\n", latestTag)
+
+	// Create a releaseUrl to the correct release
+	releaseUrl := getReleaseZipUrl(latestTag)
 
 	// Create temporary file
 	tmpFile, err := ioutil.TempFile("", "")
@@ -57,31 +54,31 @@ func Update() {
 	defer os.Remove(tmpFile.Name())
 
 	// Download update zip
-	fmt.Printf("Downloading latest release from %s.\n", url)
-	if err := downloadZip(url, tmpFile); err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to download update from %s.\n %s\n", url, err)
+	fmt.Printf("Downloading latest release from %s.\n", releaseUrl)
+	if err := downloadZip(releaseUrl, tmpFile, 500); err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to download update from %s.\n %s\n", releaseUrl, err)
 		defer os.Exit(lia_SDK.UpdateDownloadFailed)
 		return // need to call like that so that other defers are called (removing files etc...)
 	}
 
-	// Extract update zip to tmpUpdateParentDir
+	// Extract update zip to tmpReleaseParentDir
 	fmt.Println("Preparing bot...")
-	tmpUpdateParentDir, err := ioutil.TempDir("", "")
+	tmpReleaseParentDir, err := ioutil.TempDir("", "")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to create tmp update dir. %s", err)
 		defer os.Exit(lia_SDK.OsCallFailed)
 		return
 	}
-	defer os.RemoveAll(tmpUpdateParentDir)
+	defer os.RemoveAll(tmpReleaseParentDir)
 
-	if err := archiver.Zip.Open(tmpFile.Name(), tmpUpdateParentDir); err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to extract update with target %s\n%v\n", tmpUpdateParentDir, err)
+	if err := archiver.Zip.Open(tmpFile.Name(), tmpReleaseParentDir); err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to extract update with target %s\n%v\n", tmpReleaseParentDir, err)
 		defer os.Exit(lia_SDK.OsCallFailed)
 		return
 	}
 
 	// Get update dir name in temporary file
-	updateDirName, err := getDirName(tmpUpdateParentDir)
+	releaseDirName, err := getDirName(tmpReleaseParentDir)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to get update dir name. %s\n", err)
 		defer os.Exit(lia_SDK.Generic)
@@ -89,7 +86,7 @@ func Update() {
 	}
 
 	// Get the path to the update dir
-	updateDirPath := filepath.Join(tmpUpdateParentDir, updateDirName)
+	releaseDirPath := filepath.Join(tmpReleaseParentDir, releaseDirName)
 
 	// Check if data directory exists
 	if _, err := os.Stat(config.PathToData); !os.IsNotExist(err) {
@@ -97,13 +94,13 @@ func Update() {
 		fmt.Println("Removing current data/ directory.")
 		if err := os.RemoveAll(config.PathToData); err != nil {
 			fmt.Fprintf(os.Stderr, "Failed to delete current data/ directory. " +
-				"If nothing else helps please download and replace it manualy from %s. Error: %s\n", url, err)
+				"If nothing else helps please download and replace it manualy from %s. Error: %s\n", releaseUrl, err)
 			defer os.Exit(lia_SDK.Generic)
 		}
 	}
 
 	fmt.Println("Replacing old data/ directory with a new one.")
-	pathToNewDataDir := updateDirPath + "/data"
+	pathToNewDataDir := releaseDirPath + "/data"
 	if err := os.Rename(pathToNewDataDir, config.PathToData); err != nil {
 		fmt.Fprintf(os.Stderr, "Failed move new data dir from %s to %s. %s\n",
 			pathToNewDataDir, config.PathToData, err)
@@ -113,7 +110,7 @@ func Update() {
 
 	fmt.Println("Replacing lia executable.")
 
-	pathToNewLiaExecutable := updateDirPath + "/lia"
+	pathToNewLiaExecutable := releaseDirPath + "/lia"
 	if runtime.GOOS == "windows" {
 		pathToNewLiaExecutable += ".exe"
 	}
@@ -133,6 +130,15 @@ func Update() {
 	fmt.Println("Lia was updated sucessfully!")
 }
 
+func getReleaseZipUrl(latestTag string) string {
+	releaseUrl := config.ReleasesZipUrlBase + "/" + latestTag + "/lia-sdk-"
+	switch config.OperatingSystem {
+	case "windows": releaseUrl += "windows.zip"
+	case "darwin": releaseUrl += "macos.zip"
+	default: releaseUrl += "linux.zip"
+	}
+	return releaseUrl
+}
 
 func isTimeToCheckForUpdate() bool {
 	timeToCheck, err := timeToCheckForUpdate()
@@ -177,22 +183,28 @@ func timeToCheckForUpdate() (bool, error) {
 	return latestTime.Add(time.Hour * 24).Before(timeNow), nil
 }
 
-func isUpdateAvailable(latestTag string) bool {
+func isUpdateAvailable() (string, bool) {
+	latestTag := getLatestReleaseTag()
+	if latestTag == ReleaseRequestFailed {
+		return "", false
+	}
+
+
 	localRelease, err := getLocalReleaseConfig()
 	if err != nil {
-		return false
+		return "", false
 	}
 
 	// If the major versions are different then don't look at it
 	if latestTag[:2] != localRelease.Tag[:2] {
-		return false
+		return "", false
 	}
 
-	if latestTag > localRelease.Tag {
-		return true
+	if latestTag <= localRelease.Tag {
+		return "", false
 	}
 
-	return false
+	return latestTag, true
 }
 
 type ReleaseConfig struct {

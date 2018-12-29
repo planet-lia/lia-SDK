@@ -10,15 +10,30 @@ import (
 	"runtime"
 )
 
-const VERSION = "0.2.0" // TOOD update to 1.0.0
-
-const ReleasesUrl = "https://github.com/liagame/lia-SDK/releases/latest"
-const ReleaseZipUrlBase = "https://github.com/liagame/lia-SDK/releases/download/v" + VERSION + "/lia-sdk-"
+const VERSION = "1.0.0"
 
 const SettingsFile = ".lia"
 const SettingsFileExtension = "json"
 const PropertyID = "UA-122844498-1" // Id of google analytics project
 const TestPropertyID = "UA-122844498-2"
+
+
+const defaultReleasesBaseUrl = "https://github.com/liagame/lia-SDK/releases/"
+var ReleasesUrl string
+var ReleasesZipUrlBase string
+
+func init() {
+	releasesBaseUrl := os.Getenv("RELEASES_BASE_URL")
+	if releasesBaseUrl == "" {
+		releasesBaseUrl = defaultReleasesBaseUrl
+	} else {
+		fmt.Printf("Releases base URL set to %s\n", releasesBaseUrl)
+	}
+	// Url returns a json with "tag_name" key containing latest version (eg. v1.0.0)
+	ReleasesUrl = releasesBaseUrl + "latest"
+	// Base from where the releases can be downloaded
+	ReleasesZipUrlBase = releasesBaseUrl + "download"
+}
 
 var OperatingSystem = runtime.GOOS
 

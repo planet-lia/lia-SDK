@@ -5,6 +5,7 @@ Download latest release [here](https://github.com/liagame/lia-SDK/releases).
 
 ## Lia CLI
 ```bash
+Lia backend URL set to https://dev.cloud1.liagame.com
 lia is a CLI tool for easier development of Lia bots.
 
 Usage:
@@ -12,18 +13,20 @@ Usage:
   lia [command]
 
 Available Commands:
+  account     Check which user is currently logged into Lia-SDK
   bot         Create new bot
   compile     Compiles/prepares bot in specified dir
   fetch       Fetches a bot from url and sets a new name
   generate    Generates a game
   help        Help about any command
+  login       Login to Lia with your account
+  logout      Logout from Lia
   play        Compiles and generates a game between bot1 and bot2
+  playground  Runs playground specified by number with chosen bot
   replay      Runs a replay viewer
   settings    Views the user's settings
-  playground  Runs playground specified by number with chosen bot
-  update      Updates Lia development tools
-  verify      Verifies if the content in bot-dir is valid
-  zip         Verifies, compiles and zips the bot in botDir
+  update      Updates Lia-SDK
+  upload      Uploads the bot to Lia leaderboard
 
 Flags:
   -h, --help        help for lia

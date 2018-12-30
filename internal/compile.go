@@ -21,7 +21,7 @@ func Compile(botDir string) error {
 	}
 
 	// Prepare bot
-	fmt.Println("Preparing bot...")
+	fmt.Printf("Preparing bot...\n")
 	if err := prepareBot(botDirAbsPath, lang); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to run prepare bot script for bot %s and lang %s\n", botDirAbsPath, lang.Name)
 		return err
@@ -33,7 +33,7 @@ func Compile(botDir string) error {
 		return err
 	}
 
-	fmt.Println("Preparing completed.")
+	fmt.Printf("Preparing completed...\n")
 	return nil
 }
 

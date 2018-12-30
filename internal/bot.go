@@ -37,5 +37,5 @@ func getRepositoryURL(lang string) (string, error) {
 		}
 	}
 
-	return "", fmt.Errorf("BotRepo not found: %v. Use one of the supported languages.", lang)
+	return "", fmt.Errorf("BotRepo not found: %v. Use one of the supported languages.\n", lang)
 }

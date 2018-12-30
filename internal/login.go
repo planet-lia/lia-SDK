@@ -9,10 +9,11 @@ import (
 	"github.com/liagame/lia-SDK/internal/config"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
-	"golang.org/x/crypto/ssh/terminal"
 	"io/ioutil"
 	"net/http"
 	"os"
+	"golang.org/x/crypto/ssh/terminal"
+	"syscall"
 )
 
 func Login() {
@@ -26,12 +27,15 @@ func Login() {
 
 	// Ask for password
 	fmt.Print("Password: ")
-	passwordBytes, err := terminal.ReadPassword(0)
+
+	passwordBytes, err := terminal.ReadPassword(int(syscall.Stdin))
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to read password from stdin. %s\n", err)
-		os.Exit(lia_SDK.Generic)
+		scanner.Scan()
+		passwordBytes = scanner.Bytes()
 	}
 	password := string(passwordBytes)
+
+	fmt.Println("\nRetreiving token.")
 
 	// Get the token
 	token, err := getToken(username, password)

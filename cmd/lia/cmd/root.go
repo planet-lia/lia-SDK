@@ -114,7 +114,7 @@ func initConfig() {
 	}
 
 	// Get the username of currently logged in user
-	usernameWrapper := viper.Get("username")
+	usernameWrapper := viper.Get("user")
 	if usernameWrapper == nil {
 		config.LoggedInUser = ""
 	} else {

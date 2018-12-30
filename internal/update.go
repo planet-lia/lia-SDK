@@ -71,7 +71,6 @@ func Update() {
 	}
 
 	// Extract update zip to tmpReleaseParentDir
-	fmt.Println("Preparing bot...")
 	tmpReleaseParentDir, err := ioutil.TempDir("", "")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to create tmp update dir. %s", err)

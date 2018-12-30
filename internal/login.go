@@ -9,10 +9,10 @@ import (
 	"github.com/liagame/lia-SDK/internal/config"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
+	"golang.org/x/crypto/ssh/terminal"
 	"io/ioutil"
 	"net/http"
 	"os"
-	"golang.org/x/crypto/ssh/terminal"
 	"syscall"
 )
 
@@ -24,6 +24,8 @@ func Login() {
 	fmt.Print("Username: ")
 	scanner.Scan()
 	username := scanner.Text()
+
+	fmt.Printf("USERNAME 1: %v\n", username)
 
 	// Ask for password
 	fmt.Print("Password: ")
@@ -45,13 +47,12 @@ func Login() {
 	}
 
 	// Store token and username in config
-	viper.Set("username", username)
+	viper.Set("user", username)
 	viper.Set("token", token)
 	viper.WriteConfig()
 
 	config.LoggedInUser = username
 	config.UserToken = token
-
 	fmt.Println("Login successful!")
 }
 

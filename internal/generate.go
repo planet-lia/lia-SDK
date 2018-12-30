@@ -185,12 +185,15 @@ type CommandRef struct {
 
 func runBot(cmdRef *CommandRef, name, uid string, port int) error {
 	runScriptName := "run.sh"
+	if config.OperatingSystem == "windows" {
+		runScriptName = "run.bat"
+	}
 
 	botDir := filepath.Join(config.PathToBots, name)
 
 	var cmd *exec.Cmd
 	if config.OperatingSystem == "windows" {
-		cmd = exec.Command(config.Cfg.PathToBash, runScriptName, strconv.Itoa(port), uid)
+		cmd = exec.Command(".\\"+runScriptName, strconv.Itoa(port), uid)
 	} else {
 		cmd = exec.Command("/bin/bash", runScriptName, strconv.Itoa(port), uid)
 	}
@@ -210,7 +213,14 @@ func runBot(cmdRef *CommandRef, name, uid string, port int) error {
 
 func runGameEngine(started chan bool, cmdRef *CommandRef, gameFlags *GameFlags, nameBot1, nameBot2, uidBot1, uidBot2 string) error {
 	cmd := exec.Command(
-		"java", "-jar", "game-engine.jar",
+		"java",
+		// quiet warnings from com.google.protobuf.UnsafeUtil,
+		// see: https://github.com/google/protobuf/issues/3781
+		"-XX:+IgnoreUnrecognizedVMOptions",
+		"--add-opens=java.base/java.nio=ALL-UNNAMED",
+		"--add-opens=java.base/java.lang=ALL-UNNAMED",
+
+		"-jar", "game-engine.jar",
 		"-g", fmt.Sprint(gameFlags.GameSeed),
 		"-m", fmt.Sprint(gameFlags.MapSeed),
 		"-p", fmt.Sprint(gameFlags.Port),

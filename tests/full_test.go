@@ -90,7 +90,7 @@ func getSupportedLanguages() []string {
 		supportedLanguages = append(supportedLanguages, langData.Name)
 	}
 
-	// Cleanup!
+	// CleanupUnix!
 	config.Cfg = nil
 
 	return supportedLanguages

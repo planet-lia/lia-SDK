@@ -63,10 +63,9 @@ var PathToBots string
 var PathToData string
 
 type Config struct {
-	Version    string     `json:"version"`
-	GamePort   int        `json:"gamePort"`
-	PathToBash string     `json:"windowsPathToBash"`
-	Languages  []Language `json:"languages"`
+	Version   string     `json:"version"`
+	GamePort  int        `json:"gamePort"`
+	Languages []Language `json:"languages"`
 }
 
 type Language struct {
@@ -76,7 +75,8 @@ type Language struct {
 	RunUnix        string `json:"runUnix"`
 	PrepareWindows string `json:"prepareWindows"`
 	RunWindows     string `json:"runWindows"`
-	Cleanup        string `json:"cleanup"`
+	CleanupUnix    string `json:"cleanupUnix"`
+	CleanupWindows string `json:"cleanupWindows"`
 }
 
 var LoggedInUser string

@@ -1,34 +1,36 @@
 {
   "version": "1.0.0",
   "gamePort": 8887,
-  "windowsPathToBash": "C:\\Program Files\\Git\\bin\\bash.exe",
   "languages": [
     {
       "name": "java",
       "botUrl": "https://github.com/liagame/java-bot",
-      "prepareUnix": "java_UnixPrepare.sh",
-      "runUnix": "java_UnixRun.sh",
-      "prepareWindows": "java_WindowsPrepare.sh",
-      "runWindows": "java_WindowsRun.sh",
-      "cleanup": "java_Cleanup.sh"
+      "prepareUnix": "java_Prepare.sh",
+      "runUnix": "java_Run.sh",
+      "prepareWindows": "java_Prepare.bat",
+      "runWindows": "java_Run.bat",
+      "cleanupUnix": "java_Cleanup.sh",
+      "cleanupWindows": "java_Cleanup.bat"
     },
     {
       "name": "kotlin",
       "botUrl": "https://github.com/liagame/kotlin-bot",
-      "prepareUnix": "java_UnixPrepare.sh",
-      "runUnix": "java_UnixRun.sh",
-      "prepareWindows": "java_WindowsPrepare.sh",
-      "runWindows": "java_WindowsRun.sh",
-      "cleanup": "java_Cleanup.sh"
+      "prepareUnix": "java_Prepare.sh",
+      "runUnix": "java_Run.sh",
+      "prepareWindows": "java_Prepare.bat",
+      "runWindows": "java_Run.bat",
+      "cleanupUnix": "java_Cleanup.sh",
+      "cleanupWindows": "java_Cleanup.bat"
     },
     {
       "name": "python3",
       "botUrl": "https://github.com/liagame/python3-bot",
-      "prepareUnix": "python3_UnixPrepare.sh",
-      "runUnix": "python3_UnixRun.sh",
-      "prepareWindows": "python3_WindowsPrepare.sh",
-      "runWindows": "python3_WindowsRun.sh",
-      "cleanup": "python3_Cleanup.sh"
+      "prepareUnix": "python3_Prepare.sh",
+      "runUnix": "python3_Run.sh",
+      "prepareWindows": "python3_Prepare.bat",
+      "runWindows": "python3_Run.bat",
+      "cleanupUnix": "python3_Cleanup.sh",
+      "cleanupWindows": "python3_Cleanup.bat"
     }
   ]
 }

@@ -10,7 +10,7 @@ func Logout() {
 	config.UserToken = ""
 	config.UserToken = ""
 
-	viper.Set("username", "")
+	viper.Set("user", "")
 	viper.Set("token", "")
 	viper.WriteConfig()
 

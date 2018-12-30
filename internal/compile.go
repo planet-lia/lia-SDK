@@ -33,7 +33,7 @@ func Compile(botDir string) error {
 		return err
 	}
 
-	fmt.Printf("Preparing completed...\n")
+	fmt.Printf("Preparing completed.\n")
 	return nil
 }
 
@@ -47,7 +47,7 @@ func prepareBot(botDir string, lang *config.Language) error {
 
 	var cmd *exec.Cmd
 	if config.OperatingSystem == "windows" {
-		cmd = exec.Command(config.Cfg.PathToBash, prepareScript, botDir)
+		cmd = exec.Command(".\\"+prepareScript, botDir)
 	} else {
 		cmd = exec.Command("/bin/bash", prepareScript, botDir)
 	}
@@ -65,11 +65,14 @@ func prepareBot(botDir string, lang *config.Language) error {
 
 func copyRunScript(botDir string, lang *config.Language) error {
 	runScript := lang.RunUnix
+	runScriptName := "run.sh"
 	if config.OperatingSystem == "windows" {
 		runScript = lang.RunWindows
+		runScriptName = "run.bat"
 	}
+
 	globalRunScriptPath := filepath.Join(config.PathToData, "languages", runScript)
-	botRunScriptPath := filepath.Join(botDir, "run.sh")
+	botRunScriptPath := filepath.Join(botDir, runScriptName)
 
 	// Copy run script to bot
 	if err := advancedcopy.File(globalRunScriptPath, botRunScriptPath); err != nil {

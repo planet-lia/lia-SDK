@@ -192,13 +192,16 @@ func removeRedundantFiles(botDir string) error {
 		return err
 	}
 
-	cleanupScript := lang.Cleanup
+	cleanupScript := lang.CleanupUnix
+	if config.OperatingSystem == "windows" {
+		cleanupScript = lang.CleanupWindows
+	}
 
 	pathToLanguages := filepath.Join(config.PathToData, "languages")
 
 	var cmd *exec.Cmd
 	if config.OperatingSystem == "windows" {
-		cmd = exec.Command(config.Cfg.PathToBash, cleanupScript, botDirAbsPath)
+		cmd = exec.Command(".\\"+cleanupScript, botDirAbsPath)
 	} else {
 		cmd = exec.Command("/bin/bash", cleanupScript, botDirAbsPath)
 	}
@@ -207,7 +210,7 @@ func removeRedundantFiles(botDir string) error {
 	cmd.Stderr = os.Stderr
 
 	if err := cmd.Run(); err != nil {
-		fmt.Fprintf(os.Stderr, "Cleanup script failed for bot %s\n", botDir)
+		fmt.Fprintf(os.Stderr, "CleanupUnix script failed for bot %s\n", botDir)
 		return err
 	}
 

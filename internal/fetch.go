@@ -128,12 +128,12 @@ func downloadZip(url string, output *os.File, timeoutSeconds int) error {
 
 	if response.StatusCode != 200 {
 		body, _ := ioutil.ReadAll(response.Body)
-		return fmt.Errorf("failed to download bot. %v, Status code: %v", string(body), response.StatusCode)
+		return fmt.Errorf("failed to download zip. %v, Status code: %v", string(body), response.StatusCode)
 	}
 
 	_, err = io.Copy(output, response.Body)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to store downloaded bot")
+		fmt.Fprintf(os.Stderr, "failed to store downloaded zip")
 		return err
 	}
 

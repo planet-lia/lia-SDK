@@ -1,6 +1,7 @@
 package advancedcopy
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -56,11 +57,11 @@ func Dir(src string, dst string) error {
 
 		if fd.IsDir() {
 			if err = Dir(srcfp, dstfp); err != nil {
-				return err
+				fmt.Fprintf(os.Stderr, "%s -> skipping\n", err)
 			}
 		} else {
 			if err = File(srcfp, dstfp); err != nil {
-				return err
+				fmt.Fprintf(os.Stderr, "%s -> skipping\n", err)
 			}
 		}
 	}

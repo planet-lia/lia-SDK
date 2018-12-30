@@ -18,11 +18,11 @@ var generateCmd = &cobra.Command{
 		bot2Dir := args[1]
 
 		analytics.Log("command", "generate", map[string]string{
-			"gseed":      analytics.ParseIntFlagToString(cmd, "gseed"),
-			"mseed":      analytics.ParseIntFlagToString(cmd, "mseed"),
-			"port":       analytics.ParseIntFlagToString(cmd, "port"),
-			"map":        analytics.TrimPath(analytics.ParseStringFlag(cmd, "map")),
-			"debug":      analytics.ParseIntSliceFlagToString(cmd, "debug"),
+			"gseed": analytics.ParseIntFlagToString(cmd, "gseed"),
+			"mseed": analytics.ParseIntFlagToString(cmd, "mseed"),
+			"port":  analytics.ParseIntFlagToString(cmd, "port"),
+			"map":   analytics.TrimPath(analytics.ParseStringFlag(cmd, "map")),
+			"debug": analytics.ParseIntSliceFlagToString(cmd, "debug"),
 		})
 
 		internal.CheckForUpdate()

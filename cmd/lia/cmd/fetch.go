@@ -19,7 +19,7 @@ the argument is provided.`,
 		name := args[1]
 
 		analytics.Log("command", "fetch", map[string]string{
-			"url":  url,
+			"url": url,
 		})
 
 		internal.CheckForUpdate()

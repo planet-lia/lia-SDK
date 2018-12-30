@@ -2,8 +2,8 @@ package internal
 
 import (
 	"fmt"
-	"os"
 	"github.com/liagame/lia-SDK"
+	"os"
 )
 
 func Play(bot1Dir string, bot2Dir string, gameFlags *GameFlags, viewReplay bool, replayViewerWidth string) {
@@ -25,4 +25,3 @@ func Play(bot1Dir string, bot2Dir string, gameFlags *GameFlags, viewReplay bool,
 		ShowReplayViewer(gameFlags.ReplayPath, replayViewerWidth)
 	}
 }
-

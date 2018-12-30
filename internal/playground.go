@@ -2,6 +2,8 @@ package internal
 
 import (
 	"bytes"
+	"fmt"
+	"github.com/liagame/lia-SDK"
 	"github.com/liagame/lia-SDK/internal/analytics"
 	"github.com/liagame/lia-SDK/internal/config"
 	"github.com/liagame/lia-SDK/x_vendor"
@@ -9,8 +11,6 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	"fmt"
-	"github.com/liagame/lia-SDK"
 )
 
 func Playground(playgroundNumber int, botDir string, debug bool, viewReplay bool, replayViewerWidth string) {

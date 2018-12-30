@@ -1,18 +1,18 @@
 package internal
 
 import (
-	"fmt"
-	"github.com/liagame/lia-SDK/internal/config"
 	"bufio"
-	"os"
-	"net/http"
 	"bytes"
-	"io/ioutil"
-	"github.com/pkg/errors"
 	"encoding/json"
+	"fmt"
 	"github.com/liagame/lia-SDK"
+	"github.com/liagame/lia-SDK/internal/config"
+	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 	"golang.org/x/crypto/ssh/terminal"
+	"io/ioutil"
+	"net/http"
+	"os"
 )
 
 func Login() {
@@ -23,7 +23,6 @@ func Login() {
 	fmt.Print("Username: ")
 	scanner.Scan()
 	username := scanner.Text()
-
 
 	// Ask for password
 	fmt.Print("Password: ")

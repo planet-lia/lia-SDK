@@ -1,20 +1,20 @@
 package internal
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/fatih/color"
+	"github.com/inconshreveable/go-update"
 	"github.com/liagame/lia-SDK"
 	"github.com/liagame/lia-SDK/internal/config"
+	"github.com/mholt/archiver"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
-	"time"
-	"github.com/fatih/color"
-	"github.com/mholt/archiver"
 	"runtime"
-	"github.com/inconshreveable/go-update"
-	"bytes"
+	"time"
 )
 
 const ReleaseRequestFailed = "failed"
@@ -102,7 +102,7 @@ func Update() {
 
 		fmt.Println("Removing current data/ directory.")
 		if err := os.RemoveAll(config.PathToData); err != nil {
-			fmt.Fprintf(os.Stderr, "Failed to delete current data/ directory. " +
+			fmt.Fprintf(os.Stderr, "Failed to delete current data/ directory. "+
 				"If nothing else helps please download and replace it manualy from %s. Error: %s\n", releaseUrl, err)
 			osExitStatus = lia_SDK.Generic
 			return
@@ -145,9 +145,12 @@ func Update() {
 func getReleaseZipUrl(latestTag string) string {
 	releaseUrl := config.ReleasesZipUrlBase + "/" + latestTag + "/lia-sdk-"
 	switch config.OperatingSystem {
-	case "windows": releaseUrl += "windows.zip"
-	case "darwin": releaseUrl += "macos.zip"
-	default: releaseUrl += "linux.zip"
+	case "windows":
+		releaseUrl += "windows.zip"
+	case "darwin":
+		releaseUrl += "macos.zip"
+	default:
+		releaseUrl += "linux.zip"
 	}
 	return releaseUrl
 }
@@ -200,7 +203,6 @@ func isUpdateAvailable() (string, bool) {
 	if latestTag == ReleaseRequestFailed {
 		return "", false
 	}
-
 
 	localRelease, err := getLocalReleaseConfig()
 	if err != nil {
@@ -286,7 +288,7 @@ func getLatestReleaseTag() string {
 }
 
 func printNewUpdateAvailableNotification(latestTag string) {
-	text := fmt.Sprintf("New version %s of Lia-SDK is available.\nSee the changes made at %s.\n" +
+	text := fmt.Sprintf("New version %s of Lia-SDK is available.\nSee the changes made at %s.\n"+
 		"Please run '%s' command to update it automatically.\n\n", latestTag, config.ReleasesUrl, "lia update")
 
 	fmt.Printf(color.GreenString(text))

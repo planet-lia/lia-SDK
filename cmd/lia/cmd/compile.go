@@ -1,12 +1,12 @@
 package cmd
 
 import (
+	"fmt"
+	"github.com/liagame/lia-SDK"
 	"github.com/liagame/lia-SDK/internal"
 	"github.com/liagame/lia-SDK/internal/analytics"
 	"github.com/spf13/cobra"
-	"fmt"
 	"os"
-	"github.com/liagame/lia-SDK"
 )
 
 var compileCmd = &cobra.Command{

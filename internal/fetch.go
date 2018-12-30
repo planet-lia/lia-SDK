@@ -5,6 +5,7 @@ import (
 	"github.com/liagame/lia-SDK"
 	"github.com/liagame/lia-SDK/internal/config"
 	"github.com/mholt/archiver"
+	"github.com/pkg/errors"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -12,7 +13,6 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
-	"github.com/pkg/errors"
 )
 
 func FetchBot(url string, name string, customBotDir string) {
@@ -37,7 +37,7 @@ func FetchBot(url string, name string, customBotDir string) {
 	fmt.Printf("Downloading bot from %s...\n", url)
 	if err := downloadZip(url, tmpFile, 30); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to download bot from %s.\n %s\n", url, err)
-		osExitStatus  = lia_SDK.BotDownloadFailed
+		osExitStatus = lia_SDK.BotDownloadFailed
 		return
 	}
 

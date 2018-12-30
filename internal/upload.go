@@ -5,21 +5,21 @@ import (
 )
 
 import (
-	"github.com/pkg/browser"
-	"os"
-	"github.com/liagame/lia-SDK/internal/config"
-	"net/http"
 	"bytes"
-	"io/ioutil"
-	"github.com/liagame/lia-SDK"
-	"github.com/liagame/lia-SDK/pkg/advancedcopy"
-	"path/filepath"
-	"os/exec"
-	"github.com/mholt/archiver"
-	"time"
 	"encoding/json"
+	"github.com/liagame/lia-SDK"
+	"github.com/liagame/lia-SDK/internal/config"
+	"github.com/liagame/lia-SDK/pkg/advancedcopy"
+	"github.com/mholt/archiver"
+	"github.com/pkg/browser"
 	"io"
+	"io/ioutil"
 	"mime/multipart"
+	"net/http"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"time"
 )
 
 func Upload(botDir string) {
@@ -110,7 +110,7 @@ func uploadBot(botZip string) error {
 	}
 
 	values := map[string]io.Reader{
-		"file":  botZipFile,
+		"file": botZipFile,
 	}
 
 	// Prepare a form that you will submit to that URL.
@@ -148,7 +148,7 @@ func uploadBot(botZip string) error {
 	}
 
 	req.Header.Set("Content-Type", w.FormDataContentType())
-	req.Header.Set("Authorization", "Bearer " + config.UserToken)
+	req.Header.Set("Authorization", "Bearer "+config.UserToken)
 
 	// Submit the request
 	resp, err := client.Do(req)
@@ -180,7 +180,6 @@ func uploadBot(botZip string) error {
 
 	return nil
 }
-
 
 func removeRedundantFiles(botDir string) error {
 	botDirAbsPath := botDir
@@ -230,7 +229,6 @@ func zip(botDir string) (string, error) {
 	return zipFile, nil
 }
 
-
 func verifyToken(token string) (bool, error) {
 	url := config.AuthVerifyUrl
 
@@ -238,7 +236,7 @@ func verifyToken(token string) (bool, error) {
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer " + token)
+	req.Header.Set("Authorization", "Bearer "+token)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)

@@ -26,6 +26,14 @@ type GameFlags struct {
 }
 
 func GenerateGame(bot1Dir string, bot2Dir string, gameFlags *GameFlags) {
+	// Allows running deferred functions before exiting
+	osExitStatus := -1
+	defer func() {
+		if osExitStatus != -1 {
+			os.Exit(osExitStatus)
+		}
+	}()
+
 	bot1Debug := contains(gameFlags.DebugBots, 1)
 	uidBot1 := getBotUid(bot1Debug)
 
@@ -94,7 +102,8 @@ func GenerateGame(bot1Dir string, bot2Dir string, gameFlags *GameFlags) {
 	err := <-result
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to generate game\n %s\n", err)
-		defer os.Exit(lia_SDK.FailedToGenerateGame)
+		osExitStatus = lia_SDK.FailedToGenerateGame
+		return
 	}
 
 	engineFinished = true

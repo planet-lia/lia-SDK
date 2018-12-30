@@ -2,7 +2,6 @@ package internal
 
 import (
 	"fmt"
-	"github.com/liagame/lia-SDK"
 	"github.com/liagame/lia-SDK/internal/config"
 	"github.com/liagame/lia-SDK/pkg/advancedcopy"
 	"os"
@@ -10,28 +9,32 @@ import (
 	"path/filepath"
 )
 
-func Compile(botDir string) {
+func Compile(botDir string) error {
 	botDirAbsPath := botDir
 	if !filepath.IsAbs(botDir) {
 		botDirAbsPath = filepath.Join(config.PathToBots, botDir)
 	}
 
-	lang := GetBotLanguage(botDirAbsPath)
+	lang, err := GetBotLanguage(botDirAbsPath)
+	if err != nil {
+		return err
+	}
 
 	// Prepare bot
 	fmt.Println("Preparing bot...")
 	if err := prepareBot(botDirAbsPath, lang); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to run prepare bot script for bot %s and lang %s. %s\n", botDirAbsPath, lang.Name, err)
-		os.Exit(lia_SDK.PreparingBotFailed)
+		fmt.Fprintf(os.Stderr, "failed to run prepare bot script for bot %s and lang %s\n", botDirAbsPath, lang.Name)
+		return err
 	}
 
 	// Copy run script into bot dir
 	if err := copyRunScript(botDirAbsPath, lang); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to create run script for bot %s. %s\n", botDirAbsPath, err)
-		os.Exit(lia_SDK.CopyingRunScriptFailed)
+		fmt.Fprintf(os.Stderr, "failed to create run script for bot %s\n", botDirAbsPath)
+		return err
 	}
 
-	fmt.Println("Completed.")
+	fmt.Println("Preparing completed.")
+	return nil
 }
 
 func prepareBot(botDir string, lang *config.Language) error {

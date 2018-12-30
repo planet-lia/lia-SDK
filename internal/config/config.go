@@ -24,7 +24,8 @@ var ReleasesUrl string
 var ReleasesZipUrlBase string
 
 const defaultLiaBackendUrl = "https://prod.cloud1.liagame.com"
-var LoginUrl string
+var AuthUrl string
+var AuthVerifyUrl string
 var BotUploadUrl string
 
 func init() {
@@ -47,7 +48,8 @@ func init() {
 	} else {
 		fmt.Printf("Lia backend URL set to %s\n", liaBackendUrl)
 	}
-	LoginUrl = liaBackendUrl + "/auth/"
+	AuthUrl = liaBackendUrl + "/auth/"
+	AuthVerifyUrl = liaBackendUrl + "/auth/verify/"
 	BotUploadUrl = liaBackendUrl + "/game/bot/upload/"
 }
 
@@ -73,6 +75,7 @@ type Language struct {
 	RunUnix        string `json:"runUnix"`
 	PrepareWindows string `json:"prepareWindows"`
 	RunWindows     string `json:"runWindows"`
+	Cleanup        string `json:"cleanup"`
 }
 
 var LoggedInUser string

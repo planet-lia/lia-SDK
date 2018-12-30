@@ -9,6 +9,8 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"fmt"
+	"github.com/liagame/lia-SDK"
 )
 
 func Playground(playgroundNumber int, botDir string, debug bool, viewReplay bool, replayViewerWidth string) {
@@ -22,7 +24,10 @@ func Playground(playgroundNumber int, botDir string, debug bool, viewReplay bool
 		DebugBots:  setDebugSlice(debug),
 	}
 
-	Compile(botDir)
+	if err := Compile(botDir); err != nil {
+		fmt.Printf("%s\n", err)
+		os.Exit(lia_SDK.PreparingBotFailed)
+	}
 
 	playgroundBotDir := filepath.Join("data", "playgrounds", strconv.Itoa(playgroundNumber), "bot")
 	GenerateGame(botDir, playgroundBotDir, gameFlags)

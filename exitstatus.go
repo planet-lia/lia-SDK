@@ -23,4 +23,5 @@ const (
 	PreparingAnalyticsDataFailed = 19
 	UpdateDownloadFailed         = 20
 	FailedToGetToken			 = 21
+	BotUploadFailed				 = 22
 )

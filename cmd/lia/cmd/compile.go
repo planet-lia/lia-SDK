@@ -4,6 +4,9 @@ import (
 	"github.com/liagame/lia-SDK/internal"
 	"github.com/liagame/lia-SDK/internal/analytics"
 	"github.com/spf13/cobra"
+	"fmt"
+	"os"
+	"github.com/liagame/lia-SDK"
 )
 
 var compileCmd = &cobra.Command{
@@ -17,7 +20,11 @@ var compileCmd = &cobra.Command{
 		analytics.Log("command", "compile", map[string]string{})
 
 		internal.CheckForUpdate()
-		internal.Compile(botDir)
+
+		if err := internal.Compile(botDir); err != nil {
+			fmt.Printf("%s\n", err)
+			os.Exit(lia_SDK.PreparingBotFailed)
+		}
 	},
 }
 

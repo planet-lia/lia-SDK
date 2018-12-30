@@ -53,11 +53,11 @@ func Login() {
 }
 
 func getToken(username string, password string) (string, error) {
-	url := config.LoginUrl
+	url := config.AuthUrl
 
-	var jsonStr = []byte(fmt.Sprintf(`{"username":"%s","password":"%s"}`, username, password))
+	var data = []byte(fmt.Sprintf(`{"username":"%s","password":"%s"}`, username, password))
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}

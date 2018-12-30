@@ -16,11 +16,20 @@ import (
 )
 
 func FetchBot(url string, name string, customBotDir string) {
+	// Allows running deferred functions before exiting
+	osExitStatus := -1
+	defer func() {
+		if osExitStatus != -1 {
+			os.Exit(osExitStatus)
+		}
+	}()
+
 	// Create temporary file
 	tmpFile, err := ioutil.TempFile("", "")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error while creating tmp file %s\n", err)
-		os.Exit(lia_SDK.OsCallFailed)
+		osExitStatus = lia_SDK.OsCallFailed
+		return
 	}
 	defer os.Remove(tmpFile.Name())
 
@@ -28,8 +37,8 @@ func FetchBot(url string, name string, customBotDir string) {
 	fmt.Printf("Downloading bot from %s...\n", url)
 	if err := downloadZip(url, tmpFile, 30); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to download bot from %s.\n %s\n", url, err)
-		defer os.Exit(lia_SDK.BotDownloadFailed)
-		return // need to call like that so that other defers are called (removing files etc...)
+		osExitStatus  = lia_SDK.BotDownloadFailed
+		return
 	}
 
 	// Extract bot
@@ -37,14 +46,14 @@ func FetchBot(url string, name string, customBotDir string) {
 	tmpBotParentDir, err := ioutil.TempDir("", "")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to create tmp bot dir. %s", err)
-		defer os.Exit(lia_SDK.OsCallFailed)
+		osExitStatus = lia_SDK.OsCallFailed
 		return
 	}
 	defer os.RemoveAll(tmpBotParentDir)
 
 	if err := archiver.Zip.Open(tmpFile.Name(), tmpBotParentDir); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to extract bot with target %s\n%v\n", tmpBotParentDir, err)
-		defer os.Exit(lia_SDK.OsCallFailed)
+		osExitStatus = lia_SDK.OsCallFailed
 		return
 	}
 
@@ -52,7 +61,7 @@ func FetchBot(url string, name string, customBotDir string) {
 	botDirName, err := getDirName(tmpBotParentDir)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to get bot dir. %s\n", err)
-		defer os.Exit(lia_SDK.Generic)
+		osExitStatus = lia_SDK.Generic
 		return
 	}
 
@@ -64,11 +73,11 @@ func FetchBot(url string, name string, customBotDir string) {
 	// Check if the bot with chosen name already exists
 	if isUsed, err := isNameUsed(name); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to check if name isUsed. %s", err)
-		defer os.Exit(lia_SDK.Generic)
+		osExitStatus = lia_SDK.Generic
 		return
 	} else if isUsed {
 		fmt.Fprintf(os.Stderr, "bot name %s already exists. Choose another name.\n", name)
-		defer os.Exit(lia_SDK.BotExists)
+		osExitStatus = lia_SDK.BotExists
 		return
 	}
 
@@ -82,7 +91,7 @@ func FetchBot(url string, name string, customBotDir string) {
 	}
 	if err := os.Rename(tmpBotDir, finalBotDir); err != nil {
 		fmt.Fprintf(os.Stderr, "failed move bot dir from %s to %s. %s\n", botDirName, finalBotDir, err)
-		defer os.Exit(lia_SDK.OsCallFailed)
+		osExitStatus = lia_SDK.OsCallFailed
 		return
 	}
 
@@ -118,7 +127,8 @@ func downloadZip(url string, output *os.File, timeoutSeconds int) error {
 	defer response.Body.Close()
 
 	if response.StatusCode != 200 {
-		return fmt.Errorf("failed to download bot. %v", *response)
+		body, _ := ioutil.ReadAll(response.Body)
+		return fmt.Errorf("failed to download bot. %v, Status code: %v", string(body), response.StatusCode)
 	}
 
 	_, err = io.Copy(output, response.Body)

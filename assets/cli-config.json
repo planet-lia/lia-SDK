@@ -9,7 +9,8 @@
       "prepareUnix": "java_UnixPrepare.sh",
       "runUnix": "java_UnixRun.sh",
       "prepareWindows": "java_WindowsPrepare.sh",
-      "runWindows": "java_WindowsRun.sh"
+      "runWindows": "java_WindowsRun.sh",
+      "cleanup": "java_Cleanup.sh"
     },
     {
       "name": "kotlin",
@@ -17,7 +18,8 @@
       "prepareUnix": "java_UnixPrepare.sh",
       "runUnix": "java_UnixRun.sh",
       "prepareWindows": "java_WindowsPrepare.sh",
-      "runWindows": "java_WindowsRun.sh"
+      "runWindows": "java_WindowsRun.sh",
+      "cleanup": "java_Cleanup.sh"
     },
     {
       "name": "python3",
@@ -25,7 +27,8 @@
       "prepareUnix": "python3_UnixPrepare.sh",
       "runUnix": "python3_UnixRun.sh",
       "prepareWindows": "python3_WindowsPrepare.sh",
-      "runWindows": "python3_WindowsRun.sh"
+      "runWindows": "python3_WindowsRun.sh",
+      "cleanup": "python3_Cleanup.sh"
     }
   ]
 }

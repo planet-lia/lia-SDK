@@ -38,7 +38,9 @@ func Upload(botDir string) {
 	}
 
 	// Upload the bot
-	if err := prepareAndUploadBot(botDir); err != nil {
+	trackProgressUrl := ""
+	var err error
+	if trackProgressUrl, err = prepareAndUploadBot(botDir); err != nil {
 		fmt.Fprintf(os.Stderr, "Bot upload failed: %s\n", err)
 		os.Exit(lia_SDK.BotUploadFailed)
 	}
@@ -46,59 +48,59 @@ func Upload(botDir string) {
 
 	// Open user profile in browser
 	fmt.Println("Opening your profile page in your default browser...")
-	url := "https://liagame.com/games/1" // TODO open real profile
-	if err := browser.OpenURL(url); err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to open URL %s in browser: %s\n", url, err)
+	if err := browser.OpenURL(trackProgressUrl); err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to open URL %s in browser: %s\n", trackProgressUrl, err)
 		os.Exit(lia_SDK.Generic)
 	}
 }
-func prepareAndUploadBot(botDir string) error {
+func prepareAndUploadBot(botDir string) (string, error) {
 	// Copy bot to tmp dir
 	fmt.Println("Copying bot to temporary directory.")
 
 	tmpBotDir, err := ioutil.TempDir("", "")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Failed to create tmp dir")
-		return err
+		return "", err
 	}
 	defer os.RemoveAll(tmpBotDir)
 
 	if err := advancedcopy.Dir(botDir, tmpBotDir); err != nil {
 		fmt.Fprintln(os.Stderr, "Failed to copy bot to tmp directory")
-		return err
+		return "", err
 	}
 
 	// Check if bot compiles
 	fmt.Println("Preparing bot to check if everything works.")
 	if err := Compile(tmpBotDir); err != nil {
 		fmt.Fprintln(os.Stderr, "Failed to compile bot")
-		return err
+		return "", err
 	}
 
 	fmt.Println("Cleaning up bot directory.")
 	if err := removeRedundantFiles(tmpBotDir); err != nil {
 		fmt.Fprintln(os.Stderr, "Failed to remove redundant files")
-		return err
+		return "", err
 	}
 
 	// Zip the bot
 	botZip, err := zip(tmpBotDir)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Zipping bot failed")
-		return err
+		return "", err
 	}
 	defer os.RemoveAll(botZip)
 
 	// Upload it to the backend
-	if err := uploadBot(botZip); err != nil {
+	trackProgressUrl := ""
+	if trackProgressUrl, err = uploadBot(botZip); err != nil {
 		fmt.Fprintln(os.Stderr, "Uploading bot failed")
-		return err
+		return "", err
 	}
 
-	return nil
+	return trackProgressUrl, nil
 }
 
-func uploadBot(botZip string) error {
+func uploadBot(botZip string) (string, error) {
 	var client = &http.Client{
 		Timeout: time.Second * time.Duration(300),
 	}
@@ -106,7 +108,7 @@ func uploadBot(botZip string) error {
 	botZipFile, err := os.Open(botZip)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Failed to open zipped bot file")
-		return err
+		return "", err
 	}
 
 	values := map[string]io.Reader{
@@ -124,16 +126,16 @@ func uploadBot(botZip string) error {
 		// Add an image file
 		if x, ok := r.(*os.File); ok {
 			if fw, err = w.CreateFormFile(key, x.Name()); err != nil {
-				return err
+				return "", err
 			}
 		} else {
 			// Add other fields
 			if fw, err = w.CreateFormField(key); err != nil {
-				return err
+				return "", err
 			}
 		}
 		if _, err = io.Copy(fw, r); err != nil {
-			return err
+			return "", err
 		}
 
 	}
@@ -144,7 +146,7 @@ func uploadBot(botZip string) error {
 	// Now that you have a form, you can submit it to your handler.
 	req, err := http.NewRequest("POST", config.BotUploadUrl, &b)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	req.Header.Set("Content-Type", w.FormDataContentType())
@@ -153,32 +155,31 @@ func uploadBot(botZip string) error {
 	// Submit the request
 	resp, err := client.Do(req)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	// Check the response
 	if resp.StatusCode != http.StatusCreated {
 		err = fmt.Errorf("bad status: %s", resp.Status)
-		return err
+		return "", err
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	var objmap map[string]*json.RawMessage
 	if err := json.Unmarshal(body, &objmap); err != nil {
-		return err
+		return "", err
 	}
-	var botId string
-	if err := json.Unmarshal(*objmap["botId"], &botId); err != nil {
-		return err
+	var trackProgressUrl string
+	if err := json.Unmarshal(*objmap["trackProgressUrl"], &trackProgressUrl); err != nil {
+		return "", err
 	}
 
-	// fmt.Println("BOT_ID: " + botId)
 
-	return nil
+	return trackProgressUrl, nil
 }
 
 func removeRedundantFiles(botDir string) error {

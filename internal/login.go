@@ -25,8 +25,6 @@ func Login() {
 	scanner.Scan()
 	username := scanner.Text()
 
-	fmt.Printf("USERNAME 1: %v\n", username)
-
 	// Ask for password
 	fmt.Print("Password: ")
 

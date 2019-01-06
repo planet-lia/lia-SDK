@@ -23,7 +23,7 @@ const defaultReleasesBaseUrl = "https://github.com/liagame/lia-SDK/releases/"
 var ReleasesUrl string
 var ReleasesZipUrlBase string
 
-const defaultLiaBackendUrl = "https://prod.cloud1.liagame.com"
+const defaultLiaBackendUrl = "https://staging.cloud1.liagame.com"
 
 var AuthUrl string
 var AuthVerifyUrl string

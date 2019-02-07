@@ -21,7 +21,6 @@ Available Commands:
   login       Login to Lia with your account
   logout      Logout from Lia
   play        Compiles and generates a game between bot1 and bot2
-  playground  Runs playground specified by number with chosen bot
   replay      Runs a replay viewer
   settings    Views the user's settings
   update      Updates Lia-SDK

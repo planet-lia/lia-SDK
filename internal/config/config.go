@@ -18,7 +18,7 @@ const SettingsFileExtension = "json"
 const PropertyID = "UA-122844498-1" // Id of google analytics project
 const TestPropertyID = "UA-122844498-2"
 
-const defaultReleasesBaseUrl = "https://github.com/Svigelj/sdk-test/releases/"
+const defaultReleasesBaseUrl = "https://github.com/liagame/lia-sdk/releases/"
 
 var ReleasesUrl string
 var ReleasesZipUrlBase string

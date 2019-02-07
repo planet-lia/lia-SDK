@@ -194,7 +194,7 @@ func timeToCheckForUpdate() (bool, error) {
 		return false, err
 	}
 
-	return latestTime.Add(time.Hour * 24).Before(timeNow), nil
+	return latestTime.Add(time.Hour * 3).Before(timeNow), nil
 }
 
 func isUpdateAvailable() (string, bool) {

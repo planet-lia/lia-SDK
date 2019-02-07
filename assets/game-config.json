@@ -6,16 +6,16 @@
     "positionIterationsPerTick": 4
   },
   "bots": {
-    "initResponseTimeout": 15.0,
-    "tickResponseTimeout": 2.0,
+    "firstTickTimeout": 15.0,
+    "tickTimeout": 2.0,
     "ticksPerRequest": 3,
     "maxFailedResponses": 8,
     "initialConnectionTimeout": 30.0,
     "requestsSumTimeout": 300.0
   },
   "gameDetails": {
-    "mapWidth": 160,
-    "mapHeight": 90,
+    "mapWidth": 176,
+    "mapHeight": 99,
     "gameDuration": 200,
     "background": {
       "r": 0.2,
@@ -23,7 +23,9 @@
       "b": 0.2,
       "a": 1.0
     },
-    "unitsPerTeam": 16,
+    "initialWorkersPerTeam": 3,
+    "initialWarriorsPerTeam": 3,
+    "maxNumberOfUnitsPerTeam": 30,
     "teamKill": true,
     "mapType": -1
   },
@@ -35,19 +37,29 @@
     "size": 2,
     "health": 100,
     "forwardVelocity": 7.2,
-    "backwardVelocity": 5,
+    "backwardVelocity": 4.2,
     "rotationVelocityDeg": 54,
     "slowRotationVelocityDeg": 14,
     "timeBetweenShoots": 0.2,
     "nBulletsInMagazine": 3,
     "reloadTime": 1,
-    "bulletRange": 42,
     "healthRecoveryTime": 1.0,
     "healthRecoveryPoints": 8,
     "recoveryStartsAfter": 8.0,
     "speechBubbleDuration": 2.5,
     "delayBetweenSpeechBubbles": 0.5,
-    "maxSpeechBubbleTextLength": 23
+    "maxSpeechBubbleTextLength": 23,
+    "warriorPrice": 4,
+    "workerPrice": 3
+  },
+  "resources": {
+    "size": 1,
+    "amount": 20,
+    "offsetFromSpawn": 32,
+    "offsetFromUnits": 8,
+    "offsetFromWalls": 2,
+    "offsetFromObstacles": 0,
+    "stopSpawningAfter": 140
   },
   "viewingArea": {
     "length": 28,
@@ -57,7 +69,9 @@
   "bullets": {
     "size": 0.4,
     "velocity": 32,
-    "damage": 22
+    "bulletRange": 42,
+    "damageToWarrior": 22,
+    "damageToWorker": 30
   },
   "healthBar": {
     "width": 1.8,

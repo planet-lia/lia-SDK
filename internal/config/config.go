@@ -10,7 +10,7 @@ import (
 	"runtime"
 )
 
-const VERSION = "0.2.0" // TODO change to 1.0.0, for now we download bots from v0.2.0
+const VERSION = "1.0.0"
 const LiaHomePage = "https://liagame.com"
 
 const SettingsFile = ".lia"
@@ -23,7 +23,7 @@ const defaultReleasesBaseUrl = "https://github.com/liagame/lia-SDK/releases/"
 var ReleasesUrl string
 var ReleasesZipUrlBase string
 
-const defaultLiaBackendUrl = "https://staging.cloud1.liagame.com"
+const defaultLiaBackendUrl = "https://prod.cloud1.liagame.com"
 
 var AuthUrl string
 var AuthVerifyUrl string

@@ -5,7 +5,6 @@ Download latest release [here](https://github.com/liagame/lia-SDK/releases).
 
 ## Lia CLI
 ```bash
-Lia backend URL set to https://dev.cloud1.liagame.com
 lia is a CLI tool for easier development of Lia bots.
 
 Usage:

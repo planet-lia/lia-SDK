@@ -37,7 +37,7 @@
     "size": 2,
     "health": 100,
     "forwardVelocity": 7.2,
-    "backwardVelocity": 4.2,
+    "backwardVelocity": 5.2,
     "rotationVelocityDeg": 54,
     "slowRotationVelocityDeg": 14,
     "timeBetweenShoots": 0.2,

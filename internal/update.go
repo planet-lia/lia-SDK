@@ -109,7 +109,7 @@ func Update() {
 	}
 
 	fmt.Println("Replacing old data/ directory with a new one.")
-	pathToNewDataDir := releaseDirPath + "/data"
+	pathToNewDataDir := filepath.Join(releaseDirPath, "data")
 	if err := os.Rename(pathToNewDataDir, config.PathToData); err != nil {
 		fmt.Fprintf(os.Stderr, "Failed move new data dir from %s to %s. %s\n",
 			pathToNewDataDir, config.PathToData, err)
@@ -119,7 +119,7 @@ func Update() {
 
 	fmt.Println("Replacing lia executable.")
 
-	pathToNewLiaExecutable := releaseDirPath + "/lia"
+	pathToNewLiaExecutable := filepath.Join(releaseDirPath, "lia")
 	if runtime.GOOS == "windows" {
 		pathToNewLiaExecutable += ".exe"
 	}
@@ -137,6 +137,13 @@ func Update() {
 		osExitStatus = lia_SDK.Generic
 		return
 	}
+
+	// Remove lia.exe.old on windows devices TODO not working
+	//pathToOldExecutable := filepath.Join(config.PathToBots, "lia.exe.old")
+	//if _, err := os.Stat(pathToOldExecutable); os.IsNotExist(err) {
+	//	fmt.Println("Removing old lia executable.")
+	//	os.Remove(pathToOldExecutable)
+	//}
 
 	fmt.Println("Lia was updated sucessfully!")
 }

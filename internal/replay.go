@@ -6,6 +6,7 @@ import (
 	"github.com/liagame/lia-SDK/internal/config"
 	"os"
 	"os/exec"
+	"path/filepath"
 )
 
 func ShowReplayViewer(replayFile string, replayViewerWidth string) {
@@ -13,7 +14,7 @@ func ShowReplayViewer(replayFile string, replayViewerWidth string) {
 	if config.OperatingSystem == "darwin" {
 		args = append(args, "-XstartOnFirstThread", "-Dorg.lwjgl.system.allocator=system")
 	}
-	args = append(args, "-jar", config.PathToData+"/replay-viewer.jar")
+	args = append(args, "-jar", filepath.Join(config.PathToData, "replay-viewer.jar"))
 	if replayFile != "" {
 		args = append(args, replayFile)
 	}

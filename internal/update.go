@@ -138,14 +138,13 @@ func Update() {
 		return
 	}
 
-	// Remove lia.exe.old on windows devices TODO not working
-	//pathToOldExecutable := filepath.Join(config.PathToBots, "lia.exe.old")
-	//if _, err := os.Stat(pathToOldExecutable); os.IsNotExist(err) {
-	//	fmt.Println("Removing old lia executable.")
-	//	os.Remove(pathToOldExecutable)
-	//}
-
 	fmt.Println("Lia was updated sucessfully!")
+
+	if runtime.GOOS == "windows" {
+		fmt.Println()
+		fmt.Println("NOTE: You can safely delete lia.exe.old file.")
+		fmt.Println()
+	}
 }
 
 func getReleaseZipUrl(latestTag string) string {

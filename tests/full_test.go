@@ -1,16 +1,16 @@
 package tests
 
 import (
+	"fmt"
+	"github.com/liagame/lia-SDK"
+	"github.com/liagame/lia-SDK/internal"
 	"github.com/liagame/lia-SDK/internal/config"
 	"os"
 	"path/filepath"
 	"runtime"
+	"strconv"
 	"strings"
 	"testing"
-	"strconv"
-	"github.com/liagame/lia-SDK/internal"
-	"fmt"
-	"github.com/liagame/lia-SDK"
 )
 
 // Add custom replayViewerWidth for testing

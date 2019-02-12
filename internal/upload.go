@@ -178,7 +178,6 @@ func uploadBot(botZip string) (string, error) {
 		return "", err
 	}
 
-
 	return trackProgressUrl, nil
 }
 

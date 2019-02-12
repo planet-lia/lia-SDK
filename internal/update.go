@@ -16,6 +16,8 @@ import (
 	"path/filepath"
 	"runtime"
 	"time"
+	"strings"
+	"strconv"
 )
 
 const ReleaseRequestFailed = "failed"
@@ -215,16 +217,68 @@ func isUpdateAvailable() (string, bool) {
 		return "", false
 	}
 
-	// If the major versions are different then don't look at it
-	if latestTag[:2] != localRelease.Tag[:2] {
-		return "", false
+	larger := isNewUpdateLargerTanCurrent(latestTag, localRelease.Tag)
+
+	return latestTag, larger
+}
+
+func isNewUpdateLargerTanCurrent(new, current string) bool {
+	new = strings.TrimPrefix(new, "v")
+	current = strings.TrimPrefix(current, "v")
+
+	newVersions := strings.Split(new, ".")
+	currentVersions := strings.Split(new, ".")
+
+	if len(newVersions) != len(currentVersions) || len(newVersions) != 3 {
+		fmt.Printf("Error: New or current release tag is of wrong format (new=%s, current=%s)\n",
+			len(newVersions), len(currentVersions))
+		return false
 	}
 
-	if latestTag <= localRelease.Tag {
-		return "", false
+	// Only check if the major versions are the same
+	if newVersions[0] != currentVersions[0] {
+		return false
 	}
 
-	return latestTag, true
+	// Compare minor versions
+	if result, err := compareVersions(newVersions[1], currentVersions[1]); err != nil {
+		fmt.Printf("Failed to compare minor versions (new minor=%s, current minor=%s, err=%v)\n",
+			newVersions[1], currentVersions[1], err)
+		return false
+	} else if result == 1 {
+		return true
+	} else if result == -1 {
+		return false
+	}
+
+	// Compare bug fix versions
+	// TODO after the bug fix version there must be no spaces or "- some text" messages, add support
+	if result, err := compareVersions(newVersions[2], currentVersions[2]); err != nil {
+		fmt.Printf("Failed to compare bug fix versions (new bug fix=%s, current bug fix=%s, err=%v)\n",
+			newVersions[1], currentVersions[1], err)
+		return false
+	} else if result == 1 {
+		return true
+	} else if result == -1 {
+		return false
+	}
+
+	return false
+}
+
+// Returns 0 if same, -1 if v1 < v2 and 1 if v1 > v2
+func compareVersions(v1, v2 string) (int64, error) {
+	v1Number, err := strconv.ParseInt(v1, 10, 0)
+	if err != nil {
+		return -1, err
+	}
+
+	v2Number, err := strconv.ParseInt(v2, 10, 0)
+	if err != nil {
+		return -1, err
+	}
+
+	return v1Number - v2Number, nil
 }
 
 type ReleaseConfig struct {

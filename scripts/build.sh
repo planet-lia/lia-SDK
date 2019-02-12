@@ -8,6 +8,8 @@ platforms=("linux/386" "windows/386" "darwin/amd64" "linux/amd64/static")
 pathToScript="`dirname \"$0\"`"
 cd ${pathToScript}/..
 
+go fmt ./...
+
 # Run tests
 if [[ $runTests != "false" ]]; then
     go test ./...

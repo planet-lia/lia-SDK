@@ -51,7 +51,7 @@ func FetchBot(url string, name string, customBotDir string) {
 	}
 	defer os.RemoveAll(tmpBotParentDir)
 
-	if err := archiver.Zip.Open(tmpFile.Name(), tmpBotParentDir); err != nil {
+	if err := archiver.NewZip().Unarchive(tmpFile.Name(), tmpBotParentDir); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to extract bot with target %s\n%v\n", tmpBotParentDir, err)
 		osExitStatus = lia_SDK.OsCallFailed
 		return
@@ -89,6 +89,7 @@ func FetchBot(url string, name string, customBotDir string) {
 	} else {
 		finalBotDir = filepath.Join(customBotDir, name)
 	}
+
 	if err := os.Rename(tmpBotDir, finalBotDir); err != nil {
 		fmt.Fprintf(os.Stderr, "failed move bot dir from %s to %s. %s\n", botDirName, finalBotDir, err)
 		osExitStatus = lia_SDK.OsCallFailed

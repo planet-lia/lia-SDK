@@ -79,7 +79,7 @@ func Update() {
 	}
 	defer os.RemoveAll(tmpReleaseParentDir)
 
-	if err := archiver.Zip.Open(tmpFile.Name(), tmpReleaseParentDir); err != nil {
+	if err := archiver.NewZip().Unarchive(tmpFile.Name(), tmpReleaseParentDir); err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to extract update with target %s\n%v\n", tmpReleaseParentDir, err)
 		osExitStatus = lia_SDK.OsCallFailed
 		return
@@ -109,7 +109,7 @@ func Update() {
 	}
 
 	fmt.Println("Replacing old data/ directory with a new one.")
-	pathToNewDataDir := releaseDirPath + "/data"
+	pathToNewDataDir := filepath.Join(releaseDirPath, "/data")
 	if err := os.Rename(pathToNewDataDir, config.PathToData); err != nil {
 		fmt.Fprintf(os.Stderr, "Failed move new data dir from %s to %s. %s\n",
 			pathToNewDataDir, config.PathToData, err)

@@ -225,7 +225,7 @@ func zip(botDir string) (string, error) {
 	}
 
 	zipFile := botDirAbsPath + ".zip"
-	if err := archiver.Zip.Make(zipFile, []string{botDirAbsPath}); err != nil {
+	if err := archiver.NewZip().Archive([]string{botDirAbsPath}, zipFile); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to zip bot %s\n", botDirAbsPath)
 		return "", err
 	}

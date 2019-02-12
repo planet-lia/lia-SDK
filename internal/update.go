@@ -10,14 +10,15 @@ import (
 	"github.com/liagame/lia-SDK/internal/config"
 	"github.com/liagame/lia-SDK/pkg/advancedcopy"
 	"github.com/mholt/archiver"
+	"github.com/pkg/errors"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
-	"time"
-	"strings"
 	"strconv"
+	"strings"
+	"time"
 )
 
 const ReleaseRequestFailed = "failed"
@@ -112,7 +113,7 @@ func Update() {
 	}
 
 	fmt.Println("Replacing old data/ directory with a new one.")
-	pathToNewDataDir := filepath.Join(releaseDirPath, "/data")
+	pathToNewDataDir := filepath.Join(releaseDirPath, "data")
 
 	if err := advancedcopy.Dir(pathToNewDataDir, config.PathToData); err != nil {
 		fmt.Fprintf(os.Stderr, "Failed move new data dir from %s to %s. %s\n",
@@ -120,15 +121,16 @@ func Update() {
 		osExitStatus = lia_SDK.OsCallFailed
 		return
 	}
-
 	// Remove tmp directory
-	if err := os.RemoveAll(tmpReleaseParentDir); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to remove tmp dir %s, error: %s\n", tmpReleaseParentDir, err)
-	}
+	defer func() {
+		if err := os.RemoveAll(tmpReleaseParentDir); err != nil {
+			fmt.Fprintf(os.Stderr, "failed to remove tmp dir %s, error: %s\n", tmpReleaseParentDir, err)
+		}
+	}()
 
 	fmt.Println("Replacing lia executable.")
 
-	pathToNewLiaExecutable := releaseDirPath + "/lia"
+	pathToNewLiaExecutable := filepath.Join(releaseDirPath, "lia")
 	if runtime.GOOS == "windows" {
 		pathToNewLiaExecutable += ".exe"
 	}
@@ -148,6 +150,12 @@ func Update() {
 	}
 
 	fmt.Println("Lia was updated sucessfully!")
+
+	if runtime.GOOS == "windows" {
+		fmt.Println()
+		fmt.Println("NOTE: You can safely delete lia.exe.old file.")
+		fmt.Println()
+	}
 }
 
 func getReleaseZipUrl(latestTag string) string {
@@ -207,8 +215,9 @@ func timeToCheckForUpdate() (bool, error) {
 }
 
 func isUpdateAvailable() (string, bool) {
-	latestTag := getLatestReleaseTag()
-	if latestTag == ReleaseRequestFailed {
+	latestTag, err := getLatestReleaseTag()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to get latest release. Error: %v\n", err)
 		return "", false
 	}
 
@@ -217,12 +226,12 @@ func isUpdateAvailable() (string, bool) {
 		return "", false
 	}
 
-	larger := isNewUpdateLargerTanCurrent(latestTag, localRelease.Tag)
+	larger := isNewUpdateLargerThanCurrent(latestTag, localRelease.Tag)
 
 	return latestTag, larger
 }
 
-func isNewUpdateLargerTanCurrent(new, current string) bool {
+func isNewUpdateLargerThanCurrent(new, current string) bool {
 	new = strings.TrimPrefix(new, "v")
 	current = strings.TrimPrefix(current, "v")
 
@@ -306,7 +315,7 @@ func getLocalReleaseConfig() (*ReleaseConfig, error) {
 	return cfg, nil
 }
 
-func getLatestReleaseTag() string {
+func getLatestReleaseTag() (string, error) {
 	var client = &http.Client{
 		Timeout: time.Second * 30,
 	}
@@ -314,37 +323,37 @@ func getLatestReleaseTag() string {
 	url := config.ReleasesUrl
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		os.Exit(lia_SDK.Generic)
+		return "", err
 	}
 	req.Header.Add("Accept", "application/json")
 
 	res, err := client.Do(req)
 	if err != nil {
-		return ReleaseRequestFailed
+		return "", err
 	}
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
-		os.Exit(lia_SDK.FailedToGetLatestRelease)
+		return "", errors.New("Response status " + res.Status)
 	}
 
 	// Convert body to bytes
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		os.Exit(lia_SDK.FailedToGetLatestRelease)
+		return "", err
 	}
 
 	// Get tag
 	var objmap map[string]*json.RawMessage
 	if err := json.Unmarshal(body, &objmap); err != nil {
-		os.Exit(lia_SDK.FailedToGetLatestRelease)
+		return "", err
 	}
 	var tag string
 	if err := json.Unmarshal(*objmap["tag_name"], &tag); err != nil {
-		os.Exit(lia_SDK.FailedToGetLatestRelease)
+		return "", err
 	}
 
-	return tag
+	return tag, nil
 }
 
 func printNewUpdateAvailableNotification(latestTag string) {

@@ -10,7 +10,7 @@ import (
 func GetBotLanguage(botDir string) (*config.Language, error) {
 	botConfigPath := filepath.Join(botDir, "lia.json")
 
-	liaConfig, err := getConfig(botConfigPath)
+	liaConfig, err := getConfig(botDir, botConfigPath)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to read %s\n", botConfigPath)
 		return nil, err

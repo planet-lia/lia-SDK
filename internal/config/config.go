@@ -10,7 +10,7 @@ import (
 	"runtime"
 )
 
-const VERSION = "1.0.0"
+const VERSION = "1.0.1"
 const LiaHomePage = "https://liagame.com"
 
 const SettingsFile = ".lia"

@@ -8,6 +8,7 @@ import (
 	"github.com/inconshreveable/go-update"
 	"github.com/liagame/lia-SDK"
 	"github.com/liagame/lia-SDK/internal/config"
+	"github.com/liagame/lia-SDK/pkg/advancedcopy"
 	"github.com/mholt/archiver"
 	"io/ioutil"
 	"net/http"
@@ -110,11 +111,17 @@ func Update() {
 
 	fmt.Println("Replacing old data/ directory with a new one.")
 	pathToNewDataDir := filepath.Join(releaseDirPath, "/data")
-	if err := os.Rename(pathToNewDataDir, config.PathToData); err != nil {
+
+	if err := advancedcopy.Dir(pathToNewDataDir, config.PathToData); err != nil {
 		fmt.Fprintf(os.Stderr, "Failed move new data dir from %s to %s. %s\n",
 			pathToNewDataDir, config.PathToData, err)
 		osExitStatus = lia_SDK.OsCallFailed
 		return
+	}
+
+	// Remove tmp directory
+	if err := os.RemoveAll(tmpReleaseParentDir); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to remove tmp dir %s, error: %s\n", tmpReleaseParentDir, err)
 	}
 
 	fmt.Println("Replacing lia executable.")

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/liagame/lia-SDK"
 	"github.com/liagame/lia-SDK/internal/config"
+	"github.com/liagame/lia-SDK/pkg/advancedcopy"
 	"github.com/mholt/archiver"
 	"github.com/pkg/errors"
 	"io"
@@ -90,10 +91,15 @@ func FetchBot(url string, name string, customBotDir string) {
 		finalBotDir = filepath.Join(customBotDir, name)
 	}
 
-	if err := os.Rename(tmpBotDir, finalBotDir); err != nil {
-		fmt.Fprintf(os.Stderr, "failed move bot dir from %s to %s. %s\n", botDirName, finalBotDir, err)
+	if err := advancedcopy.Dir(tmpBotDir, finalBotDir); err != nil {
+		fmt.Fprintf(os.Stderr, "failed copy bot dir from %s to %s. %s\n", botDirName, finalBotDir, err)
 		osExitStatus = lia_SDK.OsCallFailed
 		return
+	}
+
+	// Remove tmp directory
+	if err := os.RemoveAll(tmpBotParentDir); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to remove tmp dir %s, error: %s\n", tmpBotParentDir, err)
 	}
 
 	fmt.Printf("Bot %s is ready!\n", name)

@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestComapreVersions(t *testing.T) {
+func TestCompareVersions(t *testing.T) {
 	cases := []struct {
 		tag1 string
 		tag2 string
@@ -14,6 +14,12 @@ func TestComapreVersions(t *testing.T) {
 		{"v1.0.1", "v1.0.0", true},
 		{"v1.0.1", "v1.0.2", false},
 		{"v1.0.11", "v1.0.2", true},
+		{"v2.0.11", "v1.0.2", false},
+		{"v2.1.11", "v2.0.22", true},
+		{"v2.0.22", "v2.3.1", false},
+		{"v2.33.22", "v2.3.1", true},
+		{"v1.0.21", "v1.0.20", true},
+		{"v11.0.21", "v1.0.20", false},
 	}
 
 	// Run actual tests

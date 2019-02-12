@@ -227,10 +227,10 @@ func isNewUpdateLargerTanCurrent(new, current string) bool {
 	current = strings.TrimPrefix(current, "v")
 
 	newVersions := strings.Split(new, ".")
-	currentVersions := strings.Split(new, ".")
+	currentVersions := strings.Split(current, ".")
 
 	if len(newVersions) != len(currentVersions) || len(newVersions) != 3 {
-		fmt.Printf("Error: New or current release tag is of wrong format (new=%s, current=%s)\n",
+		fmt.Printf("Error: New or current release tag is of wrong format (new len=%d, current len=%d)\n",
 			len(newVersions), len(currentVersions))
 		return false
 	}
@@ -245,9 +245,9 @@ func isNewUpdateLargerTanCurrent(new, current string) bool {
 		fmt.Printf("Failed to compare minor versions (new minor=%s, current minor=%s, err=%v)\n",
 			newVersions[1], currentVersions[1], err)
 		return false
-	} else if result == 1 {
+	} else if result > 0 {
 		return true
-	} else if result == -1 {
+	} else if result < 0 {
 		return false
 	}
 
@@ -257,16 +257,16 @@ func isNewUpdateLargerTanCurrent(new, current string) bool {
 		fmt.Printf("Failed to compare bug fix versions (new bug fix=%s, current bug fix=%s, err=%v)\n",
 			newVersions[1], currentVersions[1], err)
 		return false
-	} else if result == 1 {
+	} else if result > 0 {
 		return true
-	} else if result == -1 {
+	} else if result < 0 {
 		return false
 	}
 
 	return false
 }
 
-// Returns 0 if same, -1 if v1 < v2 and 1 if v1 > v2
+// Returns 0 if same, less than 0 if v1 < v2 and more than 0 if v1 > v2
 func compareVersions(v1, v2 string) (int64, error) {
 	v1Number, err := strconv.ParseInt(v1, 10, 0)
 	if err != nil {

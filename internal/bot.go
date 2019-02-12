@@ -18,24 +18,23 @@ func FetchBotByLanguage(lang string, name string) {
 	}
 
 	// Fetch repository url for specified language
-	url, err := getRepositoryURL(lang)
+	langData, err := getRepositoryURL(lang)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		ShowSupportedLanguages()
 		os.Exit(lia_SDK.FailedToFindRepo)
 	}
-	url += "/archive/v" + config.VERSION + ".zip"
 
-	FetchBot(url, name, "")
+	FetchBot(langData.BotURL, name, "")
 }
 
 // Find repository from config file based on lang parameter
-func getRepositoryURL(lang string) (string, error) {
+func getRepositoryURL(lang string) (*config.Language, error) {
 	for _, langData := range config.Cfg.Languages {
 		if lang == langData.Name {
-			return langData.BotURL, nil
+			return &langData, nil
 		}
 	}
 
-	return "", fmt.Errorf("BotRepo not found: %v. Use one of the supported languages.\n", lang)
+	return nil, fmt.Errorf("BotRepo not found: %v. Use one of the supported languages.\n", lang)
 }

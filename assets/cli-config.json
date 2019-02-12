@@ -4,7 +4,7 @@
   "languages": [
     {
       "name": "java",
-      "botUrl": "https://github.com/liagame/java-bot",
+      "botUrl": "https://github.com/liagame/java-bot/archive/v1.0.0.zip",
       "prepareUnix": "java_Prepare.sh",
       "runUnix": "java_Run.sh",
       "prepareWindows": "java_Prepare.bat",
@@ -14,7 +14,7 @@
     },
     {
       "name": "kotlin",
-      "botUrl": "https://github.com/liagame/kotlin-bot",
+      "botUrl": "https://github.com/liagame/kotlin-bot/archive/v1.0.0.zip",
       "prepareUnix": "java_Prepare.sh",
       "runUnix": "java_Run.sh",
       "prepareWindows": "java_Prepare.bat",
@@ -24,7 +24,7 @@
     },
     {
       "name": "python3",
-      "botUrl": "https://github.com/liagame/python3-bot",
+      "botUrl": "https://github.com/liagame/python3-bot/archive/v1.0.0.zip",
       "prepareUnix": "python3_Prepare.sh",
       "runUnix": "python3_Run.sh",
       "prepareWindows": "python3_Prepare.bat",
